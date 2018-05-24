@@ -1,22 +1,22 @@
 import * as React from 'react';
-import { ITheme } from './ITheme';
-import DefaultLight from './themes/DefaultLight';
+import { ITheme, IThemeSettings, createLayeredTheme, IThemeRef } from './ITheme';
+import { defaultThemeRef } from './themes/DefaultTheme';
 
-const ThemeContext = React.createContext<ITheme>(DefaultLight);
+export const ThemeContext = React.createContext<IThemeRef>(defaultThemeRef);
 
 export const ThemeConsumer = (props: { children: (theme: ITheme) => JSX.Element }) => (
   <ThemeContext.Consumer>
-    {theme => props.children(theme)}
+    {(theme) => props.children(theme.ref)}
   </ThemeContext.Consumer>
 );
 
-export const ThemeProvider = (props: { theme: Partial<ITheme>, children?: React.ReactNode }): JSX.Element => (
-  <ThemeContext.Consumer>
-    {contextualTheme => (
-      <ThemeContext.Provider value={Object.assign({}, DefaultLight, contextualTheme, props.theme)}>
+export const ThemeProvider = (props: { themeSettings: Partial<IThemeSettings>, children?: React.ReactNode }): JSX.Element => (
+  <ThemeContext.Consumer>{
+    contextualTheme => (
+      <ThemeContext.Provider value={{ref: createLayeredTheme(props.themeSettings, contextualTheme.ref)}}>
         {props.children}
       </ThemeContext.Provider>
-    )}
-  </ThemeContext.Consumer>
+    )
+  }</ThemeContext.Consumer>
 );
 

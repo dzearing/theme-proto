@@ -1,4 +1,3 @@
-import { assign } from '../../Utilities';
 import { COLOR_VALUES } from './colorValues';
 
 export const MAX_COLOR_SATURATION = 100;
@@ -10,7 +9,7 @@ export interface IRGB {
   r: number;
   g: number;
   b: number;
-  a?: number;
+  a: number;
 }
 
 export interface IHSV {
@@ -25,8 +24,13 @@ export interface IHSL {
   l: number;
 }
 
-export interface IColor extends IRGB, IHSV {
-  hex: string;
+/*
+  Modified version of IColor from fabric since it really only needs one color representation
+  to keep it smaller.  Also no reason I can see to have two string fields as long as it matches
+  the string in a css appropriate form
+*/
+export interface IColor extends IHSV {
+  a: number;
   str: string;
 }
 
@@ -92,7 +96,7 @@ export function hsl2hsv(h: number, s: number, l: number): IHSV {
   s *= ((l < 50) ? l : (100 - l)) / 100;
 
   return {
-    h: h,
+    h,
     s: 2 * s / (l + s) * 100,
     v: l + s
   };
@@ -108,7 +112,7 @@ export function hsv2hsl(h: number, s: number, v: number): { h: number, s: number
   sl = sl || 0;
   l /= 2;
 
-  return { h: h, s: sl * 100, l: l * 100 };
+  return { h, s: sl * 100, l: l * 100 };
 }
 
 export function hsl2rgb(h: number, s: number, l: number): IRGB {
@@ -157,8 +161,29 @@ export function hsv2rgb(h: number, s: number, v: number): IRGB {
   return {
     r: Math.round(MAX_COLOR_RGBA * (rgb[0] + m)),
     g: Math.round(MAX_COLOR_RGBA * (rgb[1] + m)),
-    b: Math.round(MAX_COLOR_RGBA * (rgb[2] + m))
+    b: Math.round(MAX_COLOR_RGBA * (rgb[2] + m)),
+    a: 100
   };
+}
+
+export function getRelativeLuminance(rgb: IRGB): number {
+  // Formula defined by: http://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html#contrast-ratiodef
+  // relative luminance: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+  /* calculate the intermediate value needed to calculating relative luminance */
+  function _getIntermediate(x: number): number {
+    if (x <= .03928) {
+      return x / 12.92;
+    } else {
+      return Math.pow((x + .055) / 1.055, 2.4);
+    }
+  }
+
+  // could we get rid of the MAX_COLOR_RGBA divisions here by just modifying the calculation above?
+  const r: number = _getIntermediate(rgb.r / MAX_COLOR_RGBA);
+  const g: number = _getIntermediate(rgb.g / MAX_COLOR_RGBA);
+  const b: number = _getIntermediate(rgb.b / MAX_COLOR_RGBA);
+  
+  return (.2126 * r) + (.7152 * g) + (.0722 * b);
 }
 
 export function getColorFromString(inputColor: string): IColor | undefined {
@@ -171,34 +196,19 @@ export function getColorFromString(inputColor: string): IColor | undefined {
   const { a, b, g, r } = color;
   const { h, s, v } = rgb2hsv(r, g, b);
 
-  return {
-    a: a,
-    b: b,
-    g: g,
-    h: h,
-    hex: rgb2hex(r, g, b),
-    r: r,
-    s: s,
-    str: inputColor,
-    v: v
-  };
+  return { a, h, s, str: inputColor, v };
 }
 
 export function getColorFromRGBA(rgba: { r: number, g: number, b: number, a: number }): IColor {
   const { a, b, g, r } = rgba;
   const { h, s, v } = rgb2hsv(r, g, b);
 
-  const hex = rgb2hex(r, g, b);
   return {
-    a: a,
-    b: b,
-    g: g,
-    h: h,
-    hex: hex,
-    r: r,
-    s: s,
-    str: (a === 100) ? `#${hex}` : `rgba(${r}, ${g}, ${b}, ${a / 100})`,
-    v: v
+    a,
+    h,
+    s,
+    str: (a === 100) ? `#${rgb2hex(r, g, b)}` : `rgba(${r}, ${g}, ${b}, ${a / 100})`,
+    v
   };
 }
 
@@ -206,45 +216,28 @@ export function getFullColorString(color: IColor): string {
   return `#${hsv2hex(color.h, MAX_COLOR_SATURATION, MAX_COLOR_VALUE)}`;
 }
 
-export function updateSV(color: IColor, s: number, v: number): IColor {
-  const { r, g, b } = hsv2rgb(color.h, s, v);
-  const hex = rgb2hex(r, g, b);
-
+export function createColorFromHSVA(h: number, s: number, v: number, a: number = 100) {
+  const { r, g, b } = hsv2rgb(h, s, v);
+  
   return {
-    a: color.a,
-    b: b,
-    g: g,
-    h: color.h,
-    hex: hex,
-    r: r,
-    s: s,
-    str: (color.a === 100) ? `#${hex}` : `rgba(${r}, ${g}, ${b}, ${(color.a as number) / 100})`,
-    v: v
-  };
+    a,
+    h,
+    s,
+    v,
+    str: (a === 100) ? `#${rgb2hex(r, g, b)}` : `rgba(${r}, ${g}, ${b}, ${(a as number) / 100})`,
+  }
+}
+
+export function updateSV(color: IColor, s: number, v: number): IColor {
+  return createColorFromHSVA(color.h, s, v, color.a);
 }
 
 export function updateH(color: IColor, h: number): IColor {
-  const { r, g, b } = hsv2rgb(h, color.s, color.v);
-  const hex = rgb2hex(r, g, b);
-
-  return {
-    a: color.a,
-    b: b,
-    g: g,
-    h: h,
-    hex: hex,
-    r: r,
-    s: color.s,
-    str: (color.a === 100) ? `#${hex}` : `rgba(${r}, ${g}, ${b}, ${(color.a as number) / 100})`,
-    v: color.v
-  };
+  return createColorFromHSVA(h, color.s, color.v, color.a);
 }
 
 export function updateA(color: IColor, a: number): IColor {
-  return assign({}, color, {
-    a: a,
-    str: (a === 100) ? `#${color.hex}` : `rgba(${color.r}, ${color.g}, ${color.b}, ${a / 100})`
-  });
+  return createColorFromHSVA(color.h, color.s, color.v, color.a);
 }
 
 function _numberToPaddedHex(num: number): string {
@@ -264,6 +257,7 @@ function _named(str: string): IRGB | undefined {
       a: 100
     };
   }
+  return undefined;
 }
 
 function _rgb(str: string): IRGB | undefined {
@@ -279,6 +273,7 @@ function _rgb(str: string): IRGB | undefined {
       a: 100
     };
   }
+  return undefined;
 }
 
 function _rgba(str: string): IRGB | undefined {
@@ -294,6 +289,7 @@ function _rgba(str: string): IRGB | undefined {
       a: parts[3] * 100
     };
   }
+  return undefined;
 }
 
 function _hex6(str: string): IRGB | undefined {
@@ -305,6 +301,7 @@ function _hex6(str: string): IRGB | undefined {
       a: 100
     };
   }
+  return undefined;
 }
 
 function _hex3(str: string): IRGB | undefined {
@@ -316,6 +313,7 @@ function _hex3(str: string): IRGB | undefined {
       a: 100
     };
   }
+  return undefined;
 }
 
 function _hsl(str: string): IRGB | undefined {
@@ -332,6 +330,7 @@ function _hsl(str: string): IRGB | undefined {
 
     return rgba;
   }
+  return undefined;
 }
 
 function _hsla(str: string): IRGB | undefined {
@@ -349,4 +348,5 @@ function _hsla(str: string): IRGB | undefined {
 
     return rgba;
   }
+  return undefined;
 }

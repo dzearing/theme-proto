@@ -1,7 +1,11 @@
-import { createTheme } from '../createTheme';
 import { DefaultPalette as palette } from './DefaultPalette';
+import { IThemeSettings } from '../ITheme';
 
-export const LightTheme = createTheme({
+export const LightTheme: IThemeSettings = {
+  fg: 'black',
+  bg: 'white',
+  accent: 'blue',
+
   palette,
   paletteSets: {
 
@@ -27,6 +31,6 @@ export const LightTheme = createTheme({
     }
   }
 
-});
+};
 
 export default LightTheme;

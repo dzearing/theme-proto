@@ -4,6 +4,9 @@ import * as ReactDOM from 'react-dom';
 // import { ThemeProvider } from './theming/ThemeProvider';
 import { Button } from './Button';
 import Card from './Card';
+import { Configurator } from './Configurator';
+import { ThemeConsumer } from './theming/ThemeProvider';
+import { ITheme } from './theming/ITheme';
 
 
 // loadTheme(GlobalTheme);
@@ -21,18 +24,24 @@ import Card from './Card';
 // });
 
 ReactDOM.render(
-  <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+  <div>
+    <ThemeConsumer>{(theme: ITheme) => {
+      return (<Configurator theme={theme} />);
+    }}</ThemeConsumer>
 
-    <Card>
-      <Button text='Normal button' />
-      <Button primary text='Primary button' />
-    </Card>
+    <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
 
-    <Card paletteSet='primary'>
-      <Button text='Normal button' />
-      <Button paletteSet='default' primary text='Primary button' />
-    </Card>
+      <Card>
+        <Button text='Normal button' />
+        <Button primary text='Primary button' />
+      </Card>
 
+      <Card paletteSet='primary'>
+        <Button text='Normal button' />
+        <Button paletteSet='default' primary text='Primary button' />
+      </Card>
+
+    </div>
   </div>
   ,
   document.getElementById('root') as HTMLElement

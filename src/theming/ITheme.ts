@@ -83,10 +83,6 @@ export interface ITheme {
   colors: IColorPalette;
 }
 
-export interface IThemeRef {
-  ref: ITheme;
-}
-
 export function createLayeredTheme(settings: Partial<IThemeSettings>, parent: ITheme): ITheme {
   const newTheme = { };
 

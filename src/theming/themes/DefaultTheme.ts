@@ -1,4 +1,4 @@
-import { ITheme, IThemeRef } from "../ITheme";
+import { ITheme } from "../ITheme";
 import { createTheme } from "../createTheme";
 import { LightTheme } from "./DefaultLight";
 import { IColor, getColorFromString } from "../../coloring/color";
@@ -19,13 +19,8 @@ export function updateDefaultThemeColors(fg?: string, bg?: string, accent?: stri
     if (!sameColor(newFg, colors.fg) || !sameColor(newBg, colors.bg) || !sameColor(newAccent, colors.theme)) {
       const newTheme: ITheme = { ...defaultTheme, colors: createColorPalette(newFg, newBg, newAccent) }
       defaultTheme = newTheme;
-      defaultThemeRef.ref = defaultTheme;
     }
   }
-}
-
-export const defaultThemeRef: IThemeRef = {
-  ref: defaultTheme
 }
 
 export default defaultTheme;

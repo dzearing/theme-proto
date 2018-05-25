@@ -1,9 +1,9 @@
 import { DefaultFontStyles, IStyle } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { ITheme } from './theming/ITheme';
 import { SwatchBar } from './SwatchBar';
 import { ColorChoice } from './ColorChoice';
+import { ThemeContext } from './theming/ThemeProvider';
 
 // Styles for the component
 export interface IConfiguratorStyles {
@@ -14,7 +14,6 @@ export interface IConfiguratorStyles {
 export interface IConfiguratorProps {
   renderAs?: string | React.ReactType<IConfiguratorProps>,
   className?: string;
-  theme: ITheme;
 }
 
 const view = (props: IViewProps<IConfiguratorProps, IConfiguratorStyles>) => {
@@ -23,15 +22,22 @@ const view = (props: IViewProps<IConfiguratorProps, IConfiguratorStyles>) => {
     classNames } = props;
 
   return (
-    <RootType className={classNames.root}>
-      <SwatchBar colors={props.theme.colors.bgs} />
-      <div style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-        <ColorChoice colorSlot='bg' title='Background' />
-        <ColorChoice colorSlot='fg' title='Foreground' />
-        <ColorChoice colorSlot='theme' title='Theme Color' />
-      </div>
-      <SwatchBar colors={props.theme.colors.themes} />
-    </RootType> 
+    <ThemeContext.Consumer>{
+      ({theme, updateTheme}) => {
+        return (
+          <RootType className={classNames.root}>
+            <SwatchBar colors={theme.colors.bgs} />
+            <div style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+              <ColorChoice colorSlot='bg' title='Background' updater={updateTheme} />
+              <ColorChoice colorSlot='fg' title='Foreground' updater={updateTheme} />
+              <ColorChoice colorSlot='theme' title='Theme Color' updater={updateTheme} />
+            </div>
+            <SwatchBar colors={theme.colors.themes} />
+          </RootType> 
+        )
+      }
+    }</ThemeContext.Consumer>
+    
   );
 };
 

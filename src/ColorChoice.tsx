@@ -4,10 +4,12 @@ import { Callout, ColorPicker } from 'office-ui-fabric-react';
 import { createRef } from 'office-ui-fabric-react/lib/Utilities';
 import { Button } from './Button';
 import { updateDefaultThemeColors, defaultTheme } from './theming/themes/DefaultTheme';
+import { ITheme } from './theming/ITheme';
 
 export interface IColorChoiceProps {
     title: string;
     colorSlot: string;
+    updater?: (theme: ITheme) => void;
 }
 
 export interface IColorChoiceState {
@@ -66,6 +68,9 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
         case 'theme':
             updateDefaultThemeColors(undefined, undefined, color);
             break;
+    }
+    if (this.props.updater) {
+        this.props.updater(defaultTheme);
     }
   }
 

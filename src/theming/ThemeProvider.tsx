@@ -21,7 +21,7 @@ export interface IThemeContextState extends IThemeContextValue {
   inputs to the provider component for updating the state
 */
 export interface IThemeContextProps {
-  newTheme?: IThemeSettings;
+  newTheme?: Partial<IThemeSettings>;
   children?: React.ReactNode;
 }
 
@@ -69,4 +69,20 @@ export class ThemeProvider extends React.Component<IThemeContextProps, IThemeCon
   }
 }
 
-
+export const ThemeLayer = (props: { changeTheme?: string, children: (theme: ITheme) => JSX.Element}) => {
+  if (props.changeTheme) {
+    return (
+      <ThemeProvider newTheme={{change: props.changeTheme}}>
+        <ThemeContext.Consumer>
+          {({theme, updateTheme}) => props.children(theme)}
+        </ThemeContext.Consumer>
+      </ThemeProvider>
+    );
+  } else {
+    return (
+      <ThemeContext.Consumer>
+        {({theme, updateTheme}) => props.children(theme)}
+      </ThemeContext.Consumer>
+    );
+  }
+}

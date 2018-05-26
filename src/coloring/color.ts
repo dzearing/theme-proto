@@ -32,6 +32,7 @@ export interface IHSL {
 export interface IColor extends IHSV {
   a: number;
   str: string;
+  lum?: number;   // luminance, cached to avoid calculating it over and over
 }
 
 export function cssColor(color: string): IRGB | undefined {
@@ -184,6 +185,13 @@ export function getRelativeLuminance(rgb: IRGB): number {
   const b: number = _getIntermediate(rgb.b / MAX_COLOR_RGBA);
   
   return (.2126 * r) + (.7152 * g) + (.0722 * b);
+}
+
+export function getLuminanceForColor(color: IColor): number {
+  if (!color.lum) {
+    color.lum = getRelativeLuminance(hsv2rgb(color.h, color.s, color.v));
+  }
+  return color.lum;
 }
 
 export function getColorFromString(inputColor: string): IColor | undefined {

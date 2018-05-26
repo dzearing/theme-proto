@@ -1,10 +1,15 @@
 import { DefaultPalette as palette } from './DefaultPalette';
 import { IThemeSettings } from '../ITheme';
+import { defaultThemeOffsets } from '../IThemeDefinition';
 
 export const LightTheme: IThemeSettings = {
-  fg: 'black',
-  bg: 'white',
-  accent: 'blue',
+  seedColors: {
+    fg: 'black',
+    bg: 'white',
+    accent: '#0078d4'
+  },
+
+  offsets: defaultThemeOffsets,
 
   palette,
   paletteSets: {

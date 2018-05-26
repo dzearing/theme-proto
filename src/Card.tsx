@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
+import { getLayerFromKeys } from './theming/IColorPalette';
+import { ITheme } from './theming/ITheme';
 
 // Styles for the component
 export interface ICardStyles {
@@ -20,6 +22,9 @@ export interface ICardProps {
   href?: string;
   onClick?: (ev: React.MouseEvent<HTMLElement>) => void;
 
+  deepen?: number;
+  themed?: boolean;
+
   paletteSet?: string;
 }
 
@@ -37,15 +42,36 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
   );
 };
 
+/*
+const view = (props: IViewProps<ICardProps, ICardStyles>) => {
+  if (props.deepen || props.themed !== undefined) {
+    const newShade: number = props.deepen || 0;
+    const newType: ColorLayerType = props.themed === undefined ? ColorLayerType.Relative : ColorLayerType.SwitchRel;
+    const newKey: IColorLayerKey = { type: newType, shade: newShade };
+    const offsets: Partial<IThemeOffsets> = { default: newKey };
+    const themeToSet: Partial<IThemeSettings> = { offsets };
+    return (
+      <ThemeProvider newTheme={themeToSet}>
+        {viewCore}
+      </ThemeProvider>
+    );
+  }
+  return viewCore;
+};
+*/
+
 const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
-  const { paletteSet = 'default' } = props;
-  const set = props.theme.paletteSets[paletteSet];
+  // const { paletteSet = 'default' } = props;
+  const theme: ITheme = props.theme;
+  // const set = theme.paletteSets[paletteSet];
+  const defaultKey = theme.offsets.default;
+  const layer = getLayerFromKeys(defaultKey, defaultKey, theme.colors);
 
   return {
     root: [
       {
-        background: set.background,
-        color: set.text,
+        background: layer.bg.str,
+        color: layer.fg.str,
         padding: 20,
         border: '1px solid #bababa',
         borderRadius: 2,

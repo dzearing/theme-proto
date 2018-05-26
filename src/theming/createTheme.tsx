@@ -1,6 +1,8 @@
 import { ITheme, IPaletteSet, IThemeSettings } from './ITheme';
 import { createColorPalette } from './IColorPalette';
 import { getColorFromString } from '../coloring/color';
+import { defaultTheme } from './themes/DefaultTheme';
+import { LightTheme } from './themes';
 
 export function createTheme(themeSettings: IThemeSettings): ITheme {
   const processedTheme = {
@@ -21,13 +23,17 @@ export function createTheme(themeSettings: IThemeSettings): ITheme {
   }
 
   // create colors from the base global (hacked) values
-  const fg = getColorFromString(themeSettings.fg);
-  const bg = getColorFromString(themeSettings.bg);
-  const themeColor = getColorFromString(themeSettings.accent);
+  const seeds = themeSettings.seedColors;
+  const fg = getColorFromString(seeds.fg) || LightTheme.seedColors.fg;
+  const bg = getColorFromString(seeds.bg) || 'white';
+  const accentColor = getColorFromString(seeds.accent) || ;
 
-  if (fg && bg && themeColor) {
+  const offsetName: string = 'offsets';
+  processedTheme[offsetName] = themeSettings.offsets;
+
+  if (fg && bg && accentColor) {
     const propName: string = 'colors';    // probably some way to get this to not complain
-    processedTheme[propName] = createColorPalette(fg, bg, themeColor);
+    processedTheme[propName] = createColorPalette(fg, bg, accentColor);
   }
 
   return processedTheme as ITheme;

@@ -6,8 +6,8 @@ import { IColor } from "../coloring/color";
 */
 export interface IColorLayer {
   // color values, created on demand
-  foreground: IColor;
-  background: IColor;
+  fg: IColor;
+  bg: IColor;
   named: { [key: string]: IColor };
 
   // references to alternate state layers, created or linked on request

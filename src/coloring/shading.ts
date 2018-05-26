@@ -9,8 +9,8 @@ import {
   hsv2hsl,
   getColorFromRGBA,
   hsv2rgb,
-  getRelativeLuminance,
-  createColorFromHSVA
+  createColorFromHSVA,
+  getLuminanceForColor
 } from './color';
 // import * as Colors from './colors';
 import { assign } from '@uifabric/utilities/lib/index';
@@ -159,8 +159,8 @@ export function getBackgroundShade(color: IColor, shade: Shade, isInverted: bool
 }
 
 export function getContrastRatio(color1: IColor, color2: IColor): number {
-  const L1 = getRelativeLuminance(hsv2rgb(color1.h, color1.s, color1.v)) + .05;
-  const L2 = getRelativeLuminance(hsv2rgb(color2.h, color2.s, color2.v)) + .05;
+  const L1 = getLuminanceForColor(color1) + .05;
+  const L2 = getLuminanceForColor(color1) + .05;
 
   // return the lighter color divided by darker
   return L1 / L2 > 1 ?

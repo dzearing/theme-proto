@@ -1,7 +1,7 @@
 import { IClassNames, IStyleFunction, mergeStyleSets } from "office-ui-fabric-react";
 import * as React from "react";
 import { ITheme } from './theming/ITheme';
-import { ThemeConsumer } from './theming/ThemeProvider';
+import { ThemeLayer } from './theming/ThemeProvider';
 
 export type IStyleFunction<TProps, TStyles> = (
   props: TProps
@@ -14,6 +14,7 @@ export interface IPropsWithStyles<TProps, TStyles> {
 // Components should accept styling.
 export type IComponentProps<TProps, TStyles> = TProps & {
   styles?: IStyleFunction<IPropsWithStyles<TProps, TStyles>, TStyles> | Partial<TStyles>;
+  changeTheme?: string;
 }
 
 export type IStyleProps<TProps, TStyles> = TProps & {
@@ -62,7 +63,7 @@ export function createComponent<TProps, TStyles>(
       const { styles } = processedProps;
 
       return (
-        <ThemeConsumer>{(theme: ITheme) => {
+        <ThemeLayer changeTheme={processedProps.changeTheme}>{(theme: ITheme) => {
           const styleProps = { theme, ...(processedProps as {}) };
 
           return ComponentView({
@@ -72,7 +73,7 @@ export function createComponent<TProps, TStyles>(
               evaluateStyle(styleProps, styles as any)
             )
           });
-        }}</ThemeConsumer>
+        }}</ThemeLayer>
       );
     };
 

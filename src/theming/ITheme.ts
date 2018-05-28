@@ -87,30 +87,15 @@ export interface IThemeSettings {
 */
 export interface IThemeDefinition {
   parent: string;
+  changes?: string;
   settings: Partial<IThemeSettings>;
 }
 
 /*
   Full theme, contains both the inputs and calculated/generated values
 */
-export interface ITheme extends IThemeDefinition {
+export interface ITheme extends IThemeSettings {
   colors: IColorPalette;
-}
-
-/*
-  inputs to the theming system, specified in the provider
-*/
-export interface IThemeSettings2 {
-  fg: string;
-  bg: string;
-  accent: string;
-  name?: string;
-
-  change?: string;
-  offsets?: IThemeOffsets;
-
-  palette: IPalette;
-  paletteSets: { [key: string]: IPaletteSet };
 }
 
 /*
@@ -154,7 +139,7 @@ export function createLayeredTheme(settings: Partial<IThemeSettings>, parent: IT
 */
 export function themeFromUpdateString(update: string, theme: ITheme): Partial<IThemeSettings>|undefined {
   const terms = update.split(' ');
-  const offsets: IThemeOffsets = { ...theme.offsets };
+  const offsets: IThemeOffsets = { ...theme.settings.offsets };
   const def = offsets.default;
   let didSomething: boolean = false;
 

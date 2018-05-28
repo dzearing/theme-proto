@@ -1,7 +1,6 @@
 import { ITheme, IPaletteSet, IThemeSettings } from './ITheme';
 import { createColorPalette } from './IColorPalette';
 import { getColorFromString } from '../coloring/color';
-import { defaultTheme } from './themes/DefaultTheme';
 import { LightTheme } from './themes';
 
 export function createTheme(themeSettings: IThemeSettings): ITheme {

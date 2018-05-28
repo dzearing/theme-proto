@@ -20,6 +20,10 @@ export function getTheme(name: string): ITheme {
     return themeRegistry[name];
 }
 
+export function hasTheme(name: string): boolean {
+    return themeRegistry[name] !== undefined;
+}
+
 export function getDefaultTheme(): ITheme {
     if (!themeRegistry[defaultName]) {
         themeRegistry[defaultName] = createTheme(LightTheme);

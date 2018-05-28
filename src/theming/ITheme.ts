@@ -86,7 +86,7 @@ export interface IThemeSettings {
   Theme definition, used to create a custom theme or theme variation
 */
 export interface IThemeDefinition {
-  parent: string;
+  parent?: string;
   changes?: string;
   settings: Partial<IThemeSettings>;
 }
@@ -108,10 +108,11 @@ export interface ITheme2 {
   colors: IColorPalette;
 }
 
-export function createLayeredTheme(settings: Partial<IThemeSettings>, parent: ITheme): ITheme {
+export function createLayeredTheme(definition: IThemeDefinition): ITheme {
   const newTheme = { };
+  const changes = definition.changes;
 
-  if (settings.change) {
+  if (changes) {
     const updatedSettings = themeFromUpdateString(settings.change, parent);
     if (updatedSettings) {
       settings = Object.assign({}, settings, themeFromUpdateString(settings.change, parent));
@@ -129,55 +130,4 @@ export function createLayeredTheme(settings: Partial<IThemeSettings>, parent: IT
   }
 
   return Object.assign({}, parent, newTheme);
-}
-
-/*
-  generate a theme settings interface from an update string.  Possible options:
-    type: [theme|bg|switch]             - adjust the type of the default layer as specified
-    deepen: number                      - adjust the current shade by the specified number of levels
-    shade: number                       - set the current shade to the specified value
-*/
-export function themeFromUpdateString(update: string, theme: ITheme): Partial<IThemeSettings>|undefined {
-  const terms = update.split(' ');
-  const offsets: IThemeOffsets = { ...theme.settings.offsets };
-  const def = offsets.default;
-  let didSomething: boolean = false;
-
-  for (let i: number = 0; i < terms.length; i++) {
-    switch (terms[i]) {
-      case 'type:':
-        if (++i < terms.length) {
-          let changedType: boolean = true;
-          const param = terms[i];
-          if (param === 'theme' && def.type !== ColorLayerType.Accent) {
-            def.type = ColorLayerType.Accent;
-          } else if (param === 'bg' && def.type !== ColorLayerType.Bg) {
-            def.type = ColorLayerType.Bg;
-          } else if (param === 'switch') {
-            def.type = def.type === ColorLayerType.Accent ? ColorLayerType.Bg : ColorLayerType.Accent;
-          } else {
-            changedType = false;
-          }
-          if (changedType) { 
-            didSomething = true;
-          }
-        }
-        break;
-      case 'deepen':
-      case 'shade':
-        const relative: boolean = (terms[i] === 'deepen');
-        if (++i < terms.length) {
-          const shade: number = parseInt(terms[i], 10);
-          if (!isNaN(shade) && (!relative || shade !== 0)) {
-            def.shade = relative ? def.shade + shade : shade;
-            didSomething = true;
-          }
-        }
-        break;
-    }
-  }
-  if (didSomething) {
-    return { offsets } as Partial<IThemeSettings>;
-  }
-  return undefined;
 }

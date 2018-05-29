@@ -22,9 +22,6 @@ export interface ICardProps {
   href?: string;
   onClick?: (ev: React.MouseEvent<HTMLElement>) => void;
 
-  deepen?: number;
-  themed?: boolean;
-
   paletteSet?: string;
 
   padding?: number | string;

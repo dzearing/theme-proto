@@ -1,9 +1,11 @@
-import { DefaultFontStyles, IStyle } from 'office-ui-fabric-react';
+import { DefaultFontStyles, IStyle, Slider } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
 import { SwatchBar } from './SwatchBar';
 import { ColorChoice } from './ColorChoice';
 import { ThemeContext } from './theming/ThemeProvider';
+import { Card } from './Card';
+import { Text } from './Text';
 
 // Styles for the component
 export interface IConfiguratorStyles {
@@ -14,11 +16,12 @@ export interface IConfiguratorStyles {
 export interface IConfiguratorProps {
   renderAs?: string | React.ReactType<IConfiguratorProps>,
   className?: string;
+  updateGapSize?: (newGap: number) => void;
 }
 
 const view = (props: IViewProps<IConfiguratorProps, IConfiguratorStyles>) => {
   const {
-    renderAs: RootType = 'div',
+    renderAs: RootType = Card,
     classNames } = props;
 
   return (
@@ -26,12 +29,14 @@ const view = (props: IViewProps<IConfiguratorProps, IConfiguratorStyles>) => {
       ({theme, updateTheme}) => {
         return (
           <RootType className={classNames.root}>
+            <Text>Configuration Options</Text>
             <SwatchBar colors={theme.colors.bgs} />
             <div style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-evenly' }}>
               <ColorChoice colorSlot='bg' title='Background' updater={updateTheme} />
               <ColorChoice colorSlot='fg' title='Foreground' updater={updateTheme} />
               <ColorChoice colorSlot='theme' title='Theme Color' updater={updateTheme} />
             </div>
+            <Slider label='Gap size' onChange={props.updateGapSize} min={0} max={40} step={4} />
             <SwatchBar colors={theme.colors.themes} />
           </RootType> 
         )

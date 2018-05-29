@@ -14,7 +14,7 @@ export interface IPropsWithStyles<TProps, TStyles> {
 // Components should accept styling.
 export type IComponentProps<TProps, TStyles> = TProps & {
   styles?: IStyleFunction<IPropsWithStyles<TProps, TStyles>, TStyles> | Partial<TStyles>;
-  changeTheme?: string;
+  theming?: string;
 }
 
 export type IStyleProps<TProps, TStyles> = TProps & {
@@ -64,7 +64,7 @@ export function createComponent<TProps, TStyles, TStatics = {}>(
       const { styles } = processedProps;
 
       return (
-        <ThemeLayer themeChange={processedProps.changeTheme}>{(theme: ITheme) => {
+        <ThemeLayer themeChange={processedProps.theming}>{(theme: ITheme) => {
           const styleProps = { theme, ...(processedProps as {}) };
 
           return ComponentView({

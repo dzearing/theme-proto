@@ -7,7 +7,7 @@ import { ThemeProvider } from './theming/ThemeProvider';
 // import { Button } from './Button';
 import Text from './Text';
 import Stack from './Stack';
-import { FocusZone, Slider } from 'office-ui-fabric-react';
+import { FocusZone } from 'office-ui-fabric-react';
 import { initializeIcons } from '@uifabric/icons';
 import TaskCard from './TaskCard';
 
@@ -37,8 +37,8 @@ class App extends React.Component<{}, { gapSize: number }> {
     return (
       <ThemeProvider>
       <Stack vertical gapSize={20}>
-        <Slider label='Gap size' onChange={this._onGapSizeChange} min={0} max={40} step={4} />
-        <Configurator />
+        
+        <Configurator updateGapSize={this._onGapSizeChange} />
 
         <Stack gapSize={this.state.gapSize} align='stretch'>
 
@@ -67,9 +67,9 @@ class App extends React.Component<{}, { gapSize: number }> {
 
             <TaskCard />
 
-            <TaskCard paletteSet='neutral' />
+            <TaskCard paletteSet='neutral' theming='deepen: 1' />
 
-            <TaskCard paletteSet='primary' />
+            <TaskCard paletteSet='primary' theming='type: themed' />
 
           </FocusZone>
 

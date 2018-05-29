@@ -1,4 +1,5 @@
 import { IColor } from "../coloring/color";
+import { IColorLayerKey } from "./IColorLayerKey";
 
 /*
     A given color layer.  This contains the core colors, optional colors calculated for controls
@@ -6,15 +7,15 @@ import { IColor } from "../coloring/color";
 */
 export interface IColorLayer {
   // color values, created on demand
-  fg: IColor;
-  bg: IColor;
-  named: { [key: string]: IColor };
-
-  // references to alternate state layers, created or linked on request
-  hovered?: IColorLayer;
-  pressed?: IColorLayer;
-  selected?: IColorLayer;
-  disabled?: IColorLayer;
+  key: IColorLayerKey;
+  clr: { 
+    fg: IColor;
+    bg: IColor;
+    [key: string]: IColor;
+  };
+  ref: {
+    [key: string]: IColorLayer;
+  }
 }
 
 /*

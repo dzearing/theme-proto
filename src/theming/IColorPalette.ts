@@ -2,6 +2,7 @@ import { IColor } from "../coloring/color";
 import { IColorLayer } from "./IColorLayer";
 import { getShade, getBackgroundShade, getContrastRatio } from "../coloring/shading";
 import { IColorLayerKey, ColorLayerType } from "./IColorLayerKey";
+import { ITheme } from "./ITheme";
 
 /*
     The current set of cached and active layers as well as the seed colors used to calculate values
@@ -19,7 +20,8 @@ export interface IColorPalette {
   // layer caches
   bgLayers: IColorLayer[];
   themeLayers: IColorLayer[];
-  custom: { [key: string]: IColorLayer };
+
+  layers: { [key: string]: IColorLayer };
 }
 
 // count of layers, this should be dynamic but currently matches what is in shades.ts
@@ -34,7 +36,7 @@ export function createColorPalette(fg: IColor, bg: IColor, theme: IColor): IColo
     themes: createThemeColorArray(theme),
     bgLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
     themeLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
-    custom: {}
+    layers: {}
   };
 }
 
@@ -54,11 +56,11 @@ function createBgColorArray(bg: IColor): IColor[] {
   return results;
 }
 
-function createLayerForBackground(newBg: IColor, palette: IColorPalette): IColorLayer {
+function createLayerForBackground(key: IColorLayerKey, newBg: IColor, palette: IColorPalette): IColorLayer {
   const bgRatio: number = getContrastRatio(newBg, palette.bg);
   const fgRatio: number = getContrastRatio(newBg, palette.fg);
   const fg = fgRatio > bgRatio ? palette.fg : palette.bg;
-  return {fg, bg: newBg, named: {}} as IColorLayer;
+  return {key, clr: { fg, bg: newBg }} as IColorLayer;
 }
 
 export function getLayer(bgLayer: boolean, shade: number, palette: IColorPalette): IColorLayer {
@@ -102,4 +104,43 @@ export function getLayerFromKeys(key: IColorLayerKey, baseline: IColorLayerKey, 
       shade = shade + key.shade;
   }
   return getLayer(bgLayer, shade, palette);
+}
+
+/*
+  Input/output type.  On input it is a collection of:
+    [destination key]: color name
+  
+  On output the returned value is:
+    [destination key]: resolved color value
+*/
+export interface IColorRequest {
+  [value: string]: string;
+}
+
+export function getThemeColors(layerName: string, theme: ITheme, requested: IColorRequest) : IColorRequest {
+  const palette = theme.colors;
+  const layers = palette.layers;
+  let layer: IColorLayer;
+  if (!layers.hasOwnProperty(layerName)) {
+    const offsets = theme.offsets;
+    if (offsets.hasOwnProperty(layerName)) {
+      const layerKey: IColorLayerKey = offsets[layerName];
+      layer = getLayerFromKeys(layerKey, layerKey, palette);
+      layers[layerName] = layer;
+    } else {
+      return getThemeColors('default', theme, requested);
+    }
+  } else {
+    layer = layers[layerName];
+  }
+
+  const colors = { ...requested };
+  for (const key in requested) {
+    const clr = layer.clr;
+    const colorName = requested[key];
+    if (clr.hasOwnProperty(colorName)) {
+      clr[colorName] = constructNamedColor(colorName, layer, theme);
+    }
+    colors[key] = clr[colorName].str;
+  }
 }

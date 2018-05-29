@@ -1,3 +1,5 @@
+import { IRawStyle } from '@uifabric/styling';
+
 export type IColor = string;
 
 export interface IPalette {
@@ -60,7 +62,19 @@ export interface IPaletteSet {
   linkVisited: IPaletteReference;
 }
 
+export interface IFonts {
+  medium: IRawStyle;
+}
+
+export interface IFontWeights {
+  emphasized: IRawStyle;
+  normal: IRawStyle;
+  diminished: IRawStyle;
+}
+
 export interface ITheme {
   palette: IPalette;
   paletteSets: { [key: string]: IPaletteSet };
+  fonts: IFonts;
+  fontWeights: IFontWeights;
 }

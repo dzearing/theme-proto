@@ -2,7 +2,9 @@ import { ITheme, IPaletteSet } from './ITheme';
 
 export function createTheme(theme: ITheme): ITheme {
   const processedTheme = {
-    paletteSets: {} as { [key: string]: IPaletteSet }
+    paletteSets: {} as { [key: string]: IPaletteSet },
+    fonts: theme.fonts,
+    fontWeights: theme.fontWeights || {}
   };
 
   for (const setName in theme.paletteSets) {

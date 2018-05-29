@@ -1,8 +1,11 @@
 import { createTheme } from '../createTheme';
 import { DefaultPalette as palette } from './DefaultPalette';
+import { DefaultFonts as fonts, DefaultFontWeights as fontWeights } from './DefaultFonts';
 
 export const LightTheme = createTheme({
   palette,
+  fonts,
+  fontWeights,
   paletteSets: {
 
     default: {

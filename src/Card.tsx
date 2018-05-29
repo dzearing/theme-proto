@@ -5,6 +5,7 @@ import { createComponent, IStyleProps, IViewProps } from './createComponent';
 // Styles for the component
 export interface ICardStyles {
   root: IStyle;
+  content: IStyle;
 }
 
 // Inputs to the component
@@ -21,6 +22,10 @@ export interface ICardProps {
   onClick?: (ev: React.MouseEvent<HTMLElement>) => void;
 
   paletteSet?: string;
+
+  padding?: number | string;
+  width?: number | string;
+  height?: number | string;
 }
 
 const view = (props: IViewProps<ICardProps, ICardStyles>) => {
@@ -31,14 +36,16 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
   } = props;
 
   return (
-    <RootType {...rest} className={classNames.root}>
-      {props.children}
+    <RootType {...rest} className={classNames.root} >
+      <div className={classNames.content}>
+        {props.children}
+      </div>
     </RootType>
   );
 };
 
 const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
-  const { paletteSet = 'default' } = props;
+  const { paletteSet = 'default', width, height, padding } = props;
   const set = props.theme.paletteSets[paletteSet];
 
   return {
@@ -46,14 +53,24 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
       {
         background: set.background,
         color: set.text,
-        padding: 20,
-        border: '1px solid #bababa',
+
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+        border: '1px solid #ccc',
         borderRadius: 2,
-        boxShadow: '0 0 20px -5px #000',
-        display: 'inline-flex'
+        boxShadow: '0 0 10px -4px #000',
+        display: 'inline-flex',
+        width,
+        height,
+        padding
       },
       props.className
-    ]
+    ],
+    content: {
+      overflow: 'hidden',
+      position: 'relative',
+      width: '100%'
+    }
   }
 };
 

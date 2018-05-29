@@ -15,8 +15,7 @@ export interface IThemeContextValue {
   state for the provider component, allows for cascading of states and only updating state
   and re-rendering when there are real changes
 */
-export interface IThemeContextState {
-  theme: ITheme;
+export interface IThemeContextState extends IThemeContextValue {
   parent?: ITheme;
   themeChange?: string;
 }
@@ -43,8 +42,9 @@ export const ThemeConsumer = (props: { children: (theme: ITheme) => JSX.Element 
 export class ThemeProvider extends React.Component<IThemeContextProps, IThemeContextState> {
   public state: IThemeContextState = {
     theme: getDefaultTheme(),
+    updateTheme: (newTheme: ITheme) => { this.setState({...this.state, theme: newTheme}) },
     parent: undefined,
-    themeChange: undefined 
+    themeChange: undefined
   }
 
   public render() {
@@ -60,15 +60,16 @@ export class ThemeProvider extends React.Component<IThemeContextProps, IThemeCon
               ? themeFromChangeString(changeString, contextualTheme.theme)
               : contextualTheme.theme;
             this.setState({
+              ...this.state,
               theme: newTheme,
-              parent: updateParent ? contextualTheme.theme : this.state.parent,
+              parent: contextualTheme.theme,
               themeChange: this.props.themeChange
             });
           }
           return (
             <ThemeContext.Provider value={{
               theme: this.state.theme,
-              updateTheme: contextualTheme.updateTheme
+              updateTheme: this.state.updateTheme
             }}>
               {this.props.children}
             </ThemeContext.Provider>

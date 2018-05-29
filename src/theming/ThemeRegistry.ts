@@ -35,9 +35,10 @@ export function getTheme(name: string): ITheme {
 
         // build up the settings
         const aggregatedSettings: Partial<IThemeSettings> = {};
-        let settings: IThemeDefinition|undefined;
-        while (settings = precursors.pop()) {
+        let settings: IThemeDefinition|undefined = precursors.pop();
+        while (settings) {
             Object.assign(aggregatedSettings, settings);
+            settings = precursors.pop();
         }
 
         // now create the new theme

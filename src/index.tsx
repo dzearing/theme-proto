@@ -34,7 +34,7 @@ ReactDOM.render(
           <Button primary text='Primary button' />
         </Card>
 
-        <Card paletteSet='primary' themed={true} changeTheme='type: theme'>
+        <Card paletteSet='primary' themed={true} changeTheme='type: themed'>
           <Button text='Normal button' />
           <Button paletteSet='default' primary text='Primary button' />
         </Card>

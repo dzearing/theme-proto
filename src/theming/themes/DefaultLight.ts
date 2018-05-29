@@ -1,6 +1,7 @@
 import { DefaultPalette as palette } from './DefaultPalette';
 import { IThemeSettings } from '../ITheme';
 import { defaultThemeOffsets } from '../IThemeDefinition';
+import { DefaultFonts as fonts, DefaultFontWeights as fontWeights } from './DefaultFonts';
 
 export const LightTheme: IThemeSettings = {
   seedColors: {
@@ -12,6 +13,8 @@ export const LightTheme: IThemeSettings = {
   offsets: defaultThemeOffsets,
 
   palette,
+  fonts,
+  fontWeights,
   paletteSets: {
 
     default: {

@@ -2,11 +2,11 @@ import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
 import { getLayerFromKeys } from './theming/IColorPalette';
-import { ITheme } from './theming/ITheme';
 
 // Styles for the component
 export interface ICardStyles {
   root: IStyle;
+  content: IStyle;
 }
 
 // Inputs to the component
@@ -26,6 +26,10 @@ export interface ICardProps {
   themed?: boolean;
 
   paletteSet?: string;
+
+  padding?: number | string;
+  width?: number | string;
+  height?: number | string;
 }
 
 const view = (props: IViewProps<ICardProps, ICardStyles>) => {
@@ -36,8 +40,10 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
   } = props;
 
   return (
-    <RootType {...rest} className={classNames.root}>
-      {props.children}
+    <RootType {...rest} className={classNames.root} >
+      <div className={classNames.content}>
+        {props.children}
+      </div>
     </RootType>
   );
 };
@@ -61,9 +67,8 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
 */
 
 const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
-  // const { paletteSet = 'default' } = props;
-  const theme: ITheme = props.theme;
-  // const set = theme.paletteSets[paletteSet];
+  const theme = props.theme;
+  const { width, height, padding } = props;
   const defaultKey = theme.offsets.default;
   const layer = getLayerFromKeys(defaultKey, defaultKey, theme.colors);
 
@@ -72,14 +77,24 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
       {
         background: layer.bg.str,
         color: layer.fg.str,
-        padding: 20,
-        border: '1px solid #bababa',
+
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+        border: '1px solid #ccc',
         borderRadius: 2,
-        boxShadow: '0 0 20px -5px #000',
-        display: 'inline-flex'
+        boxShadow: '0 0 10px -4px #000',
+        display: 'inline-flex',
+        width,
+        height,
+        padding
       },
       props.className
-    ]
+    ],
+    content: {
+      overflow: 'hidden',
+      position: 'relative',
+      width: '100%'
+    }
   }
 };
 

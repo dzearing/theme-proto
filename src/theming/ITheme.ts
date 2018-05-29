@@ -1,5 +1,6 @@
 import { IColorPalette } from "./IColorPalette";
 import { IThemeOffsets } from "./IThemeDefinition";
+import { IRawStyle } from '@uifabric/styling';
 
 export interface IPalette {
   themeDarker: string;
@@ -70,6 +71,16 @@ export interface IThemeColors {
   accent: string;
 }
 
+export interface IFonts {
+  medium: IRawStyle;
+}
+
+export interface IFontWeights {
+  emphasized: IRawStyle;
+  normal: IRawStyle;
+  diminished: IRawStyle;
+}
+
 /*
   Theme definition, used to specify or modify the theme
 */
@@ -78,6 +89,8 @@ export interface IThemeSettings {
   offsets: IThemeOffsets;
   palette: IPalette;
   paletteSets: { [key: string]: IPaletteSet };
+  fonts: IFonts;
+  fontWeights: IFontWeights;
 }
 
 /*

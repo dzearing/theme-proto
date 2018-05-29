@@ -28,11 +28,12 @@ export type IViewProps<TProps, TStyles> = TProps & {
 
 const augmentations = {};
 
-export interface IComponentOptions<TProps, TStyles> {
+export interface IComponentOptions<TProps, TStyles, TStatics> {
   displayName: string;
   state?: React.ComponentType<IComponentProps<TProps, TStyles>>;
   styles?: IStyleFunction<IStyleProps<TProps, TStyles>, TStyles> | Partial<TStyles>;
   view?: React.ComponentType<IViewProps<TProps, TStyles>>;
+  statics?: TStatics;
 }
 
 function evaluateStyle<TProps, TStyles>(
@@ -47,11 +48,11 @@ function evaluateStyle<TProps, TStyles>(
 }
 
 // Helper function to tie them together.
-export function createComponent<TProps, TStyles>(
-  options: IComponentOptions<TProps, TStyles>
-): React.StatelessComponent<IComponentProps<TProps, TStyles>> {
+export function createComponent<TProps, TStyles, TStatics = {}>(
+  options: IComponentOptions<TProps, TStyles, TStatics>
+): (React.StatelessComponent<IComponentProps<TProps, TStyles>> & TStatics) {
 
-  const result: React.StatelessComponent<TProps> = (userProps: TProps) => {
+  const result: (React.StatelessComponent<TProps>) = (userProps: TProps) => {
     const augmented = augmentations[options.displayName] || {};
     const ComponentState = augmented.state || options.state;
     const ComponentView = augmented.view || options.view;
@@ -84,14 +85,18 @@ export function createComponent<TProps, TStyles>(
       );
   };
 
+  // Assign display name.
   result.displayName = options.displayName;
 
-  return result;
+  // Assign statics.
+  Object.assign(result, options.statics);
+
+  return result as (React.StatelessComponent<IComponentProps<TProps, TStyles>> & TStatics);
 }
 
 // Helper function to augment existing components that have been created.
-export function augmentComponent<TProps, TStyles>(
-  options: IComponentOptions<TProps, TStyles>
+export function augmentComponent<TProps, TStyles, TStatics>(
+  options: IComponentOptions<TProps, TStyles, TStatics>
 ) {
   augmentations[options.displayName] = {
     ...augmentations[options.displayName],

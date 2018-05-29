@@ -1,7 +1,5 @@
-import { IColorPalette, createColorPalette } from "./IColorPalette";
-import { IColor, getColorFromString } from "../coloring/color";
+import { IColorPalette } from "./IColorPalette";
 import { IThemeOffsets } from "./IThemeDefinition";
-import { ColorLayerType } from "./IColorLayerKey";
 
 export interface IPalette {
   themeDarker: string;
@@ -87,7 +85,6 @@ export interface IThemeSettings {
 */
 export interface IThemeDefinition {
   parent?: string;
-  changes?: string;
   settings: Partial<IThemeSettings>;
 }
 
@@ -106,28 +103,4 @@ export interface ITheme2 {
 
   offsets: IThemeOffsets;
   colors: IColorPalette;
-}
-
-export function createLayeredTheme(definition: IThemeDefinition): ITheme {
-  const newTheme = { };
-  const changes = definition.changes;
-
-  if (changes) {
-    const updatedSettings = themeFromUpdateString(settings.change, parent);
-    if (updatedSettings) {
-      settings = Object.assign({}, settings, themeFromUpdateString(settings.change, parent));
-    }
-  }
-
-  // if any of the core colors have changed update the color cache
-  if (settings.fg || settings.bg || settings.accent) {
-    const propToAdd: string = 'colors';
-    const oldColors: IColorPalette = parent.colors;
-    const fg: IColor = settings.fg ? (getColorFromString(settings.fg) || oldColors.fg) : oldColors.fg;
-    const bg: IColor = settings.bg ? (getColorFromString(settings.bg) || oldColors.bg) : oldColors.bg;
-    const accent: IColor = settings.accent ? (getColorFromString(settings.accent) || oldColors.theme) : oldColors.theme;
-    newTheme[propToAdd] = createColorPalette(fg, bg, accent);
-  }
-
-  return Object.assign({}, parent, newTheme);
 }

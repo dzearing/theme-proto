@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ITheme } from './ITheme';
 import { getDefaultTheme } from './ThemeRegistry';
+import { themeFromChangeString } from './ThemeCreation';
 
 /*
   value stored in the context that is available at each level to consumers
@@ -53,10 +54,10 @@ export class ThemeProvider extends React.Component<IThemeContextProps, IThemeCon
         contextualTheme => {
           const updateParent: boolean = (contextualTheme.theme !== this.state.parent);
           const changeString: string|undefined = this.props.themeChange;
-          const themeChanging: boolean = (this.props.themeChange !== this.state.themeChange);
+          const themeChanging: boolean = (changeString !== this.state.themeChange);
           if (updateParent || themeChanging || !this.state.theme) {
-            const newTheme = this.props.themeChange 
-              ? themeFromChangeString(this.props.themeChange, contextualTheme.theme)
+            const newTheme = changeString 
+              ? themeFromChangeString(changeString, contextualTheme.theme)
               : contextualTheme.theme;
             this.setState({
               theme: newTheme,

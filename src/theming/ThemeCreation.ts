@@ -1,8 +1,8 @@
-import { ITheme, IThemeSettings } from "./ITheme";
-import { getTheme, hasTheme } from "./ThemeRegistry";
+import { ITheme, IThemeSettings, IPaletteSet, IThemeColors } from "./ITheme";
+import { getTheme, hasTheme, getDefaultTheme, registerDefaultTheme } from "./ThemeRegistry";
 import { ColorLayerType } from "./IColorLayerKey";
-import { IColor, getColorFromString } from "../coloring/color";
-
+import { getColorFromString, IColor, getColorFromRGBA } from "../coloring/color";
+import { IColorPalette, createColorPalette } from "./IColorPalette";
 
 /*
   generate a theme settings interface from an update string.  Possible options:
@@ -68,6 +68,69 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
           }
         }
         break;
+    }
+  }
+
+  const newTheme: ITheme = Object.assign({}, baseline, settings);
+  if (settings.seedColors) {
+    newTheme.colors = paletteFromSeedColors(settings.seedColors, baseline.colors);
+  }
+  return newTheme;
+}
+
+function paletteFromSeedColors(colors: IThemeColors, basePalette?: IColorPalette): IColorPalette {
+  const fgFallback: IColor = basePalette ? basePalette.fg : getColorFromRGBA({r: 0, g: 0, b: 0, a: 100});
+  const bgFallback: IColor = basePalette ? basePalette.bg : getColorFromRGBA({r: 255, g: 255, b: 255, a: 100});
+  const accentFallback: IColor = basePalette ? basePalette.theme : getColorFromRGBA({r: 0, g: 0, b: 255, a: 100});
+  return createColorPalette(
+    getColorFromString(colors.fg) || fgFallback,
+    getColorFromString(colors.bg) || bgFallback,
+    getColorFromString(colors.accent) || accentFallback
+  );
+}
+
+export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
+  const processedTheme = {
+    paletteSets: {} as { [key: string]: IPaletteSet }
+  };
+
+  if (themeSettings.paletteSets && themeSettings.palette) {
+    for (const setName in themeSettings.paletteSets) {
+      if (themeSettings.paletteSets.hasOwnProperty(setName)) {
+        const set = themeSettings.paletteSets[setName];
+        const targetSet = processedTheme.paletteSets[setName] = {} as any;
+
+        for (const setPropName in set) {
+          if (set.hasOwnProperty(setPropName)) {
+            targetSet[setPropName] = themeSettings.palette[set[setPropName]] || set[setPropName];
+          }
+        }
+      }
+    }
+  }
+
+  if (themeSettings.seedColors) {
+    const propName = 'colors';
+    processedTheme[propName] = paletteFromSeedColors(themeSettings.seedColors, baseline ? baseline.colors : undefined);
+  }
+
+  return Object.assign({}, baseline, themeSettings, processedTheme);
+}
+
+function sameColor(a: IColor, b: IColor): boolean {
+  return (a.a === b.a && a.h === b.h && a.s === b.s && a.v === b.v);
+}
+
+export function updateDefaultThemeColors(fg?: string, bg?: string, accent?: string) {
+  if (fg || bg || accent) {
+    const defaultTheme = getDefaultTheme();
+    const colors = defaultTheme.colors;
+    const newFg: IColor = fg ? getColorFromString(fg) || colors.fg : colors.fg;
+    const newBg: IColor = bg ? getColorFromString(bg) || colors.bg : colors.bg;
+    const newAccent: IColor = accent ? getColorFromString(accent) || colors.theme : colors.theme;
+    if (!sameColor(newFg, colors.fg) || !sameColor(newBg, colors.bg) || !sameColor(newAccent, colors.theme)) {
+      const newTheme: ITheme = { ...defaultTheme, colors: createColorPalette(newFg, newBg, newAccent) }
+      registerDefaultTheme(newTheme);
     }
   }
 }

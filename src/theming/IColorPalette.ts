@@ -100,7 +100,7 @@ export function getLayerFromKeys(key: IColorLayerKey, baseline: IColorLayerKey, 
   const shade = baseline.shade;
   switch (key.type) {
     case ColorLayerType.Relative:
-      key = { ...key, shade: shade + key.shade };
+      key = { ...key, type: baseline.type, shade: shade + key.shade };
       break;
     case ColorLayerType.Switch:
       key = { ...key, type: bgLayer ? ColorLayerType.Accent : ColorLayerType.Bg };

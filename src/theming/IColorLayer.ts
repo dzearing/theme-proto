@@ -19,5 +19,5 @@ export interface IColorLayer {
 }
 
 export interface IColorDefinition {
-  
+  [key: string]: { fn: string, param?: number|string };
 }

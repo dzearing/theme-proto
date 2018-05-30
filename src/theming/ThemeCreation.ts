@@ -1,4 +1,4 @@
-import { ITheme, IThemeSettings, IPaletteSet, IThemeColors } from "./ITheme";
+import { ITheme, IThemeSettings, IThemeColors } from "./ITheme";
 import { getTheme, hasTheme } from "./ThemeRegistry";
 import { ColorLayerType } from "./IColorLayerKey";
 import { getColorFromString, IColor, getColorFromRGBA } from "../coloring/color";
@@ -92,24 +92,8 @@ function paletteFromSeedColors(colors: IThemeColors, basePalette?: IColorPalette
 
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
   const processedTheme = {
-    paletteSets: {} as { [key: string]: IPaletteSet },
     layers: {}
   };
-
-  if (themeSettings.paletteSets && themeSettings.palette) {
-    for (const setName in themeSettings.paletteSets) {
-      if (themeSettings.paletteSets.hasOwnProperty(setName)) {
-        const set = themeSettings.paletteSets[setName];
-        const targetSet = processedTheme.paletteSets[setName] = {} as any;
-
-        for (const setPropName in set) {
-          if (set.hasOwnProperty(setPropName)) {
-            targetSet[setPropName] = themeSettings.palette[set[setPropName]] || set[setPropName];
-          }
-        }
-      }
-    }
-  }
 
   if (themeSettings.seedColors) {
     const propName = 'colors';

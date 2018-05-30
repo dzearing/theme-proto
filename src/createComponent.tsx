@@ -64,7 +64,7 @@ export function createComponent<TProps, TStyles, TStatics = {}>(
       const { styles } = processedProps;
 
       return (
-        <ThemeLayer themeChange={processedProps.theming}>{(theme: ITheme) => {
+        <ThemeLayer theming={processedProps.theming}>{(theme: ITheme) => {
           const styleProps = { theme, ...(processedProps as {}) };
 
           return ComponentView({

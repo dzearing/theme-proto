@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 // import { IStyleProps } from './createComponent';
 // import { ThemeProvider } from './theming/ThemeProvider';
 import { Configurator } from './Configurator';
-import { ThemeProvider } from './theming/ThemeProvider';
+import { ThemeLayer } from './theming/ThemeProvider';
 // import { Button } from './Button';
 import Text from './Text';
 import Stack from './Stack';
@@ -35,48 +35,48 @@ class App extends React.Component<{}, { gapSize: number }> {
 
   public render(): JSX.Element {
     return (
-      <ThemeProvider>
-      <Stack vertical gapSize={20}>
-        
-        <Configurator updateGapSize={this._onGapSizeChange} />
+      <ThemeLayer>{() => (
+        <Stack vertical gapSize={20}>
+          
+          <Configurator updateGapSize={this._onGapSizeChange} />
 
-        <Stack gapSize={this.state.gapSize} align='stretch'>
+          <Stack gapSize={this.state.gapSize} align='stretch'>
 
-          <Text>I am text</Text>
+            <Text>I am text</Text>
 
-          <RedBox />
-
-          <Text>I am <Text emphasized>emphasized</Text> text</Text>
-
-          <Stack.Area grow>
             <RedBox />
-          </Stack.Area>
 
-          <Text diminished>I am diminished</Text>
+            <Text>I am <Text emphasized>emphasized</Text> text</Text>
 
-          <RedBox />
+            <Stack.Area grow>
+              <RedBox />
+            </Stack.Area>
 
-          <Text>I am text</Text>
+            <Text diminished>I am diminished</Text>
 
-          <RedBox />
-        </Stack>
+            <RedBox />
 
-        <Stack maxWidth={200} vertical>
+            <Text>I am text</Text>
 
-          <FocusZone>
+            <RedBox />
+          </Stack>
 
-            <TaskCard />
+          <Stack maxWidth={200} vertical>
 
-            <TaskCard paletteSet='neutral' theming='deepen: 1' />
+            <FocusZone>
 
-            <TaskCard paletteSet='primary' theming='type: themed' />
+              <TaskCard />
 
-          </FocusZone>
+              <TaskCard paletteSet='neutral' theming='deepen: 1' />
 
-        </Stack>
+              <TaskCard paletteSet='primary' theming='type: themed' />
 
-      </Stack >
-      </ThemeProvider>
+            </FocusZone>
+
+          </Stack>
+
+        </Stack >
+      )}</ThemeLayer>
     );
   }
 

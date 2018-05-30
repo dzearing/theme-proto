@@ -131,7 +131,7 @@ export function updateDefaultThemeColors(fg?: string, bg?: string, accent?: stri
     const newBg: IColor = bg ? getColorFromString(bg) || colors.bg : colors.bg;
     const newAccent: IColor = accent ? getColorFromString(accent) || colors.theme : colors.theme;
     if (!sameColor(newFg, colors.fg) || !sameColor(newBg, colors.bg) || !sameColor(newAccent, colors.theme)) {
-      const newTheme: ITheme = { ...defaultTheme, colors: createColorPalette(newFg, newBg, newAccent) }
+      const newTheme: ITheme = { ...defaultTheme, colors: createColorPalette(newFg, newBg, newAccent), layers: {} }
       registerDefaultTheme(newTheme);
     }
   }

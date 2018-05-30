@@ -18,16 +18,6 @@ export interface IColorLayer {
   }
 }
 
-/*
-  Values that need to be ensured for a given layer.  Pulled on-demand.
-*/
-export interface IRequiredLayerValues {
-  // named color values 
-  names?: string[];
-
-  // recursive references to other layers, which will also require the same named values
-  hovered?: boolean;
-  pressed?: boolean;
-  selected?: boolean;
-  disabled?: boolean;
+export interface IColorDefinition {
+  
 }

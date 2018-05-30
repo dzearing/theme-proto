@@ -160,7 +160,7 @@ export function getBackgroundShade(color: IColor, shade: Shade, isInverted: bool
 
 export function getContrastRatio(color1: IColor, color2: IColor): number {
   const L1 = getLuminanceForColor(color1) + .05;
-  const L2 = getLuminanceForColor(color1) + .05;
+  const L2 = getLuminanceForColor(color2) + .05;
 
   // return the lighter color divided by darker
   return L1 / L2 > 1 ?

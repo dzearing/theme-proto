@@ -75,6 +75,7 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
   if (settings.seedColors) {
     newTheme.colors = paletteFromSeedColors(settings.seedColors, baseline.colors);
   }
+  newTheme.layers = {};
   return newTheme;
 }
 
@@ -91,7 +92,8 @@ function paletteFromSeedColors(colors: IThemeColors, basePalette?: IColorPalette
 
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
   const processedTheme = {
-    paletteSets: {} as { [key: string]: IPaletteSet }
+    paletteSets: {} as { [key: string]: IPaletteSet },
+    layers: {}
   };
 
   if (themeSettings.paletteSets && themeSettings.palette) {

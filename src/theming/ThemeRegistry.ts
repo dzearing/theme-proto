@@ -1,6 +1,6 @@
 import { ITheme, IThemeDefinition, IThemeSettings } from "./ITheme";
-import { LightTheme } from "./themes";
 import { createLayeredTheme } from "./ThemeCreation";
+import { LightTheme } from "./themes/DefaultLight";
 
 const defaultName: string = 'default';
 

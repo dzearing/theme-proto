@@ -82,7 +82,7 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
 function paletteFromSeedColors(colors: IThemeColors, basePalette?: IColorPalette): IColorPalette {
   const fgFallback: IColor = basePalette ? basePalette.fg : getColorFromRGBA({r: 0, g: 0, b: 0, a: 100});
   const bgFallback: IColor = basePalette ? basePalette.bg : getColorFromRGBA({r: 255, g: 255, b: 255, a: 100});
-  const accentFallback: IColor = basePalette ? basePalette.theme : getColorFromRGBA({r: 0, g: 0, b: 255, a: 100});
+  const accentFallback: IColor = basePalette ? basePalette.accent : getColorFromRGBA({r: 0, g: 0, b: 255, a: 100});
   return createColorPalette(
     getColorFromString(colors.fg) || fgFallback,
     getColorFromString(colors.bg) || bgFallback,

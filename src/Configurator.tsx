@@ -34,7 +34,7 @@ const view = (props: IViewProps<IConfiguratorProps, IConfiguratorStyles>) => {
             <div style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-evenly' }}>
               <ColorChoice colorSlot='bg' title='Background' updater={updateTheme} />
               <ColorChoice colorSlot='fg' title='Foreground' updater={updateTheme} />
-              <ColorChoice colorSlot='theme' title='Theme Color' updater={updateTheme} />
+              <ColorChoice colorSlot='accent' title='Theme Color' updater={updateTheme} />
             </div>
             <Slider label='Gap size' onChange={props.updateGapSize} min={0} max={40} step={4} />
             <SwatchBar colors={theme.colors.themes} />

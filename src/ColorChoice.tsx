@@ -3,14 +3,14 @@ import * as React from 'react';
 import { Callout, ColorPicker } from 'office-ui-fabric-react';
 import { createRef } from 'office-ui-fabric-react/lib/Utilities';
 import { Button } from './Button';
-import { ITheme } from './theming/ITheme';
+import { ITheme, IThemeColors } from './theming/ITheme';
 import { getDefaultTheme, registerDefaultTheme } from './theming/ThemeRegistry';
 import { getColorFromString, IColor } from './coloring/color';
 import { createColorPalette } from './theming/IColorPalette';
 
 export interface IColorChoiceProps {
     title: string;
-    colorSlot: string;
+    colorSlot: keyof IThemeColors;
     updater?: (theme: ITheme) => void;
 }
 
@@ -30,8 +30,8 @@ export function updateDefaultThemeColors(fg?: string, bg?: string, accent?: stri
     const colors = defaultTheme.colors;
     const newFg: IColor = fg ? getColorFromString(fg) || colors.fg : colors.fg;
     const newBg: IColor = bg ? getColorFromString(bg) || colors.bg : colors.bg;
-    const newAccent: IColor = accent ? getColorFromString(accent) || colors.theme : colors.theme;
-    if (!sameColor(newFg, colors.fg) || !sameColor(newBg, colors.bg) || !sameColor(newAccent, colors.theme)) {
+    const newAccent: IColor = accent ? getColorFromString(accent) || colors.accent : colors.accent;
+    if (!sameColor(newFg, colors.fg) || !sameColor(newBg, colors.bg) || !sameColor(newAccent, colors.accent)) {
       const newTheme: ITheme = { ...defaultTheme, colors: createColorPalette(newFg, newBg, newAccent), layers: {} }
       registerDefaultTheme(newTheme);
     }
@@ -86,7 +86,7 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
         case 'fg':
             updateDefaultThemeColors(color, undefined, undefined);
             break;
-        case 'theme':
+        case 'accent':
             updateDefaultThemeColors(undefined, undefined, color);
             break;
     }

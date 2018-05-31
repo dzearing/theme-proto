@@ -7,6 +7,9 @@ export enum ColorLayerType {
   Custom = 6      // custom color layer
 }
 
+/*
+
+*/
 export interface IColorLayerKey {
   type: ColorLayerType;
   shade: number;

@@ -12,7 +12,7 @@ export interface IColorPalette {
   // seed colors
   fg: IColor;
   bg: IColor;
-  theme: IColor;
+  accent: IColor;
 
   // calculated base colors
   bgs: IColor[];
@@ -26,13 +26,13 @@ export interface IColorPalette {
 // count of layers, this should be dynamic but currently matches what is in shades.ts
 export const PALETTE_LAYER_COUNT: number = 9;
 
-export function createColorPalette(fg: IColor, bg: IColor, theme: IColor): IColorPalette {
+export function createColorPalette(fg: IColor, bg: IColor, accent: IColor): IColorPalette {
   return {
     fg,
     bg,
-    theme,
+    accent,
     bgs: createBgColorArray(bg),
-    themes: createThemeColorArray(theme),
+    themes: createThemeColorArray(accent),
     bgLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
     themeLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
   };

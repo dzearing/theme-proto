@@ -5,8 +5,7 @@ import { createRef } from 'office-ui-fabric-react/lib/Utilities';
 import { Button } from './Button';
 import { ITheme, IThemeColors } from './theming/ITheme';
 import { getDefaultTheme, registerDefaultTheme } from './theming/ThemeRegistry';
-import { getColorFromString, IColor } from './coloring/color';
-import { createColorPalette } from './theming/IColorPalette';
+import { createLayeredTheme } from './theming/ThemeCreation';
 
 export interface IColorChoiceProps {
     title: string;
@@ -19,23 +18,10 @@ export interface IColorChoiceState {
     currentColor: string;
 }
 
-
-function sameColor(a: IColor, b: IColor): boolean {
-  return (a.a === b.a && a.h === b.h && a.s === b.s && a.v === b.v);
-}
-
-export function updateDefaultThemeColors(fg?: string, bg?: string, accent?: string) {
-  if (fg || bg || accent) {
-    const defaultTheme = getDefaultTheme();
-    const colors = defaultTheme.colors;
-    const newFg: IColor = fg ? getColorFromString(fg) || colors.fg : colors.fg;
-    const newBg: IColor = bg ? getColorFromString(bg) || colors.bg : colors.bg;
-    const newAccent: IColor = accent ? getColorFromString(accent) || colors.accent : colors.accent;
-    if (!sameColor(newFg, colors.fg) || !sameColor(newBg, colors.bg) || !sameColor(newAccent, colors.accent)) {
-      const newTheme: ITheme = { ...defaultTheme, colors: createColorPalette(newFg, newBg, newAccent), layers: {} }
-      registerDefaultTheme(newTheme);
-    }
-  }
+export function updateDefaultThemeColors(newColors: Partial<IThemeColors>) {
+  const defaultTheme = getDefaultTheme();
+  const newTheme = createLayeredTheme({ seedColors: newColors }, defaultTheme);
+  registerDefaultTheme(newTheme);
 }
 
 export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoiceState> {
@@ -46,7 +32,7 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
 
     this.state = {
       calloutVisible: false,
-      currentColor: getDefaultTheme().colors[props.colorSlot].str,
+      currentColor: getDefaultTheme().colors.seed[props.colorSlot].str,
     };
   }
 
@@ -79,17 +65,11 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
     this.setState({
       currentColor: color
     });
-    switch (this.props.colorSlot) {
-        case 'bg':
-            updateDefaultThemeColors(undefined, color, undefined);
-            break;
-        case 'fg':
-            updateDefaultThemeColors(color, undefined, undefined);
-            break;
-        case 'accent':
-            updateDefaultThemeColors(undefined, undefined, color);
-            break;
-    }
+
+    const newColors = { };
+    newColors[this.props.colorSlot] = color;
+    updateDefaultThemeColors(newColors);
+
     if (this.props.updater) {
         this.props.updater(getDefaultTheme());
     }

@@ -30,7 +30,7 @@ export interface ILayerCache {
   Theme definition, used to specify or modify the theme
 */
 export interface IThemeSettings {
-  seedColors: IThemeColors;
+  seedColors: Partial<IThemeColors>;
   offsets: IThemeOffsets;
   fonts: IFonts;
   fontWeights: IFontWeights;

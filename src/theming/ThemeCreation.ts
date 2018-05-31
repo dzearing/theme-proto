@@ -1,8 +1,8 @@
 import { ITheme, IThemeSettings, IThemeColors } from "./ITheme";
 import { getTheme, hasTheme } from "./ThemeRegistry";
 import { ColorLayerType } from "./IColorLayerKey";
-import { getColorFromString, IColor, getColorFromRGBA } from "../coloring/color";
-import { IColorPalette, createColorPalette } from "./IColorPalette";
+import { getColorFromString } from "../coloring/color";
+import { IColorPalette, createColorPalette, ISeedColors } from "./IColorPalette";
 
 /*
   generate a theme settings interface from an update string.  Possible options:
@@ -73,21 +73,33 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
 
   const newTheme: ITheme = Object.assign({}, baseline, settings);
   if (settings.seedColors) {
-    newTheme.colors = paletteFromSeedColors(settings.seedColors, baseline.colors);
+    newTheme.colors = paletteFromSeedColors(settings.seedColors, baseline.colors.seed);
   }
   newTheme.layers = {};
   return newTheme;
 }
 
-function paletteFromSeedColors(colors: IThemeColors, basePalette?: IColorPalette): IColorPalette {
-  const fgFallback: IColor = basePalette ? basePalette.fg : getColorFromRGBA({r: 0, g: 0, b: 0, a: 100});
-  const bgFallback: IColor = basePalette ? basePalette.bg : getColorFromRGBA({r: 255, g: 255, b: 255, a: 100});
-  const accentFallback: IColor = basePalette ? basePalette.accent : getColorFromRGBA({r: 0, g: 0, b: 255, a: 100});
-  return createColorPalette(
-    getColorFromString(colors.fg) || fgFallback,
-    getColorFromString(colors.bg) || bgFallback,
-    getColorFromString(colors.accent) || accentFallback
-  );
+const fallbackColors: ISeedColors = {
+  fg: { h: 0, s: 0, v: 0, a: 100, str: '#000000' },
+  bg: { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' },
+  accent: { h: 212.26, s: 100, v: 83.14, a: 100, str: '#0062d4' }
+}
+
+export function getSeedColors(colors: Partial<IThemeColors>, base?: ISeedColors): ISeedColors {
+  const result = { };
+  for (const key in colors) {
+    if (colors.hasOwnProperty(key)) {
+      const color = getColorFromString(colors[key]);
+      if (color) {
+        result[key] = color;
+      }
+    }
+  }
+  return Object.assign({}, base ? base : fallbackColors, result);
+}
+
+function paletteFromSeedColors(colors: Partial<IThemeColors>, base?: ISeedColors): IColorPalette {
+  return createColorPalette(getSeedColors(colors, base));
 }
 
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
@@ -97,7 +109,7 @@ export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, basel
 
   if (themeSettings.seedColors) {
     const propName = 'colors';
-    processedTheme[propName] = paletteFromSeedColors(themeSettings.seedColors, baseline ? baseline.colors : undefined);
+    processedTheme[propName] = paletteFromSeedColors(themeSettings.seedColors, baseline ? baseline.colors.seed : undefined);
   }
 
   return Object.assign({}, baseline, themeSettings, processedTheme);

@@ -5,15 +5,19 @@ import { IColorLayerKey, ColorLayerType } from "./IColorLayerKey";
 import { ITheme, ILayerCache } from "./ITheme";
 import { constructNamedColor } from "./Transforms";
 
+export interface ISeedColors {
+  fg: IColor;
+  bg: IColor;
+  accent: IColor;
+}
+
 /*
     The current set of cached and active layers as well as the seed colors used to calculate values
 */
 export interface IColorPalette {
-  // seed colors
-  fg: IColor;
-  bg: IColor;
-  accent: IColor;
-
+  // input color values
+  seed: ISeedColors;
+  
   // calculated base colors
   bgs: IColor[];
   themes: IColor[];
@@ -26,13 +30,11 @@ export interface IColorPalette {
 // count of layers, this should be dynamic but currently matches what is in shades.ts
 export const PALETTE_LAYER_COUNT: number = 9;
 
-export function createColorPalette(fg: IColor, bg: IColor, accent: IColor): IColorPalette {
+export function createColorPalette(seed: ISeedColors): IColorPalette {
   return {
-    fg,
-    bg,
-    accent,
-    bgs: createBgColorArray(bg),
-    themes: createThemeColorArray(accent),
+    seed,
+    bgs: createBgColorArray(seed.bg),
+    themes: createThemeColorArray(seed.accent),
     bgLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
     themeLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
   };
@@ -55,9 +57,10 @@ function createBgColorArray(bg: IColor): IColor[] {
 }
 
 function createLayerForBackground(key: IColorLayerKey, newBg: IColor, palette: IColorPalette): IColorLayer {
-  const bgRatio: number = getContrastRatio(newBg, palette.bg);
-  const fgRatio: number = getContrastRatio(newBg, palette.fg);
-  const fg = fgRatio > bgRatio ? palette.fg : palette.bg;
+  const seed = palette.seed;
+  const bgRatio: number = getContrastRatio(newBg, seed.bg);
+  const fgRatio: number = getContrastRatio(newBg, seed.fg);
+  const fg = fgRatio > bgRatio ? seed.fg : seed.bg;
   return {key, clr: { fg, bg: newBg }} as IColorLayer;
 }
 

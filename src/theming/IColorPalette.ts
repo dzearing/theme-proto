@@ -19,12 +19,14 @@ export interface IColorPalette {
   seed: ISeedColors;
   
   // calculated base colors
-  bgs: IColor[];
-  themes: IColor[];
+  bg: IColor[];
+  accent: IColor[];
 
   // layer caches
-  bgLayers: IColorLayer[];
-  themeLayers: IColorLayer[];
+  layers: {
+    bgLayers: IColorLayer[];
+    themeLayers: IColorLayer[];
+  }
 }
 
 // count of layers, this should be dynamic but currently matches what is in shades.ts
@@ -33,10 +35,12 @@ export const PALETTE_LAYER_COUNT: number = 9;
 export function createColorPalette(seed: ISeedColors): IColorPalette {
   return {
     seed,
-    bgs: createBgColorArray(seed.bg),
-    themes: createThemeColorArray(seed.accent),
-    bgLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
-    themeLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
+    bg: createBgColorArray(seed.bg),
+    accent: createThemeColorArray(seed.accent),
+    layers: {
+      bgLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
+      themeLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
+    }
   };
 }
 
@@ -83,11 +87,11 @@ export function getLayer(key: IColorLayerKey, theme: ITheme): IColorLayer {
   } else if (key.type === ColorLayerType.Bg || key.type === ColorLayerType.Accent) {
     const accent: boolean = (key.type === ColorLayerType.Accent);
     const colors = theme.colors;
-    const layers = accent ? colors.themeLayers : colors.bgLayers;
-    const colorVals = accent ? colors.themes : colors.bgs;
+    const layers = accent ? colors.layers.themeLayers : colors.layers.bgLayers;
+    const colorVals = accent ? colors.accent : colors.bg;
 
     if (key.shade >= colorVals.length) {
-      key = { ...key, shade: (key.shade % colors.bgs.length)};
+      key = { ...key, shade: (key.shade % colors.bg.length)};
     }
     if (!layers[key.shade]) {
       layers[key.shade] = createLayerForBackground(key, colorVals[key.shade], colors);

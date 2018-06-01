@@ -1,7 +1,7 @@
 import { IColor } from "../coloring/color";
 import { IColorLayer } from "./IColorLayer";
 import { getShade, getBackgroundShade, getContrastRatio } from "../coloring/shading";
-import { IColorLayerKey, ColorLayerType } from "./IColorLayerKey";
+import { IColorLayerKey, resolveKey, isIndexKey } from "./IColorLayerKey";
 import { ITheme, ILayerCache } from "./ITheme";
 import { constructNamedColor } from "./Transforms";
 
@@ -24,13 +24,14 @@ export interface IColorPalette {
 
   // layer caches
   layers: {
-    bgLayers: IColorLayer[];
-    themeLayers: IColorLayer[];
+    bg: IColorLayer[];
+    accent: IColorLayer[];
   }
 }
 
 // count of layers, this should be dynamic but currently matches what is in shades.ts
 export const PALETTE_LAYER_COUNT: number = 9;
+const defaultName: string = 'default';
 
 export function createColorPalette(seed: ISeedColors): IColorPalette {
   return {
@@ -38,8 +39,8 @@ export function createColorPalette(seed: ISeedColors): IColorPalette {
     bg: createBgColorArray(seed.bg),
     accent: createThemeColorArray(seed.accent),
     layers: {
-      bgLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
-      themeLayers: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
+      bg: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
+      accent: new Array<IColorLayer>(PALETTE_LAYER_COUNT),
     }
   };
 }
@@ -74,48 +75,36 @@ function getCustomLayer(name: string, theme: ITheme): IColorLayer {
     const offsets = theme.offsets;
     if (offsets.hasOwnProperty(name)) {
       layers[name] = getLayer(offsets[name], theme);
-    } else if (name !== 'default') {
-      return getCustomLayer('default', theme);
+    } else if (name !== defaultName) {
+      return getCustomLayer(defaultName, theme);
     }
   }
   return layers[name];
 }
 
 export function getLayer(key: IColorLayerKey, theme: ITheme): IColorLayer {
-  if (key.type === ColorLayerType.Custom && key.name) {
+  if (key.name) {
     return getCustomLayer(key.name, theme);
-  } else if (key.type === ColorLayerType.Bg || key.type === ColorLayerType.Accent) {
-    const accent: boolean = (key.type === ColorLayerType.Accent);
+  } else if (isIndexKey(key)) {
+    const { type, shade } = key;
     const colors = theme.colors;
-    const layers = accent ? colors.layers.themeLayers : colors.layers.bgLayers;
-    const colorVals = accent ? colors.accent : colors.bg;
+    const layers = colors.layers[key.type];
+    const colorVals = colors[key.type];
 
-    if (key.shade >= colorVals.length) {
-      key = { ...key, shade: (key.shade % colors.bg.length)};
+    if (shade >= colorVals.length) {
+      key = { ...key, shade: (shade % colorVals.length)};
     }
-    if (!layers[key.shade]) {
-      layers[key.shade] = createLayerForBackground(key, colorVals[key.shade], colors);
+    if (!layers[shade]) {
+      layers[shade] = createLayerForBackground({type, shade}, colorVals[key.shade], colors);
     }
-    return layers[key.shade];
+    return layers[shade];
   }
   // absolute fallback right now is to just return the default layer
-  return getCustomLayer('default', theme);
+  return getCustomLayer(defaultName, theme);
 }
 
 export function getLayerFromKeys(key: IColorLayerKey, baseline: IColorLayerKey, theme: ITheme): IColorLayer {
-  const bgLayer: boolean = (baseline.type === ColorLayerType.Bg);
-  const shade = baseline.shade;
-  switch (key.type) {
-    case ColorLayerType.Relative:
-      key = { ...key, type: baseline.type, shade: shade + key.shade };
-      break;
-    case ColorLayerType.Switch:
-      key = { ...key, type: bgLayer ? ColorLayerType.Accent : ColorLayerType.Bg };
-      break;
-    case ColorLayerType.SwitchRel:
-      key = { ...key, type: bgLayer ? ColorLayerType.Accent : ColorLayerType.Bg, shade: shade + key.shade };
-      break;
-  }
+  key = resolveKey(key, baseline);
   return getLayer(key, theme);
 }
 
@@ -140,7 +129,7 @@ export function getThemeColors(layerName: string, theme: ITheme, requested: ICol
       layer = getLayerFromKeys(layerKey, offsets.default, theme);
       layers[layerName] = layer;
     } else {
-      return getThemeColors('default', theme, requested);
+      return getThemeColors(defaultName, theme, requested);
     }
   } else {
     layer = layers[layerName];

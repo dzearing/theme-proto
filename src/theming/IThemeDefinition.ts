@@ -1,4 +1,4 @@
-import { IColorLayerKey, ColorLayerType } from "./IColorLayerKey";
+import { IColorLayerKey } from "./IColorLayerKey";
 
 export interface IThemeOffsets {
   default: IColorLayerKey;
@@ -9,9 +9,9 @@ export interface IThemeOffsets {
 }
 
 export const defaultThemeOffsets: IThemeOffsets = {
-  default: { type: ColorLayerType.Bg, shade: 0 },
-  shadedControl: { type: ColorLayerType.Relative, shade: 3 },
-  themedControl: { type: ColorLayerType.Switch, shade: 0 },
-  hovered: { type: ColorLayerType.Relative, shade: 2 },
-  pressed: { type: ColorLayerType.Relative, shade: 3 }
+  default: { type: 'bg', shade: 0 },
+  shadedControl: { type: 'rel', shade: 3 },
+  themedControl: { type: 'switch', shade: 0 },
+  hovered: { type: 'rel', shade: 2 },
+  pressed: { type: 'rel', shade: 3 }
 }

@@ -1,8 +1,8 @@
 import { ITheme, IThemeSettings, IThemeColors } from "./ITheme";
 import { getTheme, hasTheme } from "./ThemeRegistry";
-import { ColorLayerType } from "./IColorLayerKey";
 import { getColorFromString } from "../coloring/color";
 import { IColorPalette, createColorPalette, ISeedColors } from "./IColorPalette";
+import { flipType } from "./IColorLayerKey";
 
 /*
   generate a theme settings interface from an update string.  Possible options:
@@ -31,15 +31,16 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
           if (!settings.offsets) {
             settings.offsets = { ...baseline.offsets };
           }
-          const newDefault = { ...settings.offsets.default };
+          const offsets = settings.offsets;
+          const newDefault = { ...offsets.default };
           const param = terms[i];
           if (cmd === 'type:') {
             if (param === 'themed') {
-              newDefault.type = ColorLayerType.Accent;
+              newDefault.type = 'accent';
             } else if (param === 'bg') {
-              newDefault.type = ColorLayerType.Bg;
+              newDefault.type = 'bg';
             } else if (param === 'switch') {
-              newDefault.type = newDefault.type === ColorLayerType.Accent ? ColorLayerType.Bg : ColorLayerType.Accent;
+              newDefault.type = flipType(newDefault.type);
             }
           } else {
             const shade: number = parseInt(param, 10);
@@ -47,7 +48,7 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
               newDefault.shade = (cmd === 'deepen:') ? newDefault.shade + shade : shade;
             }
           }
-          settings.offsets.default = newDefault;
+          offsets.default = newDefault;
         }
         break;
       case 'fg:':

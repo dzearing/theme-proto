@@ -1,7 +1,6 @@
 import { IColorLayer } from "./IColorLayer";
 import { ITheme } from "./ITheme";
 import { IColor } from "../coloring/color";
-import { ColorLayerType } from "./IColorLayerKey";
 
 export interface IColorTransformProps {
   layer: IColorLayer;
@@ -33,7 +32,7 @@ function strokeColor(props: IColorTransformProps): IColor {
 }
 
 function relativeColor(layer: IColorLayer, theme: ITheme, delta: number) {
-  const bg = layer.key.type === ColorLayerType.Bg;
+  const bg = layer.key.type === 'bg';
   const vals = bg ? theme.colors.bg : theme.colors.accent;
   const shade = (layer.key.shade + vals.length + delta) % vals.length;
   return vals[shade];

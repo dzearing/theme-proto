@@ -2,15 +2,14 @@ import { IColorPalette } from "./IColorPalette";
 import { IThemeOffsets } from "./IThemeDefinition";
 import { IRawStyle } from '@uifabric/styling';
 import { IColorLayer } from "./IColorLayer";
+import { IColorDefinitions } from "./IColorDefinition";
 
 /*
-  Seed colors, used to calculate the scheme for the theme
+  Overall a theme has:
+    colors - core color values referenced by the layers
+    settings/constants - properties for various layers
+    rules - how to generate colors/layers
 */
-export interface IThemeColors {
-  fg: string;
-  bg: string;
-  accent: string;
-}
 
 export interface IFonts {
   medium: IRawStyle;
@@ -30,7 +29,7 @@ export interface ILayerCache {
   Theme definition, used to specify or modify the theme
 */
 export interface IThemeSettings {
-  seedColors: Partial<IThemeColors>;
+  seedColors: Partial<IColorDefinitions>;
   offsets: IThemeOffsets;
   fonts: IFonts;
   fontWeights: IFontWeights;

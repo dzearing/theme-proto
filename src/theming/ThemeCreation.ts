@@ -1,8 +1,7 @@
-import { ITheme, IThemeSettings, IThemeColors } from "./ITheme";
+import { ITheme, IThemeSettings } from "./ITheme";
 import { getTheme, hasTheme } from "./ThemeRegistry";
-import { getColorFromString } from "../coloring/color";
-import { IColorPalette, createColorPalette, ISeedColors } from "./IColorPalette";
 import { flipType } from "./IColorLayerKey";
+import { createPalette } from "./ThemeColors";
 
 /*
   generate a theme settings interface from an update string.  Possible options:
@@ -72,35 +71,7 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
     }
   }
 
-  const newTheme: ITheme = Object.assign({}, baseline, settings);
-  if (settings.seedColors) {
-    newTheme.colors = paletteFromSeedColors(settings.seedColors, baseline.colors.seed);
-  }
-  newTheme.layers = {};
-  return newTheme;
-}
-
-const fallbackColors: ISeedColors = {
-  fg: { h: 0, s: 0, v: 0, a: 100, str: '#000000' },
-  bg: { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' },
-  accent: { h: 212.26, s: 100, v: 83.14, a: 100, str: '#0062d4' }
-}
-
-export function getSeedColors(colors: Partial<IThemeColors>, base?: ISeedColors): ISeedColors {
-  const result = { };
-  for (const key in colors) {
-    if (colors.hasOwnProperty(key)) {
-      const color = getColorFromString(colors[key]);
-      if (color) {
-        result[key] = color;
-      }
-    }
-  }
-  return Object.assign({}, base ? base : fallbackColors, result);
-}
-
-function paletteFromSeedColors(colors: Partial<IThemeColors>, base?: ISeedColors): IColorPalette {
-  return createColorPalette(getSeedColors(colors, base));
+  return createLayeredTheme(settings, baseline);
 }
 
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
@@ -110,7 +81,7 @@ export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, basel
 
   if (themeSettings.seedColors) {
     const propName = 'colors';
-    processedTheme[propName] = paletteFromSeedColors(themeSettings.seedColors, baseline ? baseline.colors.seed : undefined);
+    processedTheme[propName] = createPalette(themeSettings.seedColors, baseline ? baseline.colors : undefined);
   }
 
   return Object.assign({}, baseline, themeSettings, processedTheme);

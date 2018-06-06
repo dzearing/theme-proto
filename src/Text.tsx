@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IColorRequest, getThemeColors } from './theming/IColorPalette';
+import { IColorRequest, getThemeColors } from './theming/ThemeRequest';
 
 // Styles for the component
 export interface ITextStyles {

@@ -78,7 +78,7 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
 
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
   const processedTheme = {
-    layers: createThemeCache(themeSettings)
+    cache: createThemeCache(themeSettings)
   };
 
   if (themeSettings.seeds) {

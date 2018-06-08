@@ -43,7 +43,7 @@ export interface IThemeSettings {
    * is not specified then the color palette will not be rebuilt.  If it is specified then
    * the theme will create a new color palette.
    */
-  seeds: Partial<IColorDefinitions>;
+  seeds?: Partial<IColorDefinitions>;
   /**
    * the set of styles for the theme.  Note that entries for each key value will replace rather
    * than merge with the values for the previous theme
@@ -52,4 +52,20 @@ export interface IThemeSettings {
     default: Partial<IThemeStyle>;
     [key: string]: Partial<IThemeStyle>;
   }
+}
+
+/**
+ * Theme definitions are used to create a theme based upon an existing theme.  If no parent is
+ * specified this will be based upon the default theme.
+ */
+export interface IThemeDefinition {
+  /**
+   * name of the parent theme.  Cascading theme settings are not resolved until the theme is
+   * actually created.
+   */
+  parent?: string;
+  /**
+   * settings for this theme
+   */
+  settings: IThemeSettings;
 }

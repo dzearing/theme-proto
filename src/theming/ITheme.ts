@@ -14,20 +14,28 @@ export interface ILayerCache {
   [key: string]: IColorLayer
 }
 
-/*
-  Theme definition, used to create a custom theme or theme variation
-*/
-export interface IThemeDefinition {
-  parent?: string;
-  settings: Partial<IThemeSettings>;
-}
-
 export interface IThemeCache {
   layers: ILayerCache;
   styles: {
     default: IThemeStyle;
     [key: string]: IThemeStyle;
   }
+}
+
+/**
+ * Theme definitions are used to create a theme based upon an existing theme.  If no parent is
+ * specified this will be based upon the default theme.
+ */
+export interface IThemeDefinition {
+  /**
+   * name of the parent theme.  Cascading theme settings are not resolved until the theme is
+   * actually created.
+   */
+  parent?: string;
+  /**
+   * settings for this theme
+   */
+  settings: IThemeSettings;
 }
 
 /*

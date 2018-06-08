@@ -236,6 +236,11 @@ export function createColorFromHSVA(h: number, s: number, v: number, a: number =
   }
 }
 
+export function createColorFromHSLA(hue: number, sat: number, lum: number, a: number = 100): IColor {
+  const { h, s, v } = hsl2hsv(hue, sat, lum);
+  return createColorFromHSVA(h, s, v, a);
+}
+
 export function updateSV(color: IColor, s: number, v: number): IColor {
   return createColorFromHSVA(color.h, s, v, color.a);
 }

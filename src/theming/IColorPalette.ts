@@ -1,6 +1,6 @@
 import { IColor } from "../coloring/color";
 import { IColorLayer } from "./IColorLayer";
-import { getShade, getBackgroundShade, getContrastRatio } from "../coloring/shading";
+import { getShade, getContrastRatio, getBackgroundShade } from "../coloring/shading";
 import { IColorLayerKey, resolveKey, isIndexKey } from "./IColorLayerKey";
 import { ITheme, ILayerCache } from "./ITheme";
 import { constructNamedColor } from "./Transforms";
@@ -54,6 +54,8 @@ function createThemeColorArray(theme: IColor): IColor[] {
 }
 
 function createBgColorArray(bg: IColor): IColor[] {
+  // return getShades(bg, PALETTE_LAYER_COUNT, 0, false);
+
   const results: IColor[] = new Array<IColor>(PALETTE_LAYER_COUNT);
   for (let i: number = 0; i < PALETTE_LAYER_COUNT; i++) {
     results[i] = getBackgroundShade(bg, i, false);

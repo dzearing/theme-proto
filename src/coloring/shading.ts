@@ -10,7 +10,9 @@ import {
   getColorFromRGBA,
   hsv2rgb,
   createColorFromHSVA,
-  getLuminanceForColor
+  getLuminanceForColor,
+  IHSL,
+  createColorFromHSLA
 } from './color';
 // import * as Colors from './colors';
 import { assign } from '@uifabric/utilities/lib/index';
@@ -83,6 +85,64 @@ function _clamp(n: number, min: number, max: number) {
 
 export function isDark(color: IColor): boolean {
   return hsv2hsl(color.h, color.s, color.v).l < 50;
+}
+
+interface IShadingParameters {
+  hsl: IHSL;        // color to use for shading
+  slot: number;     // index 
+  count: number;    // number of entries in the array
+  low: number;      // luminance min value, 0-100
+  high: number;     // luminance max value, 0-100
+  reverse: boolean; // go from dark to light instead of light to dark
+}
+
+export function getShadingParams(hsl: IHSL, count: number, reverse: boolean, low: number = 0, high: number = 100): IShadingParameters {
+  low = Math.min(hsl.l, low);
+  high = Math.max(hsl.l, high);
+  const range = high - low;
+  const offset = hsl.l / range;
+  const maxIndex = count - 1;
+  const slot = Math.min(Math.max(Math.round(offset * maxIndex), 0), maxIndex);
+  return { hsl, slot, count, low, high, reverse };
+}
+
+function interpolateShades(shades: IHSL[], start: number, last: number) {
+  const { h, s, l } = shades[start];
+  const reverse = last < start;
+  let luminance = reverse ? 0 : MAX_COLOR_VALUE;
+  const steps = Math.abs(last - start);
+  const lumDelta = (l - luminance) / steps;
+  const delta = reverse ? 1 : -1;
+
+  for (let i = last; i !== start; i += delta) {
+    shades[i] = { h, s, l};
+    shades[i].l = luminance;
+    luminance += lumDelta;
+  }
+}
+
+export function getShades(color: IColor, count: number, margins: number, invert: boolean): IColor[] {
+  const maxLum = MAX_COLOR_VALUE;
+  const hsl = hsv2hsl(color.h, color.s, color.v);
+  const shadeCount = count + (margins * 2);
+  const shades = new Array<IHSL>(shadeCount);
+  const step = maxLum / (shadeCount - 1);
+  const slot = Math.min(Math.floor((hsl.l + (step / 2)) / step), shadeCount - 1);
+
+  // set the specified color into the closest slot value
+  shades[slot] = hsl;
+
+  // interpolate shades to the end
+  interpolateShades(shades, slot, 0);
+  interpolateShades(shades, slot, shadeCount - 1);
+
+  for (let i = 0; i < margins; i++) {
+    shades.pop();
+    shades.slice();
+  }
+
+  // now return the mapped array
+  return shades.map((val: IHSL) => createColorFromHSLA(val.h, val.s, val.l, color.a))
 }
 
 /**

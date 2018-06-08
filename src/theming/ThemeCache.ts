@@ -1,9 +1,10 @@
 import { IThemeStyle } from "./IThemeStyle";
-import { ITheme, IThemeSettings, IThemeCache } from "./ITheme";
+import { ITheme, IThemeCache } from "./ITheme";
 import { resolveKey } from "./IColorLayerKey";
 import { styleBaseline } from "./themes/DefaultLight";
 import { IColorLayer } from "./IColorLayer";
 import { getLayerFromKeys } from "./ThemeColors";
+import { IThemeSettings } from "./IThemeSettings";
 
 const defName: string = 'default';
 

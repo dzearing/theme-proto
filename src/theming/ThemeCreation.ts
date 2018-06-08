@@ -1,8 +1,9 @@
-import { ITheme, IThemeSettings } from "./ITheme";
+import { ITheme } from "./ITheme";
 import { getTheme, hasTheme } from "./ThemeRegistry";
 import { flipType } from "./IColorLayerKey";
 import { createPalette } from "./ThemeColors";
 import { createThemeCache } from "./ThemeCache";
+import { IThemeSettings } from "./IThemeSettings";
 
 /*
   generate a theme settings interface from an update string.  Possible options:

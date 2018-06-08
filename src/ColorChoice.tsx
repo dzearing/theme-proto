@@ -6,7 +6,7 @@ import { Button } from './Button';
 import { ITheme } from './theming/ITheme';
 import { getDefaultTheme, registerDefaultTheme } from './theming/ThemeRegistry';
 import { createLayeredTheme } from './theming/ThemeCreation';
-import { IThemeColors } from './theming/IColorDefinition';
+import { IThemeColors } from './theming/IThemeSettings';
 
 export interface IColorChoiceProps {
     title: string;

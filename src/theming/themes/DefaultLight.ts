@@ -1,6 +1,6 @@
-import { IThemeSettings } from '../ITheme';
 import { DefaultFonts, DefaultFontWeights } from './DefaultFonts';
 import { IThemeStyle } from '../IThemeStyle';
+import { IThemeSettings } from '../IThemeSettings';
 
 export const styleBaseline: IThemeStyle = {
   key: { type: 'bg', shade: 0 },

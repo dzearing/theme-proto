@@ -1,11 +1,11 @@
 import { ISeedColors, IColorPalette, ILayerSets } from "./IColorPalette";
 import { getColorFromString, IColor } from "../coloring/color";
-import { IColorDefinitions, IThemeColors } from "./IColorDefinition";
 import { getBackgroundShade, getShade, getContrastRatio } from "../coloring/shading";
 import { IColorLayerKey, isIndexKey, resolveKey } from "./IColorLayerKey";
 import { IColorLayer } from "./IColorLayer";
 import { ITheme } from "./ITheme";
 import { getThemeLayer } from "./ThemeCache";
+import { IColorDefinitions, IThemeColors } from "./IThemeSettings";
 
 
 /**

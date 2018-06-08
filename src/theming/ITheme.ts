@@ -1,7 +1,7 @@
 import { IColorPalette } from "./IColorPalette";
 import { IColorLayer } from "./IColorLayer";
-import { IColorDefinitions } from "./IColorDefinition";
 import { IThemeStyle } from "./IThemeStyle";
+import { IThemeSettings } from "./IThemeSettings";
 
 /*
   Overall a theme has:
@@ -12,17 +12,6 @@ import { IThemeStyle } from "./IThemeStyle";
 
 export interface ILayerCache {
   [key: string]: IColorLayer
-}
-
-/*
-  Theme definition, used to specify or modify the theme
-*/
-export interface IThemeSettings {
-  seeds: Partial<IColorDefinitions>;
-  styles: {
-    default: Partial<IThemeStyle>;
-    [key: string]: Partial<IThemeStyle>;
-  }
 }
 
 /*

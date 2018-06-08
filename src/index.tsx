@@ -2,10 +2,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 // import { IStyleProps } from './createComponent';
 // import { ThemeProvider } from './theming/ThemeProvider';
-// import { Button } from './Button';
+import { Button } from './Button';
 import Text from './Text';
 import Stack from './Stack';
-import { FocusZone, Slider } from 'office-ui-fabric-react';
+import { Fabric, FocusZone, Slider } from 'office-ui-fabric-react';
 import { initializeIcons } from '@uifabric/icons';
 import TaskCard from './TaskCard';
 
@@ -33,45 +33,46 @@ class App extends React.Component<{}, { gapSize: number }> {
 
   public render(): JSX.Element {
     return (
-      <Stack vertical gapSize={20}>
-        <Slider label='Gap size' onChange={this._onGapSizeChange} min={0} max={40} step={4} />
+      <Fabric>
+        <Stack vertical gap={20}>
+          <Slider label='Gap size' onChange={this._onGapSizeChange} min={0} max={40} step={4} />
 
-        <Stack gapSize={this.state.gapSize} align='stretch'>
+          <Stack gap={this.state.gapSize} align='stretch'>
 
-          <Text>I am text</Text>
+            <Text>I am text</Text>
 
-          <RedBox />
-
-          <Text>I am <Text emphasized>emphasized</Text> text</Text>
-
-          <Stack.Area grow>
             <RedBox />
-          </Stack.Area>
 
-          <Text diminished>I am diminished</Text>
+            <Text>I am <Text bold>emphasized</Text> text</Text>
 
-          <RedBox />
+            <Stack.Area grow>
+              <RedBox />
+            </Stack.Area>
 
-          <Text>I am text</Text>
+            <Text light>I am diminished</Text>
 
-          <RedBox />
-        </Stack>
+            <RedBox />
 
-        <Stack maxWidth={200} vertical>
+            <Text>I am text</Text>
+
+            <RedBox />
+          </Stack>
+
 
           <FocusZone>
+            <Stack gap={20} vertical>
+              <Button paletteSet='primary'>hello</Button>
+              <TaskCard />
 
-            <TaskCard />
+              <TaskCard paletteSet='neutral' />
 
-            <TaskCard paletteSet='neutral' />
+              <TaskCard paletteSet='primary' />
 
-            <TaskCard paletteSet='primary' />
-
+            </Stack>
           </FocusZone>
 
         </Stack>
-
-      </Stack >
+      </Fabric>
     );
   }
 

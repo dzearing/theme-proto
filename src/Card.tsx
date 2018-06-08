@@ -36,7 +36,7 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
   } = props;
 
   return (
-    <RootType {...rest} className={classNames.root} >
+    <RootType {...rest} className={classNames.root}>
       <div className={classNames.content}>
         {props.children}
       </div>
@@ -57,7 +57,7 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
         boxSizing: 'border-box',
         overflow: 'hidden',
         border: '1px solid #ccc',
-        borderRadius: 2,
+        borderRadius: 3,
         boxShadow: '0 0 10px -4px #000',
         display: 'inline-flex',
         width,

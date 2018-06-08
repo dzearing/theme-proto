@@ -1,8 +1,8 @@
 
 # Issues to resolve
 
-* Persona should apply its own fonts. (Use Text component.)
-* Persona has right padding baked in.
+* Persona should use Text component.
+* PersonaCoin has right padding baked in.
 * Slider should apply its own fonts. (Use Text component.)
 * Slider labels should be opt in, not opt out.
 * Slider has no ticks. Not even opt in.

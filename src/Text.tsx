@@ -15,9 +15,26 @@ export interface ITextProps {
   children?: React.ReactNode;
   className?: string;
 
-  emphasized?: boolean;
-  diminished?: boolean;
+  // font type
+  monospace?: boolean;
+
+  // weights
+  bold?: boolean;
+  light?: boolean;
+
+  // colors
   disabled?: boolean;
+  success?: boolean;
+  failure?: boolean;
+
+  // sizes
+  tiny?: boolean;
+  smaller?: boolean;
+  small?: boolean;
+  h4?: boolean;
+  h3?: boolean;
+  h2?: boolean;
+  h1?: boolean;
 
   paletteSet?: string;
 
@@ -44,7 +61,7 @@ const requiredColors: IThemeRequest = {
 }
 
 const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
-  const { block, theme, emphasized, diminished, wrap } = props;
+  const { block, theme, bold, light, wrap } = props;
   const themeStyle = getThemeStyle(theme);
   const fontWeights = themeStyle.fontWeights;
 
@@ -61,8 +78,8 @@ const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
         textOverflow: 'ellipsis'
       },
 
-      emphasized && fontWeights.emphasized,
-      diminished && fontWeights.diminished,
+      bold && fontWeights.emphasized,
+      light && fontWeights.diminished,
       props.className
     ]
   };

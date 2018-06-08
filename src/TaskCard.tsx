@@ -4,8 +4,9 @@ import { createComponent, IStyleProps, IViewProps } from './createComponent';
 import Text from './Text';
 import Card from './Card';
 import Stack from './Stack';
-import { Icon, PersonaCoin } from 'office-ui-fabric-react';
+import { PersonaCoin, IconButton } from 'office-ui-fabric-react';
 import { Button } from './Button';
+import { Breadcrumb } from './Breadcrumb';
 
 // Styles for the component
 export interface ITaskCardStyles {
@@ -18,6 +19,10 @@ export interface ITaskCardProps {
   children?: React.ReactNode;
   className?: string;
 
+  width?: number;
+  height?: number;
+  padding?: number;
+
   paletteSet?: string;
 }
 
@@ -25,26 +30,41 @@ const view = (props: IViewProps<ITaskCardProps, ITaskCardStyles>) => {
   const {
     renderAs: RootType = Card,
     classNames,
+    width = 300,
+    height = 180,
+    padding = 16,
     ...rest
   } = props;
 
   return (
-    <RootType {...rest} width={300} height={180} padding={20} className={classNames.root} data-is-focusable='true'>
-      <Stack vertical fill>
-        <Text emphasized>Portfolio Review</Text>
-        <Text diminished>Design Studio</Text>
-        <Stack vertical grow justify='end'>
-        <Stack fill gapSize={8}>
+    <RootType
+      {...rest}
+      width={width}
+      height={height}
+      padding={padding}
+      className={classNames.root}
+      data-is-focusable='true'
+    >
+      <Stack vertical fill gap={ 4 }>
+        <Text bold>Portfolio Review</Text>
+        <Text light>Design Studio</Text>
+        <Breadcrumb items={[
+          { text: 'Engineering' },
+          { text: 'Bootcamps' },
+        ]}/>
+        <Stack fill gap={ 8 }>
           <Button text='normal' />
           <Button text='themed' primary={true}/>
         </Stack>
-        </Stack>
+
         <Stack vertical grow justify='end'>
-          <Stack align='center' fill gapSize={8}>
+          <Stack align='center' fill gap={8}>
             <PersonaCoin text='David Zearing' size={2} />
             <Text>Peraaaaaason Namef dkalsfdsajkl fsadklj</Text>
-            <Icon iconName='refresh' />
-            <Icon iconName='lock' />
+            <Stack>
+              <IconButton iconProps={{ iconName: 'refresh' }} />
+              <IconButton iconProps={{ iconName: 'lock' }} />
+            </Stack>
           </Stack>
         </Stack>
       </Stack>

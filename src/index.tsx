@@ -1,13 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// import { IStyleProps } from './createComponent';
-// import { ThemeProvider } from './theming/ThemeProvider';
 import { Configurator } from './Configurator';
 import { ThemeLayer } from './theming/ThemeProvider';
-// import { Button } from './Button';
 import Text from './Text';
 import Stack from './Stack';
-import { FocusZone } from 'office-ui-fabric-react';
+import { FocusZone, Fabric } from 'office-ui-fabric-react';
+import { Button } from './Button';
 import { initializeIcons } from '@uifabric/icons';
 import TaskCard from './TaskCard';
 
@@ -35,48 +33,46 @@ class App extends React.Component<{}, { gapSize: number }> {
 
   public render(): JSX.Element {
     return (
-      <ThemeLayer>{() => (
-        <Stack vertical gapSize={20}>
-          
-          <Configurator updateGapSize={this._onGapSizeChange} />
+      <Fabric>
+        <ThemeLayer>{() => (
+          <Stack vertical gap={20}>
+            <Configurator updateGapSize={this._onGapSizeChange} />
 
-          <Stack gapSize={this.state.gapSize} align='stretch'>
+            <Stack gap={this.state.gapSize} align='stretch'>
 
-            <Text>I am text</Text>
+              <Text>I am text</Text>
 
-            <RedBox />
-
-            <Text>I am <Text emphasized>emphasized</Text> text</Text>
-
-            <Stack.Area grow>
               <RedBox />
-            </Stack.Area>
 
-            <Text diminished>I am diminished</Text>
+              <Text>I am <Text bold>emphasized</Text> text</Text>
 
-            <RedBox />
+              <Stack.Area grow>
+                <RedBox />
+              </Stack.Area>
 
-            <Text>I am text</Text>
+              <Text light>I am diminished</Text>
 
-            <RedBox />
-          </Stack>
+              <RedBox />
 
-          <Stack maxWidth={200} vertical>
+              <Text>I am text</Text>
+
+              <RedBox />
+            </Stack>
 
             <FocusZone>
-
+              <Stack gap={20} vertical>
+              <Button paletteSet='primary'>hello</Button>
               <TaskCard />
 
               <TaskCard paletteSet='neutral' theming='deepen: 1' />
 
               <TaskCard paletteSet='primary' theming='type: themed' />
-
+              </Stack>
             </FocusZone>
 
-          </Stack>
-
-        </Stack >
-      )}</ThemeLayer>
+          </Stack >
+        )}</ThemeLayer>
+      </Fabric>
     );
   }
 
@@ -90,19 +86,3 @@ ReactDOM.render(
   ,
   document.getElementById('root') as HTMLElement
 );
-
-
-/*
-  <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <Card>
-            <Button text='Normal button' />
-            <Button primary text='Primary button' />
-          </Card>
-
-          <Card paletteSet='primary'>
-            <Button text='Normal button' />
-            <Button paletteSet='default' primary text='Primary button' />
-          </Card>
-
-        </div>
-        */

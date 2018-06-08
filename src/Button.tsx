@@ -16,6 +16,7 @@ export interface IButtonProps {
   paletteSet?: string;
 
   className?: string;
+  style?: React.CSSProperties;
   disabled?: boolean;
   id?: string;
   for?: string;
@@ -52,10 +53,12 @@ export interface IButtonProps {
 const view = (props: IViewProps<IButtonProps, IButtonStyles>) => {
   const {
     renderAs: RootType = _getDefaultRootType(props),
-    classNames } = props;
+    classNames,
+    ...rest
+  } = props;
 
   return (
-    <RootType className={classNames.root}>
+    <RootType { ...rest } className={classNames.root}>
       {props.text}
       {props.children}
     </RootType>
@@ -80,6 +83,7 @@ const styles = (props: IStyleProps<IButtonProps, IButtonStyles>): IButtonStyles 
       {
         ...fillThemeColors(props.theme, requiredColors, layerName),
         alignItems: 'center',
+        textAlign: 'center',
         borderRadius: 2,
         borderWidth: 0,
         cursor: 'default',

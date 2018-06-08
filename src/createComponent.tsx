@@ -79,7 +79,7 @@ export function createComponent<TProps, TStyles, TStatics = {}>(
     };
 
     return !!ComponentState ? (
-      <ComponentState>{content}</ComponentState>
+      <ComponentState {...userProps}>{content}</ComponentState>
     ) : (
         content(userProps)
       );

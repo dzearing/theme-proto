@@ -26,7 +26,7 @@ export interface IStackProps {
   vertical?: boolean;
   grow?: boolean;
 
-  gapSize?: number;
+  gap?: number;
 
   align?: 'auto' | 'center' | 'start' | 'baseline' | 'stretch' | 'end';
   justify?: 'start' | 'end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
@@ -38,15 +38,15 @@ const view = (props: IViewProps<IStackProps, IStackStyles>) => {
   const {
     renderAs: RootType = 'div',
     classNames,
-    gapSize,
+    gap,
     vertical
   } = props;
 
   const children: React.ReactChild[] = [];
 
   React.Children.forEach(props.children, (child, index: number) => {
-    if (index !== 0 && gapSize) {
-      children.push(<div key={index} className={classNames.spacer} style={{ [vertical ? 'height' : 'width']: gapSize }} />);
+    if (index !== 0 && gap) {
+      children.push(<div key={index} className={classNames.spacer} style={{ [vertical ? 'height' : 'width']: gap }} />);
     }
     children.push(child);
   });

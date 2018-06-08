@@ -31,9 +31,9 @@ function strokeColor(props: IColorTransformProps): IColor {
   return relativeColor(props.layer, props.theme, 4);
 }
 
-function relativeColor(layer: IColorLayer, theme: ITheme, delta: number) {
+function relativeColor(layer: IColorLayer, theme: ITheme, delta: number): IColor {
   const bg = layer.key.type === 'bg';
-  const vals = bg ? theme.colors.bg : theme.colors.accent;
+  const vals = bg ? theme.colors.layers.bg : theme.colors.layers.accent;
   const shade = (layer.key.shade + vals.length + delta) % vals.length;
-  return vals[shade];
+  return vals[shade].clr.bg;
 }

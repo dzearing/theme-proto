@@ -1,47 +1,41 @@
 import { IColorPalette } from "./IColorPalette";
-import { IThemeOffsets } from "./IThemeDefinition";
-import { IRawStyle } from '@uifabric/styling';
 import { IColorLayer } from "./IColorLayer";
+import { IThemeStyle } from "./IThemeStyle";
+import { IThemeSettings } from "./IThemeSettings";
 
 /*
-  Seed colors, used to calculate the scheme for the theme
+  Overall a theme has:
+    colors - core color values referenced by the layers
+    settings/constants - properties for various layers
+    rules - how to generate colors/layers
 */
-export interface IThemeColors {
-  fg: string;
-  bg: string;
-  accent: string;
-}
-
-export interface IFonts {
-  medium: IRawStyle;
-}
-
-export interface IFontWeights {
-  emphasized: IRawStyle;
-  normal: IRawStyle;
-  diminished: IRawStyle;
-}
 
 export interface ILayerCache {
   [key: string]: IColorLayer
 }
 
-/*
-  Theme definition, used to specify or modify the theme
-*/
-export interface IThemeSettings {
-  seedColors: Partial<IThemeColors>;
-  offsets: IThemeOffsets;
-  fonts: IFonts;
-  fontWeights: IFontWeights;
+export interface IThemeCache {
+  layers: ILayerCache;
+  styles: {
+    default: IThemeStyle;
+    [key: string]: IThemeStyle;
+  }
 }
 
-/*
-  Theme definition, used to create a custom theme or theme variation
-*/
+/**
+ * Theme definitions are used to create a theme based upon an existing theme.  If no parent is
+ * specified this will be based upon the default theme.
+ */
 export interface IThemeDefinition {
+  /**
+   * name of the parent theme.  Cascading theme settings are not resolved until the theme is
+   * actually created.
+   */
   parent?: string;
-  settings: Partial<IThemeSettings>;
+  /**
+   * settings for this theme
+   */
+  settings: IThemeSettings;
 }
 
 /*
@@ -49,5 +43,5 @@ export interface IThemeDefinition {
 */
 export interface ITheme extends IThemeSettings {
   colors: IColorPalette;
-  layers: ILayerCache;
+  cache: IThemeCache;
 }

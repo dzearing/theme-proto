@@ -1,8 +1,9 @@
-import { ITheme, IThemeSettings, IThemeColors } from "./ITheme";
+import { ITheme } from "./ITheme";
 import { getTheme, hasTheme } from "./ThemeRegistry";
-import { getColorFromString } from "../coloring/color";
-import { IColorPalette, createColorPalette, ISeedColors } from "./IColorPalette";
 import { flipType } from "./IColorLayerKey";
+import { createPalette } from "./ThemeColors";
+import { createThemeCache } from "./ThemeCache";
+import { IThemeSettings } from "./IThemeSettings";
 
 /*
   generate a theme settings interface from an update string.  Possible options:
@@ -28,11 +29,12 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
       case 'deepen:':
       case 'shade:':
         if (++i < terms.length) {
-          if (!settings.offsets) {
-            settings.offsets = { ...baseline.offsets };
+          if (!settings.styles) {
+            // create a new copy of styles with a copy of the default style to modify
+            settings.styles = { ...baseline.styles, default: { ...baseline.styles.default } };
           }
-          const offsets = settings.offsets;
-          const newDefault = { ...offsets.default };
+          const styles = settings.styles;
+          const newDefault = { ...styles.default.key || { type: 'bg', shade: 0 } };
           const param = terms[i];
           if (cmd === 'type:') {
             if (param === 'themed') {
@@ -48,7 +50,7 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
               newDefault.shade = (cmd === 'deepen:') ? newDefault.shade + shade : shade;
             }
           }
-          offsets.default = newDefault;
+          styles.default.key = newDefault;
         }
         break;
       case 'fg:':
@@ -56,10 +58,10 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
       case 'accent:':
         if (++i < terms.length) {
           const newColor = terms[i];
-          if (!settings.seedColors) {
-            settings.seedColors = { ...baseline.seedColors };
+          if (!settings.seeds) {
+            settings.seeds = { ...baseline.seeds };
           }
-          const colors = settings.seedColors;
+          const colors = settings.seeds;
           if (cmd === 'fg:') {
             colors.fg = newColor;
           } else if (cmd === 'bg:') {
@@ -72,45 +74,17 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
     }
   }
 
-  const newTheme: ITheme = Object.assign({}, baseline, settings);
-  if (settings.seedColors) {
-    newTheme.colors = paletteFromSeedColors(settings.seedColors, baseline.colors.seed);
-  }
-  newTheme.layers = {};
-  return newTheme;
-}
-
-const fallbackColors: ISeedColors = {
-  fg: { h: 0, s: 0, v: 0, a: 100, str: '#000000' },
-  bg: { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' },
-  accent: { h: 212.26, s: 100, v: 83.14, a: 100, str: '#0062d4' }
-}
-
-export function getSeedColors(colors: Partial<IThemeColors>, base?: ISeedColors): ISeedColors {
-  const result = { };
-  for (const key in colors) {
-    if (colors.hasOwnProperty(key)) {
-      const color = getColorFromString(colors[key]);
-      if (color) {
-        result[key] = color;
-      }
-    }
-  }
-  return Object.assign({}, base ? base : fallbackColors, result);
-}
-
-function paletteFromSeedColors(colors: Partial<IThemeColors>, base?: ISeedColors): IColorPalette {
-  return createColorPalette(getSeedColors(colors, base));
+  return createLayeredTheme(settings, baseline);
 }
 
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
   const processedTheme = {
-    layers: {}
+    cache: createThemeCache(themeSettings)
   };
 
-  if (themeSettings.seedColors) {
+  if (themeSettings.seeds) {
     const propName = 'colors';
-    processedTheme[propName] = paletteFromSeedColors(themeSettings.seedColors, baseline ? baseline.colors.seed : undefined);
+    processedTheme[propName] = createPalette(themeSettings.seeds, baseline ? baseline.colors : undefined);
   }
 
   return Object.assign({}, baseline, themeSettings, processedTheme);

@@ -14,10 +14,10 @@ export interface IColorLayerKey {
   name?: string;
 }
 
-const bgType: string = 'bg';
-const accentType: string = 'accent';
+const bgType = 'bg';
+const accentType = 'accent';
 
-export function flipType(type: string): string {
+export function flipType(type: string): 'bg' | 'accent' {
   return (type === accentType) ? bgType : accentType;
 }
 

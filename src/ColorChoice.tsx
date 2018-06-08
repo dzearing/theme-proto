@@ -3,9 +3,10 @@ import * as React from 'react';
 import { Callout, ColorPicker } from 'office-ui-fabric-react';
 import { createRef } from 'office-ui-fabric-react/lib/Utilities';
 import { Button } from './Button';
-import { ITheme, IThemeColors } from './theming/ITheme';
+import { ITheme } from './theming/ITheme';
 import { getDefaultTheme, registerDefaultTheme } from './theming/ThemeRegistry';
 import { createLayeredTheme } from './theming/ThemeCreation';
+import { IThemeColors } from './theming/IThemeSettings';
 
 export interface IColorChoiceProps {
     title: string;
@@ -20,7 +21,7 @@ export interface IColorChoiceState {
 
 export function updateDefaultThemeColors(newColors: Partial<IThemeColors>) {
   const defaultTheme = getDefaultTheme();
-  const newTheme = createLayeredTheme({ seedColors: newColors }, defaultTheme);
+  const newTheme = createLayeredTheme({ seeds: newColors }, defaultTheme);
   registerDefaultTheme(newTheme);
 }
 
@@ -32,7 +33,7 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
 
     this.state = {
       calloutVisible: false,
-      currentColor: getDefaultTheme().colors.seed[props.colorSlot].str,
+      currentColor: getDefaultTheme().colors.seeds[props.colorSlot].str,
     };
   }
 

@@ -21,7 +21,7 @@ export interface IColorChoiceState {
 
 export function updateDefaultThemeColors(newColors: Partial<IThemeColors>) {
   const defaultTheme = getDefaultTheme();
-  const newTheme = createLayeredTheme({ seedColors: newColors }, defaultTheme);
+  const newTheme = createLayeredTheme({ seeds: newColors }, defaultTheme);
   registerDefaultTheme(newTheme);
 }
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IColorRequest, getThemeColors } from './theming/ThemeRequest';
+import { IThemeRequest, fillThemeColors } from './theming/ThemeRequest';
 
 // Styles for the component
 export interface ICardStyles {
@@ -45,26 +45,7 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
   );
 };
 
-/*
-const view = (props: IViewProps<ICardProps, ICardStyles>) => {
-  if (props.deepen || props.themed !== undefined) {
-    const newShade: number = props.deepen || 0;
-    const newType: ColorLayerType = props.themed === undefined ? ColorLayerType.Relative : ColorLayerType.SwitchRel;
-    const newKey: IColorLayerKey = { type: newType, shade: newShade };
-    const offsets: Partial<IThemeOffsets> = { default: newKey };
-    const themeToSet: Partial<IThemeSettings> = { offsets };
-    return (
-      <ThemeProvider newTheme={themeToSet}>
-        {viewCore}
-      </ThemeProvider>
-    );
-  }
-  return viewCore;
-};
-*/
-
-const layerName = 'default';
-const requiredColors: IColorRequest = {
+const requiredColors: IThemeRequest = {
   background: 'bg',
   color: 'fg'
 }
@@ -75,7 +56,7 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
   return {
     root: [
       {
-        ...getThemeColors(layerName, props.theme, requiredColors),
+        ...fillThemeColors(props.theme, requiredColors),
 
         boxSizing: 'border-box',
         overflow: 'hidden',

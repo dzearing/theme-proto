@@ -1,8 +1,6 @@
-import { ITheme, ILayerCache } from "./ITheme";
-import { IColorLayer } from "./IColorLayer";
-import { IColorLayerKey } from "./IColorLayerKey";
-import { getLayerFromKeys } from "./ThemeColors";
+import { ITheme } from "./ITheme";
 import { constructNamedColor } from "./Transforms";
+import { getThemeLayer } from "./ThemeCache";
 
 /*
   Input/output type.  On input it is a collection of:
@@ -11,39 +9,39 @@ import { constructNamedColor } from "./Transforms";
   On output the returned value is:
     [destination key]: resolved color value
 */
-export interface IColorRequest {
-  [value: string]: string;
+export interface IThemeRequest {
+  [key: string]: string;
 }
 
-export function getThemeColors(layerName: string, theme: ITheme, requested: IColorRequest) : IColorRequest {
-  const layers: ILayerCache = theme.layers;
-  let layer: IColorLayer;
-  if (!layers.hasOwnProperty(layerName)) {
-    const offsets = theme.offsets;
-    if (offsets.hasOwnProperty(layerName)) {
-      const layerKey: IColorLayerKey = offsets[layerName];
-      layer = getLayerFromKeys(layerKey, offsets.default, theme);
-      layers[layerName] = layer;
-    } else {
-      return getThemeColors(defaultName, theme, requested);
-    }
-  } else {
-    layer = layers[layerName];
-  }
+/**
+ * Query a set of colors from the theme and put them into the specified values.  Set up
+ * such that it can be used easily in a spread operator
+ * @param theme Theme to extract colors from
+ * @param requestedColors A set of colors to obtain.  Key is used for the destination, 
+ * string for each key is the lookup value
+ * @param layerName Name of the style the requested colors correspond to.  
+ * If blank or not found it will use default.
+ * @param layerState Optional state override value to get a variation for that style.
+ */
+export function fillThemeColors(
+  theme: ITheme, 
+  requestedColors: IThemeRequest, 
+  layerName?: string, 
+  layerState?: string
+): IThemeRequest {
+  const layer = getThemeLayer(theme, layerName);
+  const result: IThemeRequest = { };
 
-  const colors = { ...requested };
-  for (const key in requested) {
-    if (requested.hasOwnProperty(key)) {
+  for (const key in requestedColors) {
+    if (requestedColors.hasOwnProperty(key)) {
       const clr = layer.clr;
-      const colorName = requested[key];
+      const colorName = requestedColors[key];
       if (!clr.hasOwnProperty(colorName)) {
         clr[colorName] = constructNamedColor(colorName, layer, theme);
       }
-      colors[key] = clr[colorName].str;
+      result[key] = clr[colorName].str;
     }
   }
 
-  return colors;
+  return result;
 }
-
-const defaultName = 'default';

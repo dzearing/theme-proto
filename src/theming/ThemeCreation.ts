@@ -2,6 +2,7 @@ import { ITheme, IThemeSettings } from "./ITheme";
 import { getTheme, hasTheme } from "./ThemeRegistry";
 import { flipType } from "./IColorLayerKey";
 import { createPalette } from "./ThemeColors";
+import { createThemeCache } from "./ThemeCache";
 
 /*
   generate a theme settings interface from an update string.  Possible options:
@@ -27,11 +28,12 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
       case 'deepen:':
       case 'shade:':
         if (++i < terms.length) {
-          if (!settings.offsets) {
-            settings.offsets = { ...baseline.offsets };
+          if (!settings.styles) {
+            // create a new copy of styles with a copy of the default style to modify
+            settings.styles = { ...baseline.styles, default: { ...baseline.styles.default } };
           }
-          const offsets = settings.offsets;
-          const newDefault = { ...offsets.default };
+          const styles = settings.styles;
+          const newDefault = { ...styles.default.key || { type: 'bg', shade: 0 } };
           const param = terms[i];
           if (cmd === 'type:') {
             if (param === 'themed') {
@@ -47,7 +49,7 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
               newDefault.shade = (cmd === 'deepen:') ? newDefault.shade + shade : shade;
             }
           }
-          offsets.default = newDefault;
+          styles.default.key = newDefault;
         }
         break;
       case 'fg:':
@@ -55,10 +57,10 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
       case 'accent:':
         if (++i < terms.length) {
           const newColor = terms[i];
-          if (!settings.seedColors) {
-            settings.seedColors = { ...baseline.seedColors };
+          if (!settings.seeds) {
+            settings.seeds = { ...baseline.seeds };
           }
-          const colors = settings.seedColors;
+          const colors = settings.seeds;
           if (cmd === 'fg:') {
             colors.fg = newColor;
           } else if (cmd === 'bg:') {
@@ -76,12 +78,12 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
 
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
   const processedTheme = {
-    layers: {}
+    layers: createThemeCache(themeSettings)
   };
 
-  if (themeSettings.seedColors) {
+  if (themeSettings.seeds) {
     const propName = 'colors';
-    processedTheme[propName] = createPalette(themeSettings.seedColors, baseline ? baseline.colors : undefined);
+    processedTheme[propName] = createPalette(themeSettings.seeds, baseline ? baseline.colors : undefined);
   }
 
   return Object.assign({}, baseline, themeSettings, processedTheme);

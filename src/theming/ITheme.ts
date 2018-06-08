@@ -1,8 +1,7 @@
 import { IColorPalette } from "./IColorPalette";
-import { IThemeOffsets } from "./IThemeDefinition";
-import { IRawStyle } from '@uifabric/styling';
 import { IColorLayer } from "./IColorLayer";
 import { IColorDefinitions } from "./IColorDefinition";
+import { IThemeStyle } from "./IThemeStyle";
 
 /*
   Overall a theme has:
@@ -10,16 +9,6 @@ import { IColorDefinitions } from "./IColorDefinition";
     settings/constants - properties for various layers
     rules - how to generate colors/layers
 */
-
-export interface IFonts {
-  medium: IRawStyle;
-}
-
-export interface IFontWeights {
-  emphasized: IRawStyle;
-  normal: IRawStyle;
-  diminished: IRawStyle;
-}
 
 export interface ILayerCache {
   [key: string]: IColorLayer
@@ -29,10 +18,11 @@ export interface ILayerCache {
   Theme definition, used to specify or modify the theme
 */
 export interface IThemeSettings {
-  seedColors: Partial<IColorDefinitions>;
-  offsets: IThemeOffsets;
-  fonts: IFonts;
-  fontWeights: IFontWeights;
+  seeds: Partial<IColorDefinitions>;
+  styles: {
+    default: Partial<IThemeStyle>;
+    [key: string]: Partial<IThemeStyle>;
+  }
 }
 
 /*
@@ -43,10 +33,18 @@ export interface IThemeDefinition {
   settings: Partial<IThemeSettings>;
 }
 
+export interface IThemeCache {
+  layers: ILayerCache;
+  styles: {
+    default: IThemeStyle;
+    [key: string]: IThemeStyle;
+  }
+}
+
 /*
   Full theme, contains both the inputs and calculated/generated values
 */
 export interface ITheme extends IThemeSettings {
   colors: IColorPalette;
-  layers: ILayerCache;
+  cache: IThemeCache;
 }

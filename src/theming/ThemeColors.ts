@@ -5,6 +5,7 @@ import { getBackgroundShade, getShade, getContrastRatio } from "../coloring/shad
 import { IColorLayerKey, isIndexKey, resolveKey } from "./IColorLayerKey";
 import { IColorLayer } from "./IColorLayer";
 import { ITheme } from "./ITheme";
+import { getThemeLayer } from "./ThemeCache";
 
 
 /**
@@ -61,7 +62,6 @@ export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPale
 
 // count of layers, this should be dynamic but currently matches what is in shades.ts
 const PALETTE_LAYER_COUNT: number = 9;
-const defaultName: string = 'default';
 
 const fallbackColors: ISeedColors = {
   fg: { h: 0, s: 0, v: 0, a: 100, str: '#000000' },
@@ -101,22 +101,9 @@ function createLayerForBackground(key: IColorLayerKey, newBg: IColor, seeds: ISe
   return {key, clr: { fg, bg: newBg }} as IColorLayer;
 }
 
-function getCustomLayer(name: string, theme: ITheme): IColorLayer {
-  const layers = theme.layers;
-  if (!layers.hasOwnProperty(name)) {
-    const offsets = theme.offsets;
-    if (offsets.hasOwnProperty(name)) {
-      layers[name] = getLayer(offsets[name], theme);
-    } else if (name !== defaultName) {
-      return getCustomLayer(defaultName, theme);
-    }
-  }
-  return layers[name];
-}
-
 export function getLayer(key: IColorLayerKey, theme: ITheme): IColorLayer {
   if (key.name) {
-    return getCustomLayer(key.name, theme);
+    return getThemeLayer(theme, key.name);
   } else if (isIndexKey(key)) {
     // these will be pre-created, just scope the key to fit
     let shade = key.shade;
@@ -128,7 +115,7 @@ export function getLayer(key: IColorLayerKey, theme: ITheme): IColorLayer {
     return layers[shade];
   }
   // absolute fallback right now is to just return the default layer
-  return getCustomLayer(defaultName, theme);
+  return getThemeLayer(theme);
 }
 
 export function getLayerFromKeys(key: IColorLayerKey, baseline: IColorLayerKey, theme: ITheme): IColorLayer {

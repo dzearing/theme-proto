@@ -18,6 +18,16 @@ export interface IThemeColors {
    * themed or accented layers.
    */
   accent: string;
+  /**
+   * If true the background color is used for tone but the background starts as white (or black
+   * if inverted), because white/black loses color this allows for shading to have a non-pure gray
+   * cast to it
+   */
+  useBgForTone: boolean;
+  /**
+   * Make this theme inverted.  This will cause colors to start dark and get lighter
+   */
+  invert: boolean;
 }
 
 /**

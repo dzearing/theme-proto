@@ -1,6 +1,6 @@
 import { ISeedColors, IColorPalette, ILayerSets } from "./IColorPalette";
 import { getColorFromString, IColor } from "../coloring/color";
-import { getBackgroundShade, getShade, getContrastRatio } from "../coloring/shading";
+import { getContrastRatio, getShadeArray } from "../coloring/shading";
 import { IColorLayerKey, isIndexKey, resolveKey } from "./IColorLayerKey";
 import { IColorLayer } from "./IColorLayer";
 import { ITheme } from "./ITheme";
@@ -33,9 +33,11 @@ export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPale
 
   // now do the calculated sets for ones that are not specified
   const keys: Array<'bg'|'accent'> = ['bg', 'accent'];
+  const invert: boolean = def.invert !== undefined ? def.invert : false;
   for (const key of keys) {
     if (!colors.hasOwnProperty(key)) {
-      colors[key] = createGeneratedArray(seeds[key], key)
+      const rotate = (key === 'bg' && def.useBgForTone !== undefined) ? !def.useBgForTone : true;
+      colors[key] = getShadeArray(seeds[key], PALETTE_LAYER_COUNT, invert, rotate, 30, 100);
     }
   }
 
@@ -84,14 +86,6 @@ function getSeedColors(colors: Partial<IThemeColors>, base?: ISeedColors): ISeed
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {
   return colors.map((val) => (getColorFromString(val) || fallback));
-}
-
-function createGeneratedArray(seedColor: IColor, type: 'bg' | 'accent'): IColor[] {
-  const results: IColor[] = new Array<IColor>(PALETTE_LAYER_COUNT);
-  for (let i: number = 0; i < PALETTE_LAYER_COUNT; i++) {
-    results[i] = type === 'bg' ? getBackgroundShade(seedColor, i, false) : getShade(seedColor, i, false);
-  }
-  return results;
 }
 
 function createLayerForBackground(key: IColorLayerKey, newBg: IColor, seeds: ISeedColors): IColorLayer {

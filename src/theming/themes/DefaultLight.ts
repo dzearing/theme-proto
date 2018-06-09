@@ -12,7 +12,9 @@ export const LightTheme: IThemeSettings = {
   seeds: {
     fg: 'black',
     bg: 'white',
-    accent: '#0078d4'
+    accent: '#0078d4',
+    useBgForTone: true,
+    invert: false
   },
   styles: {
     default: styleBaseline,

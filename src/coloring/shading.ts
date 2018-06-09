@@ -87,62 +87,61 @@ export function isDark(color: IColor): boolean {
   return hsv2hsl(color.h, color.s, color.v).l < 50;
 }
 
-interface IShadingParameters {
-  hsl: IHSL;        // color to use for shading
-  slot: number;     // index 
-  count: number;    // number of entries in the array
-  low: number;      // luminance min value, 0-100
-  high: number;     // luminance max value, 0-100
-  reverse: boolean; // go from dark to light instead of light to dark
-}
-
-export function getShadingParams(hsl: IHSL, count: number, reverse: boolean, low: number = 0, high: number = 100): IShadingParameters {
+/**
+ * This will generate a shade array for a given color.  The color is converted to
+ * hsl, at which point the luminance value will be interpolated across the slots in
+ * the array
+ * @param color color to use for generating the shade array
+ * @param count count of colors to put in the array
+ * @param reverse arrange the colors in descending order
+ * @param rotate rotate the values such that color is at index 0
+ * @param low minimum luminance value in the array (0 to 100)
+ * @param high maximum luminance value in the array (0 to 100)
+ */
+export function getShadeArray(
+  color: IColor, 
+  count: number, 
+  reverse: boolean,
+  rotate: boolean,
+  low: number = 0, 
+  high: number = 100
+): IColor[] {
+  const hsl: IHSL = hsv2hsl(color.h, color.s, color.v);
   low = Math.min(hsl.l, low);
   high = Math.max(hsl.l, high);
-  const range = high - low;
-  const offset = hsl.l / range;
+  const startLum = reverse ? low : high;
+  const endLum = reverse ? high : low;
   const maxIndex = count - 1;
+  const range = endLum - startLum;
+  const offset = (hsl.l - startLum) / range;
   const slot = Math.min(Math.max(Math.round(offset * maxIndex), 0), maxIndex);
-  return { hsl, slot, count, low, high, reverse };
-}
+  let result = new Array<IColor>(count);
 
-function interpolateShades(shades: IHSL[], start: number, last: number) {
-  const { h, s, l } = shades[start];
-  const reverse = last < start;
-  let luminance = reverse ? 0 : MAX_COLOR_VALUE;
-  const steps = Math.abs(last - start);
-  const lumDelta = (l - luminance) / steps;
-  const delta = reverse ? 1 : -1;
-
-  for (let i = last; i !== start; i += delta) {
-    shades[i] = { h, s, l};
-    shades[i].l = luminance;
-    luminance += lumDelta;
-  }
-}
-
-export function getShades(color: IColor, count: number, margins: number, invert: boolean): IColor[] {
-  const maxLum = MAX_COLOR_VALUE;
-  const hsl = hsv2hsl(color.h, color.s, color.v);
-  const shadeCount = count + (margins * 2);
-  const shades = new Array<IHSL>(shadeCount);
-  const step = maxLum / (shadeCount - 1);
-  const slot = Math.min(Math.floor((hsl.l + (step / 2)) / step), shadeCount - 1);
-
-  // set the specified color into the closest slot value
-  shades[slot] = hsl;
-
-  // interpolate shades to the end
-  interpolateShades(shades, slot, 0);
-  interpolateShades(shades, slot, shadeCount - 1);
-
-  for (let i = 0; i < margins; i++) {
-    shades.pop();
-    shades.slice();
+  result[0] = createColorFromHSLA(hsl.h, hsl.s, startLum);
+  result[maxIndex] = createColorFromHSLA(hsl.h, hsl.s, endLum);
+  if (slot > 0 && slot < maxIndex) {
+    result[slot] = createColorFromHSLA(hsl.h, hsl.s, hsl.l);
   }
 
-  // now return the mapped array
-  return shades.map((val: IHSL) => createColorFromHSLA(val.h, val.s, val.l, color.a))
+  if (slot > 1) {
+    const step = (hsl.l - startLum) / slot;
+    for (let i = 1; i < slot; i++) {
+      result[i] = createColorFromHSLA(hsl.h, hsl.s, startLum + (step * i));
+    }
+  }
+
+  if ((slot + 1) < maxIndex) {
+    const step = (endLum - hsl.l) / (maxIndex - slot);
+    for (let i = 1; (i + slot) < maxIndex; i++) {
+      result[i + slot] = createColorFromHSLA(hsl.h, hsl.s, hsl.l + (step * i));
+    }
+  }
+
+  if (rotate && slot !== 0) {
+    result = result.slice(slot, result.length).concat(result.slice(0, slot));
+  }
+
+  return result;
 }
 
 /**

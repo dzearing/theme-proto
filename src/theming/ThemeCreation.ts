@@ -77,15 +77,27 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
   return createLayeredTheme(settings, baseline);
 }
 
+export function mergeSettings(
+  oldVals: Partial<IThemeSettings>, 
+  newVals: Partial<IThemeSettings>
+): Partial<IThemeSettings> {
+  return {
+    seeds: Object.assign({}, oldVals.seeds, newVals.seeds),
+    styles: Object.assign({}, oldVals.styles, newVals.styles)
+  }
+}
+
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
+  const mergedSettings = baseline ? mergeSettings(baseline, themeSettings) : themeSettings;
+
   const processedTheme = {
     cache: createThemeCache(themeSettings)
   };
 
-  if (themeSettings.seeds) {
+  if (themeSettings.seeds && mergedSettings.seeds) {
     const propName = 'colors';
-    processedTheme[propName] = createPalette(themeSettings.seeds, baseline ? baseline.colors : undefined);
+    processedTheme[propName] = createPalette(mergedSettings.seeds, baseline ? baseline.colors : undefined);
   }
 
-  return Object.assign({}, baseline, themeSettings, processedTheme);
+  return Object.assign({}, baseline, mergedSettings, processedTheme);
 }

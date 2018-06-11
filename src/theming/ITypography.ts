@@ -10,6 +10,8 @@ export interface IFontSizes {
   medium: string;
   large: string;
   xLarge: string;
+  xxLarge: string;
+  xxxLarge: string;
   mega: string;
 }
 
@@ -40,6 +42,9 @@ export interface IFontTypes {
   caption: Partial<IFontType>;
   h1: Partial<IFontType>;
   h2: Partial<IFontType>;
+  h3: Partial<IFontType>;
+  h4: Partial<IFontType>;
+  h5: Partial<IFontType>;
 }
 
 export interface ITypography {

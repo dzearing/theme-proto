@@ -36,13 +36,22 @@ export interface ITextProps {
 }
 
 const view = (props: IViewProps<ITextProps, ITextStyles>) => {
-  const { renderAs: RootType = "span", classNames, ...rest } = props;
+  const {
+    block,
+    classNames,
+    color,
+    family,
+    grow,
+    renderAs: RootType = "span",
+    shrink,
+    size,
+    type,
+    weight,
+    wrap,
+    ...rest
+  } = props;
 
-  return (
-    <RootType {...rest} className={classNames.root}>
-      {props.children}
-    </RootType>
-  );
+  return <RootType {...rest} className={classNames.root} />;
 };
 
 const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {

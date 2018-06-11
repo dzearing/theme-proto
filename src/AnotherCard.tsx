@@ -16,7 +16,9 @@ export const AnotherCard = () => {
             <Text>Roadmap</Text>
           </Stack.Item>
         </Stack>
-        <Text weight="light">Design Studio</Text>
+        <Text type="h3" weight="bold">
+          Design Studio
+        </Text>
 
         <Stack vertical grow justify="end">
           <Stack align="center" fill gap={8}>

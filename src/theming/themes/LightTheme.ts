@@ -1,7 +1,6 @@
-import { createTheme } from "../createTheme";
 import { DefaultSwatches as swatches } from "./DefaultSwatches";
 import { DefaultTypography as typography } from "./DefaultTypography";
-export const LightTheme = createTheme({
+export const LightTheme = {
   swatches,
   typography,
 
@@ -27,6 +26,6 @@ export const LightTheme = createTheme({
       linkVisited: "white"
     }
   }
-});
+};
 
 export default LightTheme;

@@ -14,15 +14,39 @@ export function createTheme(
   );
 
   // Expand font types!
+  const { types } = processedTheme.typography;
+
   // tslint:disable-next-line:forin
-  for (const typeName in processedTheme.typography.types) {
-    const type: IFontType = processedTheme.typography.types[typeName];
+  for (const typeName in types) {
+    const type: IFontType = types[typeName];
     const { swatches, typography } = processedTheme;
 
-    type.color = swatches[type.color] || type.color;
-    type.fontFamily = typography.families[type.fontFamily] || type.fontFamily;
-    type.fontSize = typography.sizes[type.fontSize] || type.fontSize;
-    type.fontWeight = typography.weights[type.fontWeight] || type.fontWeight;
+    type.color = swatches[type.color] || type.color || types.default.color;
+    type.fontFamily =
+      typography.families[type.fontFamily] ||
+      type.fontFamily ||
+      types.default.fontFamily;
+    type.fontSize =
+      typography.sizes[type.fontSize] ||
+      type.fontSize ||
+      types.default.fontSize;
+    type.fontWeight =
+      typography.weights[type.fontWeight] ||
+      type.fontWeight ||
+      types.default.fontWeight;
+  }
+
+  // Expand schemes
+  // tslint:disable-next-line:forin
+  for (const setName in processedTheme.paletteSets) {
+    const set = processedTheme.paletteSets[setName];
+
+    // tslint:disable-next-line:forin
+    for (const setPropName in set) {
+      const propValue = set[setPropName];
+
+      set[setPropName] = processedTheme.swatches[propValue] || propValue;
+    }
   }
 
   return processedTheme;

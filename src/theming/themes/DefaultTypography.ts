@@ -15,7 +15,9 @@ export const DefaultFontSizes: IFontSizes = {
   medium: "1.4rem",
   large: "1.6rem",
   xLarge: "1.8rem",
-  mega: "2.5rem"
+  xxLarge: "2rem",
+  xxxLarge: "3rem",
+  mega: "4rem"
 };
 
 export const DefaultFontFamilies: IFontFamilies = {
@@ -50,16 +52,33 @@ export const DefaultFontTypes: IFontTypes = {
   },
 
   caption: {
-    fontSize: "small",
+    fontSize: "xSmall",
     color: "caption"
   },
 
   h1: {
-    fontSize: "xLarge"
+    fontSize: "mega",
+    fontWeight: "light"
   },
 
   h2: {
-    fontSize: "large"
+    fontSize: "xxxLarge",
+    fontWeight: "light"
+  },
+
+  h3: {
+    fontSize: "xxLarge",
+    fontWeight: "light"
+  },
+
+  h4: {
+    fontSize: "xLarge",
+    fontWeight: "light"
+  },
+
+  h5: {
+    fontSize: "large",
+    fontWeight: "light"
   }
 };
 

@@ -19,7 +19,7 @@ export const LightTheme: IThemeSettings = {
   styles: {
     default: styleBaseline,
     shadedControl: {
-      key: { type: 'rel', shade: 3 }
+      key: { type: 'rel', shade: 2 }
     },
     themedControl: {
       key: { type: 'switch', shade: 0 }

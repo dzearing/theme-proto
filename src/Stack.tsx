@@ -45,17 +45,35 @@ export interface IStackProps {
 const view = (props: IViewProps<IStackProps, IStackStyles>) => {
   const { renderAs: RootType = "div", classNames, gap, vertical } = props;
 
-  const children: React.ReactChild[] = [];
-  const spacerStyle = {
-    [vertical ? "height" : "width"]: gap
-  };
-
-  React.Children.forEach(props.children, (child, index: number) => {
-    if (index > 0 && gap) {
-      children.push(<span className={classNames.spacer} style={spacerStyle} />);
+  const children: React.ReactChild[] = React.Children.map(
+    props.children,
+    (child: React.ReactChild, index: number) => {
+      if ((child as any).type === StackItemType) {
+        return React.cloneElement(child as any, {
+          gap,
+          vertical,
+          index
+        });
+      } else {
+        return (
+          <StackItem gap={gap} vertical={vertical} index={index}>
+            {child}
+          </StackItem>
+        );
+      }
     }
-    children.push(child);
-  });
+  );
+
+  // const spacerStyle = {
+  //   [vertical ? "height" : "width"]: gap
+  // };
+
+  // React.Children.forEach(props.children, (child, index: number) => {
+  //   // if (index > 0 && gap) {
+  //   //   children.push(<span className={classNames.spacer} style={spacerStyle} />);
+  //   // }
+  //   children.push(child);
+  // });
 
   return <RootType className={classNames.root}>{children}</RootType>;
 };
@@ -69,6 +87,7 @@ const styles = (
     justify,
     maxWidth,
     vertical,
+    gap,
     grow,
     margin,
     padding
@@ -94,10 +113,15 @@ const styles = (
       },
       props.className
     ],
-    spacer: {
-      flexShrink: 0,
-      alignSelf: "stretch"
-    }
+    spacer: [
+      {
+        flexShrink: 0,
+        alignSelf: "stretch"
+      },
+      !!gap && {
+        [vertical ? "marginBottom" : "marginRight"]: gap
+      }
+    ]
   };
 };
 
@@ -110,5 +134,8 @@ export const Stack = createComponent({
     defaultProps: {}
   }
 });
+
+// tslint:disable-next-line:one-variable-per-declaration
+const StackItemType = (<StackItem /> as any).type;
 
 export default Stack;

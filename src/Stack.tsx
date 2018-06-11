@@ -25,13 +25,15 @@ export interface IStackProps {
   inline?: boolean;
   vertical?: boolean;
   grow?: boolean;
+  wrap?: boolean;
 
   gap?: number;
-
   align?: 'auto' | 'center' | 'start' | 'baseline' | 'stretch' | 'end';
   justify?: 'start' | 'end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
 
   maxWidth?: number | string;
+  padding?: number | string;
+  margin?: number | string;
 }
 
 const view = (props: IViewProps<IStackProps, IStackStyles>) => {
@@ -43,12 +45,17 @@ const view = (props: IViewProps<IStackProps, IStackStyles>) => {
   } = props;
 
   const children: React.ReactChild[] = [];
+  const spacerStyle = {
+    [vertical ? 'height' : 'width']: gap
+  };
 
   React.Children.forEach(props.children, (child, index: number) => {
-    if (index !== 0 && gap) {
-      children.push(<div key={index} className={classNames.spacer} style={{ [vertical ? 'height' : 'width']: gap }} />);
+    if (index > 0 && gap) {
+      children.push(
+        <span className={ classNames.spacer } style={spacerStyle } />
+      );
     }
-    children.push(child);
+      children.push(child);
   });
 
   return (
@@ -60,12 +67,14 @@ const view = (props: IViewProps<IStackProps, IStackStyles>) => {
 
 const styles = (props: IStyleProps<IStackProps, IStackStyles>): IStackStyles => {
   const {
-    align,
     fill,
+    align,
     justify,
     maxWidth,
     vertical,
-    grow
+    grow,
+    margin,
+    padding
   } = props;
 
   return {
@@ -79,7 +88,12 @@ const styles = (props: IStyleProps<IStackProps, IStackStyles>): IStackStyles => 
         width: (fill && !vertical) ? '100%' : 'auto',
         height: (fill && vertical) ? '100%' : 'auto',
         maxWidth,
-        flexGrow: grow ? 1 : undefined
+        margin,
+        padding
+      },
+      grow && {
+        flexGrow: 1,
+        overflow: 'hidden'
       },
       props.className
     ],
@@ -95,9 +109,11 @@ export const Stack = createComponent({
   displayName: 'Stack',
   styles,
   view,
-  statics: { Area: StackItem }
+  statics: {
+    Item: StackItem,
+    defaultProps: {}
+  }
 });
-
 
 export default Stack;
 

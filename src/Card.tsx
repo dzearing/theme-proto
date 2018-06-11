@@ -51,9 +51,19 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
   return {
     root: [
       {
+        outline: 'none',
+        selectors: {
+          ':focus': {
+            border: '1px solid rgba(0,0,0,.5)',
+            boxShadow: '0 0 2px 0 rgba(255,255,255,.5) inset',
+            boxSizing: 'border-box'
+          }
+        }
+      },
+      {
         background: set.background,
         color: set.text,
-
+        outline: 'none',
         boxSizing: 'border-box',
         overflow: 'hidden',
         border: '1px solid #ccc',

@@ -1,59 +1,59 @@
-import { IRawStyle } from '@uifabric/styling';
+import { ITypography } from "./ITypography";
 
-export type IColor = string;
+export type ISwatch = string;
 
-export interface IPalette {
-  themeDarker: IColor;
-  themeDark: IColor;
-  themeDarkAlt: IColor;
-  themePrimary: IColor;
-  themeSecondary: IColor;
-  themeTertiary: IColor;
-  themeLight: IColor;
-  themeLighter: IColor;
-  themeLighterAlt: IColor;
-  black: IColor;
-  blackTranslucent40: IColor;
-  neutralDark: IColor;
-  neutralPrimary: IColor;
-  neutralPrimaryAlt: IColor;
-  neutralSecondary: IColor;
-  neutralTertiary: IColor;
-  neutralTertiaryAlt: IColor;
-  neutralQuaternary: IColor;
-  neutralQuaternaryAlt: IColor;
-  neutralLight: IColor;
-  neutralLighter: IColor;
-  neutralLighterAlt: IColor;
-  accent: IColor;
-  white: IColor;
-  whiteTranslucent40: IColor;
-  yellow: IColor;
-  yellowLight: IColor;
-  orange: IColor;
-  orangeLight: IColor;
-  orangeLighter: IColor;
-  redDark: IColor;
-  red: IColor;
-  magentaDark: IColor;
-  magenta: IColor;
-  magentaLight: IColor;
-  purpleDark: IColor;
-  purple: IColor;
-  purpleLight: IColor;
-  blueDark: IColor;
-  blueMid: IColor;
-  blue: IColor;
-  blueLight: IColor;
-  tealDark: IColor;
-  teal: IColor;
-  tealLight: IColor;
-  greenDark: IColor;
-  green: IColor;
-  greenLight: IColor;
+export interface ISwatches {
+  themeDarker: ISwatch;
+  themeDark: ISwatch;
+  themeDarkAlt: ISwatch;
+  themePrimary: ISwatch;
+  themeSecondary: ISwatch;
+  themeTertiary: ISwatch;
+  themeLight: ISwatch;
+  themeLighter: ISwatch;
+  themeLighterAlt: ISwatch;
+  black: ISwatch;
+  blackTranslucent40: ISwatch;
+  neutralDark: ISwatch;
+  neutralPrimary: ISwatch;
+  neutralPrimaryAlt: ISwatch;
+  neutralSecondary: ISwatch;
+  neutralTertiary: ISwatch;
+  neutralTertiaryAlt: ISwatch;
+  neutralQuaternary: ISwatch;
+  neutralQuaternaryAlt: ISwatch;
+  neutralLight: ISwatch;
+  neutralLighter: ISwatch;
+  neutralLighterAlt: ISwatch;
+  accent: ISwatch;
+  white: ISwatch;
+  whiteTranslucent40: ISwatch;
+  yellow: ISwatch;
+  yellowLight: ISwatch;
+  orange: ISwatch;
+  orangeLight: ISwatch;
+  orangeLighter: ISwatch;
+  redDark: ISwatch;
+  red: ISwatch;
+  magentaDark: ISwatch;
+  magenta: ISwatch;
+  magentaLight: ISwatch;
+  purpleDark: ISwatch;
+  purple: ISwatch;
+  purpleLight: ISwatch;
+  blueDark: ISwatch;
+  blueMid: ISwatch;
+  blue: ISwatch;
+  blueLight: ISwatch;
+  tealDark: ISwatch;
+  teal: ISwatch;
+  tealLight: ISwatch;
+  greenDark: ISwatch;
+  green: ISwatch;
+  greenLight: ISwatch;
 }
 
-export type IPaletteReference = keyof IPalette;
+export type IPaletteReference = keyof ISwatches;
 
 export interface IPaletteSet {
   background: IPaletteReference;
@@ -62,19 +62,8 @@ export interface IPaletteSet {
   linkVisited: IPaletteReference;
 }
 
-export interface IFonts {
-  medium: IRawStyle;
-}
-
-export interface IFontWeights {
-  emphasized: IRawStyle;
-  normal: IRawStyle;
-  diminished: IRawStyle;
-}
-
 export interface ITheme {
-  palette: IPalette;
+  swatches: ISwatches;
   paletteSets: { [key: string]: IPaletteSet };
-  fonts: IFonts;
-  fontWeights: IFontWeights;
+  typography: ITypography;
 }

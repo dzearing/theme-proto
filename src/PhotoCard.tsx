@@ -2,7 +2,7 @@ import * as React from "react";
 import Stack from "./Stack";
 import Text from "./Text";
 import Card from "./Card";
-import { Image, ImageFit, PersonaCoin } from "office-ui-fabric-react";
+import { Icon, Image, ImageFit, PersonaCoin } from "office-ui-fabric-react";
 
 export const PhotoCard = () => {
   const RootType = Card;
@@ -21,7 +21,11 @@ export const PhotoCard = () => {
             <Stack vertical grow gap={4}>
               <Text>John Jacob Jingleheimershmidt</Text>
               <Text type="caption" shrink>
-                05/12/2017, 1:33pm
+                <Stack gap={8} align="center">
+                  <Icon iconName="upload" />
+                  05/12/2017, 1:33pm
+                  <Icon iconName="share" />
+                </Stack>
               </Text>
             </Stack>
           </Stack>

@@ -55,7 +55,7 @@ class App extends React.Component<{}, { gapSize: number }> {
 
     return (
       <Fabric>
-        <Grid gap={8} templateColumns="40rem 1fr 1fr">
+        <Grid gap={8} templateColumns="1fr 1fr">
           <Grid.Cell debug>
             <Box background="blue" />
           </Grid.Cell>
@@ -118,7 +118,9 @@ class App extends React.Component<{}, { gapSize: number }> {
             </Stack>
           </FocusZone>
 
-          <Text type="h1">I am h1 text</Text>
+          <Text type="h1" size="tiny">
+            I am h1 text
+          </Text>
           <Text type="h2">I am h2 text</Text>
           <Text type="h3">I am h3 text</Text>
           <Text type="h4">I am h4 text</Text>

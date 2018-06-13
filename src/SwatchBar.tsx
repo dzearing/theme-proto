@@ -23,7 +23,7 @@ const view = (props: IViewProps<ISwatchBarProps, ISwatchBarStyles>) => {
   } = props;
 
   return (
-    <RootType {...rest} className={classNames.root}>
+    <RootType {...rest} className={classNames.root} style={{width: '300px'}}>
       { props.colors.map((value: IColor, index: number) => {
         return (<div key={index} style={{height:5, width:'100%', background: value.str}} />);
       })}

@@ -1,11 +1,11 @@
 import { DefaultFontStyles, IStyle, Slider } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { SwatchBar } from './SwatchBar';
 import { ColorChoice } from './ColorChoice';
 import { ThemeContext } from './theming/ThemeProvider';
 import { Card } from './Card';
 import { Text } from './Text';
+import { Stack } from './Stack';
 
 // Styles for the component
 export interface IConfiguratorStyles {
@@ -30,14 +30,12 @@ const view = (props: IViewProps<IConfiguratorProps, IConfiguratorStyles>) => {
         return (
           <RootType className={classNames.root}>
             <Text>Configuration Options</Text>
-            <SwatchBar colors={theme.palette.colors.bg} />
-            <div style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-              <ColorChoice colorSlot='bg' title='Background' updater={updateTheme} />
-              <ColorChoice colorSlot='fg' title='Foreground' updater={updateTheme} />
-              <ColorChoice colorSlot='accent' title='Theme Color' updater={updateTheme} />
-            </div>
+            <Stack vertical gap={4}>
+              <ColorChoice colorSlot='bg' title='Bg' updater={updateTheme} theme={theme} />
+              <ColorChoice colorSlot='fg' title='Fg' updater={updateTheme} theme={theme} />
+              <ColorChoice colorSlot='accent' title='Accent' updater={updateTheme} theme={theme} />
+            </Stack>
             <Slider label='Gap size' onChange={props.updateGapSize} min={0} max={40} step={4} />
-            <SwatchBar colors={theme.palette.colors.accent} />
           </RootType> 
         )
       }

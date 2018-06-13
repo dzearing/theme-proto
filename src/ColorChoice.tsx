@@ -7,10 +7,14 @@ import { ITheme } from './theming/ITheme';
 import { getDefaultTheme, registerDefaultTheme } from './theming/ThemeRegistry';
 import { createLayeredTheme } from './theming/ThemeCreation';
 import { IThemeColors } from './theming/IThemeSettings';
+import { Stack } from './Stack';
+import { Text } from './Text';
+import { SwatchBar } from './SwatchBar';
 
 export interface IColorChoiceProps {
     title: string;
     colorSlot: keyof IThemeColors;
+    theme: ITheme;
     updater?: (theme: ITheme) => void;
 }
 
@@ -39,11 +43,17 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
 
   public render() {
     return (
-      <div ref={ this._buttonElement } onClick={ this._onShowColorPicker } >
-        <Button 
-          onClick={ this._onShowColorPicker }
-          text={ this.props.title + ": " + this.state.currentColor }
-        />
+      <div ref={ this._buttonElement } onClick={ this._onShowColorPicker } style={{width: 500}}>
+        <Stack gap={5} fill grow>
+          <Button 
+            onClick={ this._onShowColorPicker }
+            text={this.props.title}
+          />
+          <Stack vertical align='stretch' fill>
+            <Text>{this.state.currentColor}</Text>
+            <SwatchBar colors={this.props.theme.palette.colors[this.props.colorSlot]} />
+          </Stack>
+        </Stack>
         { this.state.calloutVisible ? (
           <Callout
             className='ms-ColorCallout'

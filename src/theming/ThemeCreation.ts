@@ -1,9 +1,9 @@
 import { ITheme } from "./ITheme";
-import { getTheme, hasTheme } from "./ThemeRegistry";
-import { flipType } from "./IColorLayerKey";
-import { createPalette } from "./ThemeColors";
-import { createThemeCache } from "./ThemeCache";
+import { getTheme, hasTheme, mergeObjects } from "./ThemeRegistry";
+import { createPalette, flipType } from "./ThemeColors";
 import { IThemeSettings } from "./IThemeSettings";
+import { createThemeCache, getThemeStyle } from "./ThemeCache";
+import { IColorLayerKey } from "./IColorLayerKey";
 
 /*
   generate a theme settings interface from an update string.  Possible options:
@@ -16,6 +16,8 @@ import { IThemeSettings } from "./IThemeSettings";
 export function themeFromChangeString(update: string, baseline: ITheme): ITheme {
   const terms = update.split(' ');
   const settings: Partial<IThemeSettings> = { };
+  let baseBgKey: IColorLayerKey|undefined;
+  let newBgKey: IColorLayerKey|undefined;
 
   for (let i: number = 0; i < terms.length; i++) {
     const cmd = terms[i];
@@ -29,28 +31,28 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
       case 'deepen:':
       case 'shade:':
         if (++i < terms.length) {
-          if (!settings.styles) {
-            // create a new copy of styles with a copy of the default style to modify
-            settings.styles = { ...baseline.styles, default: { ...baseline.styles.default } };
+          if (!baseBgKey || !newBgKey) {
+            const defaultStyle = getThemeStyle(baseline);
+            const baseColorDef = defaultStyle.definition.colors;
+            baseBgKey = (baseColorDef && baseColorDef.bg) ? baseColorDef.bg : { type: 'bg', shade: 0 };
+            newBgKey = { ...baseBgKey };
+            settings.styles = { default: { colors: { bg: newBgKey } } };
           }
-          const styles = settings.styles;
-          const newDefault = { ...styles.default.key || { type: 'bg', shade: 0 } };
           const param = terms[i];
           if (cmd === 'type:') {
             if (param === 'themed') {
-              newDefault.type = 'accent';
+              newBgKey.type = 'accent';
             } else if (param === 'bg') {
-              newDefault.type = 'bg';
+              newBgKey.type = 'bg';
             } else if (param === 'switch') {
-              newDefault.type = flipType(newDefault.type);
+              newBgKey.type = flipType(newBgKey.type);
             }
           } else {
             const shade: number = parseInt(param, 10);
             if (!isNaN(shade)) {
-              newDefault.shade = (cmd === 'deepen:') ? newDefault.shade + shade : shade;
+              newBgKey.shade = (cmd === 'deepen:') ? newBgKey.shade + shade : shade;
             }
           }
-          styles.default.key = newDefault;
         }
         break;
       case 'fg:':
@@ -77,27 +79,19 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
   return createLayeredTheme(settings, baseline);
 }
 
-export function mergeSettings(
-  oldVals: Partial<IThemeSettings>, 
-  newVals: Partial<IThemeSettings>
-): Partial<IThemeSettings> {
-  return {
-    seeds: Object.assign({}, oldVals.seeds, newVals.seeds),
-    styles: Object.assign({}, oldVals.styles, newVals.styles)
-  }
-}
-
+/**
+ * Create a theme, conditionally built upon another existing theme
+ * @param themeSettings The partial set of theme settings to use to build the theme
+ * @param baseline Baseline theme to layer the new settings on top of
+ */
 export function createLayeredTheme(themeSettings: Partial<IThemeSettings>, baseline?: ITheme): ITheme {
-  const mergedSettings = baseline ? mergeSettings(baseline, themeSettings) : themeSettings;
-
-  const processedTheme = {
-    cache: createThemeCache(themeSettings)
-  };
-
-  if (themeSettings.seeds && mergedSettings.seeds) {
-    const propName = 'colors';
-    processedTheme[propName] = createPalette(mergedSettings.seeds, baseline ? baseline.colors : undefined);
+  const mergedSettings = baseline ? mergeObjects(baseline, themeSettings) : themeSettings;
+  let palette = baseline ? baseline.palette : undefined;
+  if (!palette || themeSettings.seeds !== undefined) {
+    palette = createPalette(mergedSettings.seeds, palette);
   }
 
-  return Object.assign({}, baseline, mergedSettings, processedTheme);
+  const cache = createThemeCache(palette, mergedSettings);
+
+  return Object.assign({}, baseline, mergedSettings, { palette, cache });
 }

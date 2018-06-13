@@ -1,5 +1,4 @@
 import { IColor } from "../coloring/color";
-import { IColorLayer } from "./IColorLayer";
 
 export interface ISeedColors {
   fg: IColor;
@@ -11,16 +10,20 @@ export interface ILayerSets {
   /**
    * Background color layers.  Generated from the seed colors unless specified
    */
-  bg: IColorLayer[];
+  bg: IColor[];
   /**
    * Accent color layers.  Generated from the accent seed color unless specified directly
    */
-  accent: IColorLayer[];
+  accent: IColor[];
+  /**
+   * Foreground color layers.  Generated from foreground and cached to save on contrast calculations
+   */
+  fg: IColor[];
   /**
    * Additional layers.  If an additional swatch array is specified, an additional set of
    * layers will be created to match that can then be referenced by name and index.
    */
-  [key: string]: IColorLayer[];
+  [key: string]: IColor[];
 }
 
 /*
@@ -34,8 +37,8 @@ export interface IColorPalette {
   seeds: ISeedColors;
 
   /**
-   * The set of layers that can be referenced by various controls.
+   * The set of colors that can be referenced by various controls.
    */
-  layers: ILayerSets;
+  colors: ILayerSets;
 }
 

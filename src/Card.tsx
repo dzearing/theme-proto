@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IThemeRequest, fillThemeColors } from './theming/ThemeRequest';
+import { IThemeRequest } from './theming/IThemeStyle';
+import { fillThemeProps } from './theming/ThemeRequest';
 
 // Styles for the component
 export interface ICardStyles {
@@ -46,8 +47,11 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
 };
 
 const requiredColors: IThemeRequest = {
-  background: 'bg',
-  color: 'fg'
+  colors: {
+    background: 'bg',
+    color: 'fg',
+    borderColor: 'border'
+  }
 }
 
 const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
@@ -56,11 +60,11 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
   return {
     root: [
       {
-        ...fillThemeColors(props.theme, requiredColors),
+        ...fillThemeProps(props.theme, requiredColors),
 
         boxSizing: 'border-box',
         overflow: 'hidden',
-        border: '1px solid #ccc',
+        border: '1px solid',
         borderRadius: 3,
         boxShadow: '0 0 10px -4px #000',
         display: 'inline-flex',

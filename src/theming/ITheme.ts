@@ -1,6 +1,5 @@
 import { IColorPalette } from "./IColorPalette";
-import { IColorLayer } from "./IColorLayer";
-import { IThemeStyleDefinition } from "./IThemeStyle";
+import { IThemeStyle } from "./IThemeStyle";
 import { IThemeSettings } from "./IThemeSettings";
 
 /*
@@ -10,15 +9,10 @@ import { IThemeSettings } from "./IThemeSettings";
     rules - how to generate colors/layers
 */
 
-export interface ILayerCache {
-  [key: string]: IColorLayer
-}
-
 export interface IThemeCache {
-  layers: ILayerCache;
   styles: {
-    default: IThemeStyleDefinition;
-    [key: string]: IThemeStyleDefinition;
+    default: IThemeStyle;
+    [key: string]: IThemeStyle;
   }
 }
 
@@ -42,6 +36,6 @@ export interface IThemeDefinition {
   Full theme, contains both the inputs and calculated/generated values
 */
 export interface ITheme extends IThemeSettings {
-  colors: IColorPalette;
+  palette: IColorPalette;
   cache: IThemeCache;
 }

@@ -1,7 +1,8 @@
 import { DefaultFontStyles, IStyle } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { fillThemeColors, IThemeRequest } from './theming/ThemeRequest';
+import { IThemeRequest } from './theming/IThemeStyle';
+import { fillThemeProps } from './theming/ThemeRequest';
 
 // Styles for the component
 export interface IButtonStyles {
@@ -69,23 +70,31 @@ function _getDefaultRootType(props: IButtonProps): string {
   return (!!props.href ? 'a' : 'button');
 }
 
-const requiredColors: IThemeRequest = {
-  color: 'fg',
-  backgroundColor: 'bg'
+const themePropMapping: IThemeRequest = {
+  colors: {
+    color: 'fg',
+    backgroundColor: 'bg'
+  },
+  values: {
+    borderRadius: 'cornerRadius',
+    borderWidth: 'borderThickness'
+  },
+  states: {
+    ':hover': 'hover',
+    ':active': 'press'
+  }
 }
 
 const styles = (props: IStyleProps<IButtonProps, IButtonStyles>): IButtonStyles => {
-  const layerName = props.primary ? 'themedControl' : 'shadedControl';
+  const layerName = props.primary ? 'themedButton' : 'button';
 
   return {
     root: [
       DefaultFontStyles.medium,
       {
-        ...fillThemeColors(props.theme, requiredColors, layerName),
+        ...fillThemeProps(props.theme, themePropMapping, layerName),
         alignItems: 'center',
         textAlign: 'center',
-        borderRadius: 2,
-        borderWidth: 0,
         cursor: 'default',
         display: props.fullWidth ? 'flex' : 'inline-flex',
         width: props.fullWidth ? '100%' : 'auto',
@@ -94,14 +103,6 @@ const styles = (props: IStyleProps<IButtonProps, IButtonStyles>): IButtonStyles 
         overflow: 'hidden',
         padding: '0 20px',
         userSelect: 'none',
-        selectors: {
-          ':hover': {
-            background: 'blue'
-          },
-          ':active': {
-            background: 'green'
-          }
-        }
       },
 
     ]

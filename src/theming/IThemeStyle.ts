@@ -18,7 +18,11 @@ export interface IStyleValues {
   /**
    * Border thickness
    */
-  borderThickness?: string;
+  borderThickness?: number;
+  /**
+   * Corner radius
+   */
+  cornerRadius?: number;
 }
 
 /**
@@ -76,6 +80,7 @@ export interface IStyleColors {
  * from the parent style have been pushed forward at this point
  */
 export interface IThemeStyle {
+  definition: IThemeStyleDefinition;
   colors: IStyleColors;
   values: IStyleValues;
   states: {
@@ -84,6 +89,30 @@ export interface IThemeStyle {
       values?: Partial<IStyleValues>;
     }
   }
+}
+
+/**
+ * This is a mapping interface to convert from the theme style above, to a structure with
+ * colors and values merged and states turned into selectors
+ */
+export interface IThemeRequest {
+  /**
+   * Color mappings.  Format should be:
+   *  <destination key name>: 'key name in the styles above' so something like:
+   *    color: 'fg',
+   *    backgroundColor: 'bg'
+   */
+  colors?: { [key: string]: string };
+  /**
+   * Value mappings.  Same pattern as for colors: keys are the destination names, values are the references
+   * to the named styles.
+   */
+  values?: { [key: string]: string };
+  /**
+   * Internal states to map into selectors.  Same pattern ':hover': 'hover' with the same color and value
+   * mappings attempted on selectors
+   */
+  states?: { [key: string]: string };
 }
 
 export interface IFonts {

@@ -1,9 +1,11 @@
-import { IThemeStyle } from "./IThemeStyle";
+import { IThemeStyle, IThemeStyleDefinition, IStyleColors } from "./IThemeStyle";
 import { ITheme, IThemeCache } from "./ITheme";
-import { resolveKey } from "./IColorLayerKey";
-import { styleBaseline } from "./themes/DefaultLight";
-import { IColorLayer } from "./IColorLayer";
-import { getLayerFromKeys } from "./ThemeColors";
+import { IColorLayerKey } from "./IColorLayerKey";
+import { DefaultStyleValues, DefaultStyleFallback } from "./themes/DefaultLight";
+import { resolveColor, resolveKey } from "./ThemeColors";
+import { mergeObjects } from "./ThemeRegistry";
+import { getColorFromRGBA } from "../coloring/color";
+import { IColorPalette } from "./IColorPalette";
 import { IThemeSettings } from "./IThemeSettings";
 
 const defName: string = 'default';
@@ -29,54 +31,90 @@ export function getThemeStyle(theme: ITheme, styleName?: string): IThemeStyle {
   }
 
   // this style has to be resolved so go look for the definition from the settings
-  const styles = theme.styles;
-  if (styles.hasOwnProperty(styleName)) {
-    const thisStyle = styles[styleName];
-    const parentStyle = getThemeStyle(theme, thisStyle.parent);
-    const oneOffs: Partial<IThemeStyle> = { };
-    if (thisStyle.key) {
-      oneOffs.key = resolveKey(thisStyle.key, parentStyle.key);
-    }
-    // now put the joined object in the cache for quick lookups in the future
-    const newStyle = Object.assign({}, parentStyle, thisStyle, oneOffs);
-    styleCache[styleName] = newStyle;
-    return newStyle;
+  const styleDefinitions = theme.styles;
+  if (styleDefinitions.hasOwnProperty(styleName)) {
+    const thisDefinition = styleDefinitions[styleName];
+    const parentStyle = thisDefinition.parent ? getThemeStyle(theme, thisDefinition.parent) : undefined;
+    styleCache[styleName] = buildStyle(theme.palette, thisDefinition, parentStyle);
+    return styleCache[styleName];
   }
 
   // failing everything just return the default
   return getThemeStyle(theme);
 }
 
-/**
- * Get the color layer for the given style.
- * @param theme theme to extract settings from
- * @param styleName style name to get the layer for.  If not in the cache will obtain this via the style
- */
-export function getThemeLayer(theme: ITheme, styleName?: string): IColorLayer {
-  const layers = theme.cache.layers;
-  if (!styleName) {
-    styleName = defName;
+const fallbackBg = getColorFromRGBA({r: 255, g: 255, b: 255, a: 100});
+const fallbackFg = getColorFromRGBA({r: 0, g: 0, b: 0, a: 100});
+const bgName = 'bg';
+
+function buildColors(
+  palette: IColorPalette, 
+  colorDefs: { [key: string]: IColorLayerKey }, 
+  colorVals: Partial<IStyleColors>, 
+  baseline?: IColorLayerKey
+) {
+  // do bg first as colors like fg will need it
+  let bgKey = baseline;
+  if (colorDefs.hasOwnProperty(bgName)) {
+    bgKey = resolveKey(colorDefs[bgName], baseline);
+    colorDefs[bgName] = bgKey;
+    colorVals[bgName] = resolveColor(palette, bgKey, undefined);
   }
-  if (layers.hasOwnProperty(styleName)) {
-    return layers[styleName];
+  for (const key in colorDefs) {
+    if (key !== bgName && colorDefs.hasOwnProperty(key)) {
+      colorDefs[key] = resolveKey(colorDefs[key], baseline);
+      colorVals[key] = resolveColor(palette, colorDefs[key], bgKey);
+    }
+  }
+}
+
+function buildStyle(palette: IColorPalette, def: IThemeStyleDefinition, parent?: IThemeStyle): IThemeStyle {
+  const newDef: IThemeStyleDefinition = parent ? mergeObjects(parent.definition, def) : Object.assign({}, def);
+  const newValues = Object.assign({}, DefaultStyleValues, newDef.values);
+
+  // build up the new colors
+  const newColors: IStyleColors = { bg: fallbackBg, fg: fallbackFg };
+  const colors = newDef.colors;
+  const parentColors = parent ? parent.definition.colors : undefined;
+  const parentBg = parentColors ? parentColors[bgName] : undefined;
+  if (colors) {
+    buildColors(palette, colors, newColors, parentBg);
   }
 
-  const style = getThemeStyle(theme, styleName);
-  const layer = getLayerFromKeys(style.key, style.key, theme);
-  layers[styleName] = layer;
-  return layer;
+  // now build up the states
+  const newStates = { };
+  const baseColor = newDef.colors ? newDef.colors.bg : undefined;
+  if (newDef.states) {
+    const states = newDef.states;
+    for (const key in states) {
+      if (states.hasOwnProperty(key)) {
+        const state = states[key];
+        newStates[key] = { };
+        if (state.values) {
+          newStates[key].values = state.values;
+        }
+        if (state.colors) {
+          newStates[key].colors = { };
+          buildColors(palette, state.colors, newStates[key].colors, baseColor);
+        }
+      }
+    }
+  }
+
+  // return the built up style
+  return { definition: newDef, colors: newColors, values: newValues, states: newStates };
 }
 
 /**
  * Create the style cache when creating a new theme.  This will pull what it can from
  * settings.
+ * @param palette color palette to build the set of colors in the default style
  * @param settings theme settings to use to initialize the cache
  */
-export function createThemeCache(settings: Partial<IThemeSettings>): IThemeCache {
-  const defaultStyleDefinition = settings.styles ? settings.styles.default : undefined;
-  const defaultStyle: IThemeStyle = Object.assign({}, styleBaseline, defaultStyleDefinition);
+export function createThemeCache(palette: IColorPalette, settings: Partial<IThemeSettings>): IThemeCache {
+  const defaultStyleDefinition = settings.styles ? settings.styles.default : DefaultStyleFallback;
+  const defaultStyle = buildStyle(palette, defaultStyleDefinition);
   return {
-    layers: { },
     styles: { default: defaultStyle }
   };
 }

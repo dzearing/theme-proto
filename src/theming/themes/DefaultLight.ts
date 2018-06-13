@@ -1,25 +1,36 @@
 import { DefaultFonts, DefaultFontWeights } from './DefaultFonts';
 import { IThemeSettings } from '../IThemeSettings';
+import { IStyleValues, IThemeStyleDefinition } from '../IThemeStyle';
+
+export const DefaultStyleValues: IStyleValues = {
+  fonts: DefaultFonts,
+  fontWeights: DefaultFontWeights
+}
+
+export const DefaultStyleFallback: IThemeStyleDefinition = {
+  colors: {
+    bg: { type: 'bg', shade: 0 },
+    fg: { type: 'fn', shade: 0, name: 'autofg' }
+  },
+  values: DefaultStyleValues
+}
 
 export const LightTheme: IThemeSettings = {
   seeds: {
     fg: 'black',
     bg: 'white',
     accent: '#0078d4',
-    useBgForTone: false,
+    useBgForTone: true,
     invert: false
   },
   styles: {
-    default: { 
+    default: DefaultStyleFallback,
+    container: {
       colors: {
-        bg: { type: 'bg', shade: 0 }
-      },
-      values: {
-        fonts: DefaultFonts,
-        fontWeights: DefaultFontWeights
+        border: { type: 'rel', shade: 2 }
       }
     },
-    controlBase: {
+    control: {
       states: {
         press: {
           colors: { bg: { type: 'rel', shade: 2 } }
@@ -30,11 +41,18 @@ export const LightTheme: IThemeSettings = {
       }
     },
     shadedControl: {
-      parent: 'controlBase',
+      parent: 'control',
       colors: { bg: { type: 'rel', shade: 2 } }
     },
-    themedControl: {
-      parent: 'controlBase',
+    button: {
+      parent: 'shadedControl',
+      values: {
+        borderThickness: 0,
+        cornerRadius: 2
+      }
+    },
+    themedButton: {
+      parent: 'button',
       colors: { bg: { type: 'switch', shade: 0 } }
     }
   }

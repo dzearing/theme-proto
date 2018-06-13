@@ -1,12 +1,34 @@
 import { ISeedColors, IColorPalette, ILayerSets } from "./IColorPalette";
 import { getColorFromString, IColor } from "../coloring/color";
 import { getContrastRatio, getShadeArray } from "../coloring/shading";
-import { IColorLayerKey, isIndexKey, resolveKey } from "./IColorLayerKey";
-import { IColorLayer } from "./IColorLayer";
-import { ITheme } from "./ITheme";
-import { getThemeLayer } from "./ThemeCache";
+import { IColorLayerKey } from "./IColorLayerKey";
 import { IColorDefinitions, IThemeColors } from "./IThemeSettings";
 
+const bgType = 'bg';
+const accentType = 'accent';
+
+export function flipType(type: string): 'bg' | 'accent' {
+  return (type === accentType) ? bgType : accentType;
+}
+
+export function resolveKey(key: IColorLayerKey, base?: IColorLayerKey): IColorLayerKey {
+  const { type, shade } = key;
+  const baseType = base ? base.type : bgType;
+  const baseShade = base ? base.shade : 0;
+  switch (type) {
+    case 'switch':
+      return { type: flipType(baseType), shade };
+    case 'rel':
+      return { type: baseType, shade: shade + baseShade };
+    case 'relswitch':
+      return { type: flipType(baseType), shade: shade + baseShade };
+  }
+  return key;
+}
+
+export function isFnKey(key: IColorLayerKey): boolean {
+  return key.type === 'fn' && key.name !== undefined;
+}
 
 /**
  * Creates an IColorPalette based on the given set of inputs.
@@ -20,7 +42,7 @@ import { IColorDefinitions, IThemeColors } from "./IThemeSettings";
 export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPalette): IColorPalette {
   const baseSeeds = base ? base.seeds : undefined;
   const seeds = getSeedColors(def, baseSeeds)
-  const colors: { [key: string]: IColor[] } = { };
+  let colors: { [key: string]: IColor[] } = { };
 
   // if any swatch arrays are specified then convert them from strings to IColors
   if (def.swatches) {
@@ -32,33 +54,24 @@ export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPale
   }
 
   // now do the calculated sets for ones that are not specified
-  const keys: Array<'bg'|'accent'> = ['bg', 'accent'];
+  const keys: Array<'bg'|'accent'|'fg'> = ['bg', 'accent', 'fg'];
   const invert: boolean = def.invert !== undefined ? def.invert : false;
   for (const key of keys) {
     if (!colors.hasOwnProperty(key)) {
+      const invertActual = key === 'fg' ? !invert : invert;
       const rotate = (key === 'bg' && def.useBgForTone !== undefined) ? !def.useBgForTone : true;
-      colors[key] = getShadeArray(seeds[key], PALETTE_LAYER_COUNT, invert, rotate, 30, 100);
-    }
-  }
-
-  // finally build the actual layer arrays
-  let layers = { };
-  for (const key in colors) {
-    if (colors.hasOwnProperty(key)) {
-      layers[key] = colors[key].map((val: IColor, index: number) => {
-        return createLayerForBackground({type: key, shade: index}, colors[key][index], seeds);
-      })
+      colors[key] = getShadeArray(seeds[key], PALETTE_LAYER_COUNT, invertActual, rotate, 30, 100);
     }
   }
 
   // if we have a base palette specified pull from that in case there are custom arrays
   if (base) {
-    layers = Object.assign({}, base.layers, layers);
+    colors = Object.assign({}, base.colors, colors);
   }
 
   return {
     seeds,
-    layers: layers as ILayerSets
+    colors: colors as ILayerSets
   }
 }
 
@@ -88,32 +101,34 @@ function convertColorArray(colors: string[], fallback: IColor): IColor[] {
   return colors.map((val) => (getColorFromString(val) || fallback));
 }
 
-function createLayerForBackground(key: IColorLayerKey, newBg: IColor, seeds: ISeedColors): IColorLayer {
-  const bgRatio: number = getContrastRatio(newBg, seeds.bg);
-  const fgRatio: number = getContrastRatio(newBg, seeds.fg);
-  const fg = fgRatio > bgRatio ? seeds.fg : seeds.bg;
-  return {key, clr: { fg, bg: newBg }} as IColorLayer;
-}
-
-export function getLayer(key: IColorLayerKey, theme: ITheme): IColorLayer {
-  if (key.name) {
-    return getThemeLayer(theme, key.name);
-  } else if (isIndexKey(key)) {
-    // these will be pre-created, just scope the key to fit
-    let shade = key.shade;
-    const layers = theme.colors.layers[key.type];
-    
-    if (shade >= layers.length) {
-      shade = (shade % layers.length);
+function getAutoFg(palette: IColorPalette, bgKey: IColorLayerKey): IColor {
+  const bgColor = resolveColor(palette, bgKey);
+  const fgs = palette.colors.fg;
+  let bestIndex = 0;
+  let bestRatio: number = getContrastRatio(bgColor, fgs[bestIndex]);
+  for (let i = 1; i < fgs.length; i++) {
+    const newRatio: number = getContrastRatio(bgColor, fgs[i]);
+    if (newRatio > bestRatio) {
+      bestRatio = newRatio;
+      bestIndex = i;
     }
-    return layers[shade];
   }
-  // absolute fallback right now is to just return the default layer
-  return getThemeLayer(theme);
+  return fgs[bestIndex];
 }
 
-export function getLayerFromKeys(key: IColorLayerKey, baseline: IColorLayerKey, theme: ITheme): IColorLayer {
-  key = resolveKey(key, baseline);
-  return getLayer(key, theme);
-}
+export function resolveColor(palette: IColorPalette, key: IColorLayerKey, base?: IColorLayerKey): IColor {
+  const colorSets = palette.colors;
+  if (colorSets.hasOwnProperty(key.type)) {
+    const colors = colorSets[key.type];
+    return colors[key.shade % colors.length];
+  }
+  const fallbackKey: IColorLayerKey = { type: bgType, shade: 0 };
 
+  if (isFnKey(key) && key.name) {
+    if (key.name === 'autofg') {
+      return getAutoFg(palette, base || fallbackKey);
+    }
+  }
+
+  return resolveColor(palette, fallbackKey);
+}

@@ -1,6 +1,6 @@
 import { ITheme } from "./ITheme";
-import { constructNamedColor } from "./Transforms";
-import { getThemeLayer } from "./ThemeCache";
+import { getThemeStyle } from "./ThemeCache";
+import { IThemeRequest } from "./IThemeStyle";
 
 /*
   Input/output type.  On input it is a collection of:
@@ -9,9 +9,17 @@ import { getThemeLayer } from "./ThemeCache";
   On output the returned value is:
     [destination key]: resolved color value
 */
-export interface IThemeRequest {
-  [key: string]: string;
+
+function mapRequests(result: object, requested: {[key: string]: string}, lookup: object, mapfn: (val: any) => any) {
+  for (const key in requested) {
+    if (requested.hasOwnProperty(key) && lookup.hasOwnProperty(requested[key])) {
+      result[key] = mapfn(lookup[requested[key]]);
+    }
+  }
 }
+
+const colorKey = 'colors';
+const valueKey = 'values';
 
 /**
  * Query a set of colors from the theme and put them into the specified values.  Set up
@@ -23,24 +31,37 @@ export interface IThemeRequest {
  * If blank or not found it will use default.
  * @param layerState Optional state override value to get a variation for that style.
  */
-export function fillThemeColors(
+export function fillThemeProps(
   theme: ITheme, 
-  requestedColors: IThemeRequest, 
-  layerName?: string, 
-  layerState?: string
-): IThemeRequest {
-  const layer = getThemeLayer(theme, layerName);
-  const result: IThemeRequest = { };
+  request: IThemeRequest, 
+  styleName?: string
+) {
+  const { colors, values, states } = request;
+  const style = getThemeStyle(theme, styleName);
+  const result = { };
 
-  for (const key in requestedColors) {
-    if (requestedColors.hasOwnProperty(key)) {
-      const clr = layer.clr;
-      const colorName = requestedColors[key];
-      if (!clr.hasOwnProperty(colorName)) {
-        clr[colorName] = constructNamedColor(colorName, layer, theme);
+  if (colors) {
+    mapRequests(result, colors, style.colors, (color) => ( color.str ));
+  }
+
+  if (values) {
+    mapRequests(result, values, style.values, (val) => ( val ));
+  }
+
+  if (states) {
+    const stateParent = 'selectors';
+    const selectors = { };
+    result[stateParent] = selectors;
+    mapRequests(selectors, states, style.states, (selectorStyle) => {
+      const newSelector = { };
+      if (colors && selectorStyle.hasOwnProperty(colorKey)) {
+        mapRequests(newSelector, colors, selectorStyle[colorKey], (color) => (color.str));
       }
-      result[key] = clr[colorName].str;
-    }
+      if (values && selectorStyle.hasOwnProperty(valueKey)) {
+        mapRequests(newSelector, values, selectorStyle[valueKey], (val) => (val));
+      }
+      return newSelector;
+    })
   }
 
   return result;

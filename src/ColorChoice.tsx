@@ -33,7 +33,7 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
 
     this.state = {
       calloutVisible: false,
-      currentColor: getDefaultTheme().colors.seeds[props.colorSlot].str,
+      currentColor: getDefaultTheme().palette.seeds[props.colorSlot].str,
     };
   }
 

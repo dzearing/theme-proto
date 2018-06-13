@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IThemeRequest, fillThemeColors } from './theming/ThemeRequest';
 import { getThemeStyle } from './theming/ThemeCache';
+import { IThemeRequest } from './theming/IThemeStyle';
+import { fillThemeProps } from './theming/ThemeRequest';
 
 // Styles for the component
 export interface ITextStyles {
@@ -57,19 +58,21 @@ const view = (props: IViewProps<ITextProps, ITextStyles>) => {
 };
 
 const requiredColors: IThemeRequest = {
-  color: 'fg'
+  colors: {
+    color: 'fg'
+  }
 }
 
 const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
   const { block, theme, bold, light, wrap } = props;
   const themeStyle = getThemeStyle(theme);
-  const fontWeights = themeStyle.fontWeights;
-
+  const fontWeights = themeStyle.values.fontWeights;
+  
   return {
     root: [
-      themeStyle.fonts.medium,
+      themeStyle.values.fonts.medium,
       {
-        ...fillThemeColors(theme, requiredColors),
+        ...fillThemeProps(theme, requiredColors),
         display: block ? 'block' : 'inline'
       },
       !wrap && {

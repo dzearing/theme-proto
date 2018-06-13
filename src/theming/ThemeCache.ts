@@ -34,7 +34,7 @@ export function getThemeStyle(theme: ITheme, styleName?: string): IThemeStyle {
   const styleDefinitions = theme.styles;
   if (styleDefinitions.hasOwnProperty(styleName)) {
     const thisDefinition = styleDefinitions[styleName];
-    const parentStyle = thisDefinition.parent ? getThemeStyle(theme, thisDefinition.parent) : undefined;
+    const parentStyle = getThemeStyle(theme, thisDefinition.parent);
     styleCache[styleName] = buildStyle(theme.palette, thisDefinition, parentStyle);
     return styleCache[styleName];
   }
@@ -74,7 +74,8 @@ function buildStyle(palette: IColorPalette, def: IThemeStyleDefinition, parent?:
 
   // build up the new colors
   const newColors: IStyleColors = { bg: fallbackBg, fg: fallbackFg };
-  const colors = newDef.colors;
+  const colors = { ...newDef.colors };
+  newDef.colors = colors;
   const parentColors = parent ? parent.definition.colors : undefined;
   const parentBg = parentColors ? parentColors[bgName] : undefined;
   if (colors) {

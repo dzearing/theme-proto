@@ -95,10 +95,14 @@ export function rgb2hsv(r: number, g: number, b: number): IHSV {
 
 export function hsl2hsv(h: number, s: number, l: number): IHSV {
   s *= ((l < 50) ? l : (100 - l)) / 100;
+  let sMod = 2 * s / (l + s) * 100;
+  if (isNaN(sMod)) {
+    sMod = 0;
+  }
 
   return {
     h,
-    s: 2 * s / (l + s) * 100,
+    s: sMod,
     v: l + s
   };
 }

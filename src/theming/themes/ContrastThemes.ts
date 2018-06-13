@@ -50,9 +50,9 @@ const registerOverlayTheme = () => registerTheme('Overlay', {
   parent: 'HighContrast',
   settings: {
     seeds: {
-      fg: 'white',
-      bg: 'rgba(0, 0, 0, 0.5)',
-      accent: 'rgba(0, 120, 212, 0.5)'
+      fg: 'rgba(255, 255, 255, 0.8)',
+      bg: 'rgba(0, 0, 0, 0.4)',
+      accent: 'rgba(0, 120, 212, 0.4)'
     },
     styles: {
       default: { }

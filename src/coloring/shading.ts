@@ -107,6 +107,7 @@ export function getShadeArray(
   high: number = 100,
   autoinvert: number = 50,
 ): IColor[] {
+  const a = color.a;
   const hsl: IHSL = hsv2hsl(color.h, color.s, color.v);
   if (autoinvert) {
     reverse = hsl.l < autoinvert;
@@ -121,23 +122,23 @@ export function getShadeArray(
   const slot = Math.min(Math.max(Math.round(offset * maxIndex), 0), maxIndex);
   let result = new Array<IColor>(count);
 
-  result[0] = createColorFromHSLA(hsl.h, hsl.s, startLum);
-  result[maxIndex] = createColorFromHSLA(hsl.h, hsl.s, endLum);
+  result[0] = createColorFromHSLA(hsl.h, hsl.s, startLum, a);
+  result[maxIndex] = createColorFromHSLA(hsl.h, hsl.s, endLum, a);
   if (slot > 0 && slot < maxIndex) {
-    result[slot] = createColorFromHSLA(hsl.h, hsl.s, hsl.l);
+    result[slot] = createColorFromHSLA(hsl.h, hsl.s, hsl.l, a);
   }
 
   if (slot > 1) {
     const step = (hsl.l - startLum) / slot;
     for (let i = 1; i < slot; i++) {
-      result[i] = createColorFromHSLA(hsl.h, hsl.s, startLum + (step * i));
+      result[i] = createColorFromHSLA(hsl.h, hsl.s, startLum + (step * i), a);
     }
   }
 
   if ((slot + 1) < maxIndex) {
     const step = (endLum - hsl.l) / (maxIndex - slot);
     for (let i = 1; (i + slot) < maxIndex; i++) {
-      result[i + slot] = createColorFromHSLA(hsl.h, hsl.s, hsl.l + (step * i));
+      result[i + slot] = createColorFromHSLA(hsl.h, hsl.s, hsl.l + (step * i), a);
     }
   }
 

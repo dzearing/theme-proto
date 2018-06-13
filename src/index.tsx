@@ -9,6 +9,7 @@ import { Button } from './Button';
 import { initializeIcons } from '@uifabric/icons';
 import TaskCard from './TaskCard';
 import { initializeTheming } from './theming/ThemeRegistry';
+import { Card } from './Card';
 
 initializeIcons();
 initializeTheming();
@@ -63,14 +64,31 @@ class App extends React.Component<{}, { gapSize: number }> {
 
             <FocusZone>
               <Stack gap={20} vertical>
-              <Button paletteSet='primary'>hello</Button>
-              <TaskCard />
+                <Button paletteSet='primary'>hello</Button>
+                <TaskCard />
 
-              <TaskCard paletteSet='neutral' theming='deepen: 1' />
+                <TaskCard paletteSet='neutral' theming='deepen: 1' />
 
-              <TaskCard paletteSet='primary' theming='type: themed' />
+                <TaskCard paletteSet='primary' theming='type: themed' />
 
-              <TaskCard theming='theme: HighContrast' />
+                <TaskCard theming='theme: HighContrast' />
+
+                <div style={
+                  {
+                  backgroundImage: 'url(https://photos.smugmug.com/2009/August/Death-Valley/i-GmpnKpX/0/364fd063/M/20090816-DSC_9876-M.jpg)',
+                  width: 260, 
+                  height: 140,
+                  padding: 20}
+                }>
+                  <Stack gap={4} theming='theme: Overlay'>
+                    <Card padding={10}>
+                      <Button text='the' />
+                      <Button text='overlay' />
+                      <Button text='theme' primary={true} />
+                    </Card>
+                  </Stack>
+                </div>
+
               </Stack>
             </FocusZone>
 

@@ -8,8 +8,10 @@ import { FocusZone, Fabric } from 'office-ui-fabric-react';
 import { Button } from './Button';
 import { initializeIcons } from '@uifabric/icons';
 import TaskCard from './TaskCard';
+import { initializeTheming } from './theming/ThemeRegistry';
 
 initializeIcons();
+initializeTheming();
 
 const RedBox = () => (
   <div
@@ -67,6 +69,8 @@ class App extends React.Component<{}, { gapSize: number }> {
               <TaskCard paletteSet='neutral' theming='deepen: 1' />
 
               <TaskCard paletteSet='primary' theming='type: themed' />
+
+              <TaskCard theming='theme: HighContrast' />
               </Stack>
             </FocusZone>
 

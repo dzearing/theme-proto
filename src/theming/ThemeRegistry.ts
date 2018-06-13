@@ -1,7 +1,12 @@
 import { ITheme, IThemeDefinition } from "./ITheme";
 import { createLayeredTheme } from "./ThemeCreation";
-import { DefaultTheme } from "./themes/DefaultLight";
-import { IThemeSettings } from "./IThemeSettings";
+import { DefaultTheme, registerShadedThemes } from "./themes/ShadedThemes";
+import { registerContrastThemes } from "./themes/ContrastThemes";
+
+export function initializeTheming() {
+  registerShadedThemes();
+  registerContrastThemes();
+}
 
 export function mergeObjects(a: any, b: any): any {
   const result = { ...a };
@@ -26,10 +31,13 @@ const defaultName: string = 'default';
 const themeRegistry: { [key: string]: ITheme } = {
 }
 
-const themeDefinitions: { [key: string]: IThemeDefinition } = {
+let themeDefinitions: { [key: string]: IThemeDefinition } = {
 }
 
 export function registerTheme(name: string, definition: IThemeDefinition) {
+  if (!themeDefinitions) { 
+    themeDefinitions = { };
+  }
   themeDefinitions[name] = definition;
 }
 
@@ -61,32 +69,9 @@ export function getTheme(name: string): ITheme {
       // fallback to default if it is unknown
       return getDefaultTheme();
   }
-  
-  if (!themeRegistry.hasOwnProperty(name) && themeDefinitions.hasOwnProperty(name)) {
-    let def = themeDefinitions[name];
-    let parentTheme: ITheme = getDefaultTheme();
-    const precursors: IThemeDefinition[] = [def];
-    while (def.parent && themeDefinitions.hasOwnProperty(def.parent)) {
-      // if a parent theme has already been created use that as a baseline
-      if (themeRegistry.hasOwnProperty(def.parent)) {
-        parentTheme = themeRegistry[def.parent];
-        break;
-      }
-      def = themeDefinitions[def.parent];
-      precursors.push(def);
-    }
 
-    // build up the settings
-    const aggregatedSettings: Partial<IThemeSettings> = {};
-    let settings: IThemeDefinition|undefined = precursors.pop();
-    while (settings) {
-      Object.assign(aggregatedSettings, settings);
-      settings = precursors.pop();
-    }
-
-    // now create the new theme
-    themeRegistry[name] = createLayeredTheme(aggregatedSettings, parentTheme);
-  }
+  // now create the new theme
+  themeRegistry[name] = createLayeredTheme(definition.settings);
   return themeRegistry[name];
 }
 

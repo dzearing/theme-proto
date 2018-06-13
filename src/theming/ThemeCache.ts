@@ -1,7 +1,7 @@
 import { IThemeStyle, IThemeStyleDefinition, IStyleColors } from "./IThemeStyle";
 import { ITheme, IThemeCache } from "./ITheme";
 import { IColorLayerKey } from "./IColorLayerKey";
-import { DefaultStyleValues, DefaultStyleFallback } from "./themes/DefaultLight";
+import { DefaultStyleValues, DefaultStyleFallback } from "./themes/ShadedThemes";
 import { resolveColor, resolveKey } from "./ThemeColors";
 import { mergeObjects } from "./ThemeRegistry";
 import { getColorFromRGBA } from "../coloring/color";

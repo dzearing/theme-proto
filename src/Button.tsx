@@ -73,7 +73,8 @@ function _getDefaultRootType(props: IButtonProps): string {
 const themePropMapping: IThemeRequest = {
   colors: {
     color: 'fg',
-    backgroundColor: 'bg'
+    backgroundColor: 'bg',
+    borderColor: 'border'
   },
   values: {
     borderRadius: 'cornerRadius',
@@ -96,6 +97,7 @@ const styles = (props: IStyleProps<IButtonProps, IButtonStyles>): IButtonStyles 
         alignItems: 'center',
         textAlign: 'center',
         cursor: 'default',
+        borderStyle: 'solid',
         display: props.fullWidth ? 'flex' : 'inline-flex',
         width: props.fullWidth ? '100%' : 'auto',
         margin: 0,

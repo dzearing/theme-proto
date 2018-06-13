@@ -1,6 +1,7 @@
 import { DefaultFonts, DefaultFontWeights } from './DefaultFonts';
 import { IThemeSettings } from '../IThemeSettings';
 import { IStyleValues, IThemeStyleDefinition } from '../IThemeStyle';
+import { registerTheme } from '../ThemeRegistry';
 
 export const DefaultStyleValues: IStyleValues = {
   fonts: DefaultFonts,
@@ -15,10 +16,10 @@ export const DefaultStyleFallback: IThemeStyleDefinition = {
   values: DefaultStyleValues
 }
 
-export const LightTheme: IThemeSettings = {
+export const DefaultShaded: IThemeSettings = {
   seeds: {
     fg: 'black',
-    bg: 'white',
+    bg: '#f3f2f1',
     accent: '#0078d4',
     useBgForTone: true,
     invert: false
@@ -42,12 +43,15 @@ export const LightTheme: IThemeSettings = {
     },
     shadedControl: {
       parent: 'control',
-      colors: { bg: { type: 'rel', shade: 2 } }
+      colors: { 
+        bg: { type: 'rel', shade: 2 },
+        border: { type: 'rel', shade: 2 }
+      }
     },
     button: {
       parent: 'shadedControl',
       values: {
-        borderThickness: 0,
+        borderThickness: 1,
         cornerRadius: 2
       }
     },
@@ -58,6 +62,30 @@ export const LightTheme: IThemeSettings = {
   }
 };
 
-export const DefaultTheme = LightTheme;
+const registerLightTheme = () => registerTheme('LightTheme', {
+  settings: DefaultShaded
+});
 
-export default LightTheme;
+const registerDarkTheme = () => registerTheme('DarkTheme', {
+  parent: 'LightTheme',
+  settings: {
+    seeds: {
+      fg: 'white',
+      bg: '#c3c3c3',
+      accent: '#0078d4',
+      useBgForTone: false,
+      invert: true
+    },
+    styles: {
+      default: { }
+    }
+  }
+});
+
+export function registerShadedThemes() {
+  registerLightTheme();
+  registerDarkTheme();
+}
+
+export const DefaultTheme = DefaultShaded;
+

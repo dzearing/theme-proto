@@ -31,16 +31,17 @@ export function getThemeStyle(theme: ITheme, styleName?: string): IThemeStyle {
   }
 
   // this style has to be resolved so go look for the definition from the settings
-  const styleDefinitions = theme.styles;
-  if (styleDefinitions.hasOwnProperty(styleName)) {
-    const thisDefinition = styleDefinitions[styleName];
-    const parentStyle = getThemeStyle(theme, thisDefinition.parent);
-    styleCache[styleName] = buildStyle(theme.palette, thisDefinition, parentStyle);
-    return styleCache[styleName];
-  }
+  const styleDefinition = getMergedParentDefinition(theme, styleName);
+  styleCache[styleName] = buildStyle(theme.palette, styleDefinition, getThemeStyle(theme));
+  return styleCache[styleName];
+}
 
-  // failing everything just return the default
-  return getThemeStyle(theme);
+function getMergedParentDefinition(theme: ITheme, styleName?: string): Partial<IThemeStyleDefinition> {
+  if (!styleName || styleName === defName || !theme.styles.hasOwnProperty(styleName)) {
+    return theme.styles.default;
+  }
+  const thisStyleDef = theme.styles[styleName];
+  return mergeObjects(getMergedParentDefinition(theme, thisStyleDef.parent), thisStyleDef);
 }
 
 const fallbackBg = getColorFromRGBA({r: 255, g: 255, b: 255, a: 100});

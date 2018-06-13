@@ -60,7 +60,7 @@ export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPale
     if (!colors.hasOwnProperty(key)) {
       const invertActual = key === 'fg' ? !invert : invert;
       const rotate = (key === 'bg' && def.useBgForTone !== undefined) ? !def.useBgForTone : true;
-      colors[key] = getShadeArray(seeds[key], PALETTE_LAYER_COUNT, invertActual, rotate, 30, 100);
+      colors[key] = getShadeArray(seeds[key], PALETTE_LAYER_COUNT, invertActual, rotate, 30, 100, 50);
     }
   }
 

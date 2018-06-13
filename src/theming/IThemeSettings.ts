@@ -28,6 +28,10 @@ export interface IThemeColors {
    * Make this theme inverted.  This will cause colors to start dark and get lighter
    */
   invert: boolean;
+  /**
+   * Luminance value 0 to 100 to auto invert at.  100 is white, 0 is black
+   */
+  autoInvert?: number;
 }
 
 /**

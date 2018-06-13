@@ -104,9 +104,13 @@ export function getShadeArray(
   reverse: boolean,
   rotate: boolean,
   low: number = 0, 
-  high: number = 100
+  high: number = 100,
+  autoinvert: number = 50,
 ): IColor[] {
   const hsl: IHSL = hsv2hsl(color.h, color.s, color.v);
+  if (autoinvert) {
+    reverse = hsl.l < autoinvert;
+  }
   low = Math.min(hsl.l, low);
   high = Math.max(hsl.l, high);
   const startLum = reverse ? low : high;

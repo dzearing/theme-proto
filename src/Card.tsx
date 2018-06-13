@@ -60,11 +60,12 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
   return {
     root: [
       {
-        ...fillThemeProps(props.theme, requiredColors),
+        ...fillThemeProps(props.theme, requiredColors, 'container'),
 
         boxSizing: 'border-box',
         overflow: 'hidden',
-        border: '1px solid',
+        borderStyle: 'solid',
+        borderWidth: '1px',
         borderRadius: 3,
         boxShadow: '0 0 10px -4px #000',
         display: 'inline-flex',

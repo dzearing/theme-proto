@@ -1,7 +1,25 @@
 import { ITheme, IThemeDefinition } from "./ITheme";
 import { createLayeredTheme } from "./ThemeCreation";
-import { LightTheme } from "./themes/DefaultLight";
+import { DefaultTheme } from "./themes/DefaultLight";
 import { IThemeSettings } from "./IThemeSettings";
+
+export function mergeObjects(a: any, b: any): any {
+  const result = { ...a };
+  for (let key in b) {
+    if (b.hasOwnProperty(key)) {
+      const bval = b[key];
+      if (typeof bval === 'object'
+        && result.hasOwnProperty(key)
+        && typeof result[key] === 'object'
+      ) {
+        result[key] = mergeObjects(result[key], bval);
+      } else {
+        result[key] = bval;
+      }
+    }
+  }
+  return result;
+}
 
 const defaultName: string = 'default';
 
@@ -12,14 +30,39 @@ const themeDefinitions: { [key: string]: IThemeDefinition } = {
 }
 
 export function registerTheme(name: string, definition: IThemeDefinition) {
-    themeDefinitions[name] = definition;
+  themeDefinitions[name] = definition;
 }
 
 export function registerDefaultTheme(defaultTheme: ITheme) {
-    themeRegistry[defaultName] = defaultTheme;
+  themeRegistry[defaultName] = defaultTheme;
+}
+
+function getResolvedDefinition(name: string): IThemeDefinition|undefined {
+  if (themeDefinitions.hasOwnProperty(name)) {
+    const thisDef = themeDefinitions[name];
+    const parent = thisDef.parent;
+    if (parent && themeDefinitions.hasOwnProperty(parent)) {
+      return mergeObjects(getResolvedDefinition(parent), thisDef);
+    }
+    return thisDef;
+  }
+  return undefined;
 }
 
 export function getTheme(name: string): ITheme {
+  if (themeRegistry.hasOwnProperty(name)) {
+    // theme has already been created
+    return themeRegistry[name];
+  }
+
+  // now no cached theme exists so try the definition
+  const definition = getResolvedDefinition(name);
+  if (!definition) {
+      // fallback to default if it is unknown
+      return getDefaultTheme();
+  }
+
+  
     if (!themeRegistry.hasOwnProperty(name) && themeDefinitions.hasOwnProperty(name)) {
         let def = themeDefinitions[name];
         let parentTheme: ITheme = getDefaultTheme();
@@ -54,7 +97,7 @@ export function hasTheme(name: string): boolean {
 
 export function getDefaultTheme(): ITheme {
     if (!themeRegistry[defaultName]) {
-        themeRegistry[defaultName] = createLayeredTheme(LightTheme);
+        themeRegistry[defaultName] = createLayeredTheme(DefaultTheme);
     }
     return themeRegistry[defaultName];
 }

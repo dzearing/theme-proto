@@ -16,14 +16,18 @@ export const ThemeContext = React.createContext<IThemeContextValue>({
   updateTheme: undefined
 });
 
+export const ThemeConsumer = (props: { children: (theme: ITheme) => JSX.Element }) => (
+  <ThemeContext.Consumer>
+    {({theme, updateTheme}) => props.children(theme)}
+  </ThemeContext.Consumer>
+);
+
 /*
   state for the provider component, allows for cascading of states and only updating state
   and re-rendering when there are real changes
 */
 export interface IThemeLayerState {
   theme?: ITheme;
-  parent?: ITheme;
-  theming?: string;
 }
 
 /*
@@ -31,6 +35,7 @@ export interface IThemeLayerState {
 */
 export interface IThemeLayerProps {
   theming?: string;
+  parent?: ITheme;
   children: (theme: ITheme) => JSX.Element;
 }
 
@@ -42,39 +47,20 @@ export class ThemeLayer extends React.Component<IThemeLayerProps, IThemeLayerSta
   }
 
   public render() {
-    return (
-      <ThemeContext.Consumer>{
-        inherited => {
-          const parent: ITheme = inherited.theme;
-          let theme = this.state.theme || parent;
-          const updateParent: boolean = (parent !== this.state.parent);
-          const theming: string|undefined = this.props.theming;
-          const themeChanging: boolean = (theming !== this.state.theming);
-  
-          // update the state if necessary, parent changed, no theme, or creating a theme with a new string
-          if (updateParent || themeChanging || !this.state.theme) {
-            if (theming) {
-              theme = themeFromChangeString(theming, parent);
-            } else if (updateParent) {
-              theme = parent;
-            }
-            this.setState({theme, parent, theming});
-          }
+    const theming = this.props.theming;
+    const inheritedParent = this.props.parent;
+    const needsProvider: boolean = (theming !== undefined || inheritedParent === undefined);
+    const parent = inheritedParent ? inheritedParent : getDefaultTheme();
+    const theme = theming ? themeFromChangeString(theming, parent) : parent;
 
-          if (this.state.theme !== this.state.parent || !inherited.updateTheme) {
-            // if we have created a new theme at this level, or are at the root, wrap the children in a provider
-            return (
-              <ThemeContext.Provider value={{theme, updateTheme: this._updateTheme}}>
-                {this.props.children(theme)}
-              </ThemeContext.Provider>
-            );
-          } else {
-            // otherwise just directly feed the theme to children
-            return (this.props.children(theme));
-          }
-        }
-      }</ThemeContext.Consumer>
-    );
+    if (needsProvider) {
+      return (
+        <ThemeContext.Provider value={{theme, updateTheme: this._updateTheme}}>
+          {this.props.children(theme)}
+        </ThemeContext.Provider>
+      )
+    }
+    return (this.props.children(theme));
   }
 
   private _updateTheme(newTheme: ITheme) {

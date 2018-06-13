@@ -1,38 +1,45 @@
 import { DefaultFonts, DefaultFontWeights } from './DefaultFonts';
-import { IThemeStyle } from '../IThemeStyle';
 import { IThemeSettings } from '../IThemeSettings';
-
-export const styleBaseline: IThemeStyle = {
-  key: { type: 'bg', shade: 0 },
-  fonts: DefaultFonts,
-  fontWeights: DefaultFontWeights,
-}
 
 export const LightTheme: IThemeSettings = {
   seeds: {
     fg: 'black',
     bg: 'white',
     accent: '#0078d4',
-    useBgForTone: true,
+    useBgForTone: false,
     invert: false
   },
   styles: {
-    default: styleBaseline,
+    default: { 
+      colors: {
+        bg: { type: 'bg', shade: 0 }
+      },
+      values: {
+        fonts: DefaultFonts,
+        fontWeights: DefaultFontWeights
+      }
+    },
+    controlBase: {
+      states: {
+        press: {
+          colors: { bg: { type: 'rel', shade: 2 } }
+        },
+        hover: {
+          colors: { bg: { type: 'rel', shade: 3 } }
+        }
+      }
+    },
     shadedControl: {
-      key: { type: 'rel', shade: 2 }
+      parent: 'controlBase',
+      colors: { bg: { type: 'rel', shade: 2 } }
     },
     themedControl: {
-      key: { type: 'switch', shade: 0 }
-    },
-    hovered: {
-      key: { type: 'rel', shade: 2 }
-    },
-    pressed: {
-      key: { type: 'rel', shade: 3 }
+      parent: 'controlBase',
+      colors: { bg: { type: 'switch', shade: 0 } }
     }
   }
 };
 
-
+export const DefaultTheme = LightTheme;
 
 export default LightTheme;

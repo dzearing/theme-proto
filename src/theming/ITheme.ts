@@ -1,6 +1,6 @@
 import { IColorPalette } from "./IColorPalette";
 import { IColorLayer } from "./IColorLayer";
-import { IThemeStyle } from "./IThemeStyle";
+import { IThemeStyleDefinition } from "./IThemeStyle";
 import { IThemeSettings } from "./IThemeSettings";
 
 /*
@@ -17,8 +17,8 @@ export interface ILayerCache {
 export interface IThemeCache {
   layers: ILayerCache;
   styles: {
-    default: IThemeStyle;
-    [key: string]: IThemeStyle;
+    default: IThemeStyleDefinition;
+    [key: string]: IThemeStyleDefinition;
   }
 }
 

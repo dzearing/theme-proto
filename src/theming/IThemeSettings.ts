@@ -1,4 +1,4 @@
-import { IThemeStyle } from "./IThemeStyle";
+import { IThemeStyleDefinition } from "./IThemeStyle";
 
 /**
  * Theme colors, used to seed the theming system
@@ -59,8 +59,8 @@ export interface IThemeSettings {
    * than merge with the values for the previous theme
    */
   styles: {
-    default: Partial<IThemeStyle>;
-    [key: string]: Partial<IThemeStyle>;
+    default: Partial<IThemeStyleDefinition>;
+    [key: string]: Partial<IThemeStyleDefinition>;
   }
 }
 

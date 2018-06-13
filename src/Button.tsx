@@ -93,7 +93,15 @@ const styles = (props: IStyleProps<IButtonProps, IButtonStyles>): IButtonStyles 
         minHeight: 32,
         overflow: 'hidden',
         padding: '0 20px',
-        userSelect: 'none'
+        userSelect: 'none',
+        selectors: {
+          ':hover': {
+            background: 'blue'
+          },
+          ':active': {
+            background: 'green'
+          }
+        }
       },
 
     ]

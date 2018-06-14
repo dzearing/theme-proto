@@ -67,9 +67,9 @@ class App extends React.Component<{}, { gapSize: number }> {
                 <Button paletteSet='primary'>hello</Button>
                 <TaskCard />
 
-                <TaskCard paletteSet='neutral' theming='deepen: 1' />
+                <TaskCard theming='deepen: 1' />
 
-                <TaskCard paletteSet='primary' theming='type: themed' />
+                <TaskCard theming='type: themed' />
 
                 <TaskCard theming='theme: HighContrast' />
 

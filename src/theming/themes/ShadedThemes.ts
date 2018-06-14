@@ -31,7 +31,10 @@ export const DefaultShaded: IThemeSettings = {
     bg: '#f3f2f1',
     accent: '#0078d4',
     useBgForTone: true,
-    invert: false
+    invert: false,
+    swatches: {
+      bg: ['blue', 'black', 'green', 'red', 'purple']
+    }
   },
   styles: {
     default: DefaultStyleFallback,

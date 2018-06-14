@@ -47,7 +47,7 @@ export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPale
   // if any swatch arrays are specified then convert them from strings to IColors
   if (def.swatches) {
     for (const swatch in def.swatches) {
-      if (colors.hasOwnProperty(swatch)) {
+      if (def.swatches.hasOwnProperty(swatch)) {
         colors[swatch] = convertColorArray(def.swatches[swatch], fallbackColors.bg);
       }
     }

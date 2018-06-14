@@ -102,14 +102,14 @@ class App extends React.Component<{}, { gapSize: number }> {
             <Box />
           </Stack>
 
-          <Button paletteSet="primary">hello</Button>
+          <Button scheme="primary">hello</Button>
 
           <FocusZone direction={FocusZoneDirection.bidirectional}>
             <Stack vertical gap={gapSize * 2}>
               <Stack gap={gapSize * 2} justify="center">
                 <TaskCard />
-                <TaskCard paletteSet="neutral" />
-                <TaskCard paletteSet="primary" />
+                <TaskCard scheme="neutral" />
+                <TaskCard scheme="primary" />
               </Stack>
               <Stack gap={gapSize * 2} justify="center">
                 <AnotherCard />
@@ -121,8 +121,11 @@ class App extends React.Component<{}, { gapSize: number }> {
           <Text type="h1" size="tiny">
             I am h1 text
           </Text>
+
           <Text type="h2">I am h2 text</Text>
+
           <Text type="h3">I am h3 text</Text>
+
           <Text type="h4">I am h4 text</Text>
           <Text type="h5">I am h5 text</Text>
           <Text type="default">I am default text</Text>

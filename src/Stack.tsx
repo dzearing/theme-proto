@@ -95,6 +95,7 @@ const styles = (
       props.className
     ],
     spacer: {
+      // background: "red",
       flexShrink: 0,
       alignSelf: "stretch"
     }

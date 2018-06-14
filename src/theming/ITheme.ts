@@ -53,17 +53,17 @@ export interface ISwatches {
   greenLight: ISwatch;
 }
 
-export type IPaletteReference = keyof ISwatches;
+export type ISwatchRef = keyof ISwatches;
 
-export interface IPaletteSet {
-  background: IPaletteReference;
-  text: IPaletteReference;
-  link: IPaletteReference;
-  linkVisited: IPaletteReference;
+export interface IScheme {
+  background: ISwatchRef;
+  text: ISwatchRef;
+  link: ISwatchRef;
+  linkVisited: ISwatchRef;
 }
 
 export interface ITheme {
   swatches: ISwatches;
-  paletteSets: { [key: string]: IPaletteSet };
+  schemes: { [key: string]: IScheme };
   typography: ITypography;
 }

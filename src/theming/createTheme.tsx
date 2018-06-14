@@ -38,8 +38,8 @@ export function createTheme(
 
   // Expand schemes
   // tslint:disable-next-line:forin
-  for (const setName in processedTheme.paletteSets) {
-    const set = processedTheme.paletteSets[setName];
+  for (const setName in processedTheme.schemes) {
+    const set = processedTheme.schemes[setName];
 
     // tslint:disable-next-line:forin
     for (const setPropName in set) {

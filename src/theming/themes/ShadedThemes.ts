@@ -11,9 +11,18 @@ export const DefaultStyleValues: IStyleValues = {
 export const DefaultStyleFallback: IThemeStyleDefinition = {
   colors: {
     bg: { type: 'bg', shade: 0 },
-    fg: { type: 'fn', shade: 0, name: 'autofg' }
+    fg: { type: 'fn', shade: 0, name: 'autofg' },
+    border: { type: 'rel', shade: 2 }
   },
-  values: DefaultStyleValues
+  values: DefaultStyleValues,
+  states: {
+    press: {
+      colors: { bg: { type: 'rel', shade: 2 } }
+    },
+    hover: {
+      colors: { bg: { type: 'rel', shade: 3 } }
+    }
+  }
 }
 
 export const DefaultShaded: IThemeSettings = {
@@ -26,30 +35,10 @@ export const DefaultShaded: IThemeSettings = {
   },
   styles: {
     default: DefaultStyleFallback,
-    container: {
-      colors: {
-        border: { type: 'rel', shade: 2 }
-      }
-    },
-    control: {
-      states: {
-        press: {
-          colors: { bg: { type: 'rel', shade: 2 } }
-        },
-        hover: {
-          colors: { bg: { type: 'rel', shade: 3 } }
-        }
-      }
-    },
-    shadedControl: {
-      parent: 'control',
-      colors: { 
-        bg: { type: 'rel', shade: 2 },
-        border: { type: 'rel', shade: 2 }
-      }
-    },
     button: {
-      parent: 'shadedControl',
+      colors: {
+        bg: { type: 'rel', shade: 2 }
+      },
       values: {
         borderThickness: 1,
         cornerRadius: 2
@@ -57,7 +46,9 @@ export const DefaultShaded: IThemeSettings = {
     },
     themedButton: {
       parent: 'button',
-      colors: { bg: { type: 'switch', shade: 0 } }
+      colors: { 
+        bg: { type: 'switch', shade: 0 } 
+      }
     }
   }
 };

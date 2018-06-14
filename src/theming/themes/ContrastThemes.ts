@@ -1,5 +1,4 @@
 import { registerTheme } from "../ThemeRegistry";
-import { DefaultFonts, DefaultFontWeights } from "./DefaultFonts";
 
 const resisterHighContrastTheme = () => registerTheme('HighContrast', {
   parent: 'DarkTheme',
@@ -13,35 +12,21 @@ const resisterHighContrastTheme = () => registerTheme('HighContrast', {
       default: {
         colors: {
           bg: { type: 'bg', shade: 0 },
-          fg: { type: 'fn', shade: 0, name: 'autofg' }
-        },
-        values: {
-          fonts: DefaultFonts,
-          fontWeights: DefaultFontWeights
+          fg: { type: 'fn', shade: 0, name: 'autofg' },
+          border: { type: 'fn', shade: 0, name: 'autofg' }
         }
       },
       container: {
-        colors: {
-          border: { type: 'fn', shade: 0, name: 'autofg' }
-        },
         values: {
           borderThickness: 1
         }
       },
       button: {
-        parent: 'control',
-        colors: {
-          border: { type: 'fn', shade: 0, name: 'autofg' }
-        },
         values: {
           borderThickness: 1,
           cornerRadius: 0
         }
       },
-      themedButton: {
-        parent: 'button',
-        colors: { bg: { type: 'switch', shade: 0 } }
-      }
     }
   }
 });

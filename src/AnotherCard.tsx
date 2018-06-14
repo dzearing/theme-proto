@@ -24,7 +24,7 @@ export const AnotherCard = () => {
           <Stack align="center" fill gap={8}>
             <PersonaCoin text="John Jacob Jingleheimershmidt" size={3} />
             <Stack vertical grow gap={4}>
-              <Text type="caption">John Jacob Jingleheimershmidt</Text>
+              <Text>John Jacob Jingleheimershmidt</Text>
               <Text size="small" shrink>
                 05/12/2017, 1:33pm
               </Text>

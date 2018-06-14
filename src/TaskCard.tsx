@@ -23,7 +23,7 @@ export interface ITaskCardProps {
   height?: number;
   padding?: number;
 
-  paletteSet?: string;
+  scheme?: string;
 }
 
 const view = (props: IViewProps<ITaskCardProps, ITaskCardStyles>) => {
@@ -46,10 +46,10 @@ const view = (props: IViewProps<ITaskCardProps, ITaskCardStyles>) => {
       data-is-focusable="true"
     >
       <Stack vertical fill gap={4}>
-        <Text weight='bold'>
+        <Text weight="bold">
           Portfolio Review jkfldsf jdaskfldas jfkadlsf jdasklfads jfklads
         </Text>
-        <Text weight='light'>Design Studio</Text>
+        <Text weight="light">Design Studio</Text>
 
         <Breadcrumb items={[{ text: "Engineering" }, { text: "Bootcamps" }]} />
 
@@ -60,8 +60,8 @@ const view = (props: IViewProps<ITaskCardProps, ITaskCardStyles>) => {
               <Text>Peraaaaaason Namef dkalsfdsajkl fsadklj</Text>
             </Stack.Item>
             <Stack>
-            <IconButton iconProps={{ iconName: "refresh" }} />
-            <IconButton iconProps={{ iconName: "lock" }} />
+              <IconButton iconProps={{ iconName: "refresh" }} />
+              <IconButton iconProps={{ iconName: "lock" }} />
             </Stack>
           </Stack>
         </Stack>

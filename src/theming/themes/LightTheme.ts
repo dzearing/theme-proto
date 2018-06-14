@@ -1,10 +1,12 @@
 import { DefaultSwatches as swatches } from "./DefaultSwatches";
 import { DefaultTypography as typography } from "./DefaultTypography";
-export const LightTheme = {
+import { ITheme } from "../ITheme";
+
+export const LightTheme: ITheme = {
   swatches,
   typography,
 
-  paletteSets: {
+  schemes: {
     default: {
       background: "white",
       text: "black",

@@ -15,12 +15,13 @@ export const PhotoCard = () => {
           height={200}
           imageFit={ImageFit.cover}
         />
+
         <Stack vertical grow justify="end" padding={16}>
           <Stack align="center" fill gap={8}>
             <PersonaCoin text="John Jacob Jingleheimershmidt" size={3} />
             <Stack vertical grow gap={4}>
               <Text>John Jacob Jingleheimershmidt</Text>
-              <Text type="caption" shrink>
+              <Text type="caption" weight="bold" shrink>
                 <Stack gap={8} align="center">
                   <Icon iconName="upload" />
                   05/12/2017, 1:33pm

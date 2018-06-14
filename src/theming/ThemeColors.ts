@@ -2,10 +2,11 @@ import { ISeedColors, IColorPalette, ILayerSets } from "./IColorPalette";
 import { getColorFromString, IColor } from "../coloring/color";
 import { getContrastRatio, getShadeArray } from "../coloring/shading";
 import { IColorLayerKey } from "./IColorLayerKey";
-import { IColorDefinitions, IThemeColors } from "./IThemeSettings";
+import { IColorDefinitions } from "./IThemeSettings";
 
 const bgType = 'bg';
 const accentType = 'accent';
+const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 
 export function flipType(type: string): 'bg' | 'accent' {
   return (type === accentType) ? bgType : accentType;
@@ -40,27 +41,25 @@ export function isFnKey(key: IColorLayerKey): boolean {
  * from here and as will custom swatch arrays.  Default arrays will be recreated. 
  */
 export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPalette): IColorPalette {
-  const baseSeeds = base ? base.seeds : undefined;
-  const seeds = getSeedColors(def, baseSeeds)
   let colors: { [key: string]: IColor[] } = { };
 
-  // if any swatch arrays are specified then convert them from strings to IColors
-  if (def.swatches) {
-    for (const swatch in def.swatches) {
-      if (def.swatches.hasOwnProperty(swatch)) {
-        colors[swatch] = convertColorArray(def.swatches[swatch], fallbackColors.bg);
+  // convert colors in the color definitions
+  for (const key in def) {
+    if (def.hasOwnProperty(key)) {
+      const params = def[key];
+      if (params) {
+        if (typeof params.color === 'string') {
+          const invertAt = params.invertAt || 50;
+          const rotate: boolean = params.anchorColor || false;
+          const count = 9;
+          const low = 30;
+          const high = 100;
+          const seedColor = getColorFromString(params.color) || fallbackBg;
+          colors[key] = getShadeArray(seedColor, count, false, rotate, low, high, invertAt);
+        } else {
+          colors[key] = convertColorArray(params.color, fallbackColors.bg);
+        }
       }
-    }
-  }
-
-  // now do the calculated sets for ones that are not specified
-  const keys: Array<'bg'|'accent'|'fg'> = ['bg', 'accent', 'fg'];
-  const invert: boolean = def.invert !== undefined ? def.invert : false;
-  for (const key of keys) {
-    if (!colors.hasOwnProperty(key)) {
-      const invertActual = key === 'fg' ? !invert : invert;
-      const rotate = (key === 'bg' && def.useBgForTone !== undefined) ? !def.useBgForTone : true;
-      colors[key] = getShadeArray(seeds[key], PALETTE_LAYER_COUNT, invertActual, rotate, 30, 100, 50);
     }
   }
 
@@ -70,31 +69,14 @@ export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPale
   }
 
   return {
-    seeds,
     colors: colors as ILayerSets
   }
 }
-
-// count of layers, this should be dynamic but currently matches what is in shades.ts
-const PALETTE_LAYER_COUNT: number = 9;
 
 const fallbackColors: ISeedColors = {
   fg: { h: 0, s: 0, v: 0, a: 100, str: '#000000' },
   bg: { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' },
   accent: { h: 212.26, s: 100, v: 83.14, a: 100, str: '#0062d4' }
-}
-
-function getSeedColors(colors: Partial<IThemeColors>, base?: ISeedColors): ISeedColors {
-  const result = { };
-  for (const key in fallbackColors) {
-    if (colors.hasOwnProperty(key)) {
-      const color = getColorFromString(colors[key]);
-      if (color) {
-        result[key] = color;
-      }
-    }
-  }
-  return Object.assign({}, base ? base : fallbackColors, result);
 }
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {

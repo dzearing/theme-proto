@@ -27,14 +27,9 @@ export const DefaultStyleFallback: IThemeStyleDefinition = {
 
 export const DefaultShaded: IThemeSettings = {
   seeds: {
-    fg: 'black',
-    bg: '#f3f2f1',
-    accent: '#0078d4',
-    useBgForTone: true,
-    invert: false,
-    swatches: {
-      bg: ['blue', 'black', 'green', 'red', 'purple']
-    }
+    fg: { color: 'black' },
+    bg: { color: '#f3f2f1' },
+    accent: { color: '#0078d4', anchorColor: true }
   },
   styles: {
     default: DefaultStyleFallback,
@@ -64,11 +59,9 @@ const registerDarkTheme = () => registerTheme('DarkTheme', {
   parent: 'LightTheme',
   settings: {
     seeds: {
-      fg: 'white',
-      bg: '#c3c3c3',
-      accent: '#0078d4',
-      useBgForTone: false,
-      invert: true
+      fg: { color: 'white' },
+      bg: { color: '#c3c3c3'},
+      accent: { color: '#0078d4'}
     },
     styles: {
       default: { }

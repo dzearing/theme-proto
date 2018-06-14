@@ -31,12 +31,6 @@ export interface ILayerSets {
 */
 export interface IColorPalette {
   /**
-   * Input color values.  These values are used to calculate generated color arrays
-   * as well as providing fallbacks for things such as text
-   */
-  seeds: ISeedColors;
-
-  /**
    * The set of colors that can be referenced by various controls.
    */
   colors: ILayerSets;

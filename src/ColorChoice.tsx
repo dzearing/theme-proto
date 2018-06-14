@@ -1,19 +1,18 @@
 import * as React from 'react';
-// import { Button } from './Button';
 import { Callout, ColorPicker } from 'office-ui-fabric-react';
 import { createRef } from 'office-ui-fabric-react/lib/Utilities';
 import { Button } from './Button';
 import { ITheme } from './theming/ITheme';
 import { getDefaultTheme, registerDefaultTheme } from './theming/ThemeRegistry';
 import { createLayeredTheme } from './theming/ThemeCreation';
-import { IThemeColors } from './theming/IThemeSettings';
 import { Stack } from './Stack';
 import { Text } from './Text';
 import { SwatchBar } from './SwatchBar';
+import { IColorDefinitions } from './theming/IThemeSettings';
 
 export interface IColorChoiceProps {
     title: string;
-    colorSlot: keyof IThemeColors;
+    colorSlot: string;
     theme: ITheme;
     updater?: (theme: ITheme) => void;
 }
@@ -23,7 +22,7 @@ export interface IColorChoiceState {
     currentColor: string;
 }
 
-export function updateDefaultThemeColors(newColors: Partial<IThemeColors>) {
+export function updateDefaultThemeColors(newColors: Partial<IColorDefinitions>) {
   const defaultTheme = getDefaultTheme();
   const newTheme = createLayeredTheme({ seeds: newColors }, defaultTheme);
   registerDefaultTheme(newTheme);
@@ -34,10 +33,15 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
 
   public constructor(props: IColorChoiceProps) {
     super(props);
+    const themeColors = getDefaultTheme().seeds;
+    const colorRef = (themeColors && themeColors.hasOwnProperty(props.colorSlot))
+        ? themeColors[props.colorSlot] : undefined;
+    const currentColor = (colorRef && typeof colorRef.color === 'string')
+      ? colorRef.color : 'black';
 
     this.state = {
       calloutVisible: false,
-      currentColor: getDefaultTheme().palette.seeds[props.colorSlot].str,
+      currentColor,
     };
   }
 
@@ -78,7 +82,7 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
     });
 
     const newColors = { };
-    newColors[this.props.colorSlot] = color;
+    newColors[this.props.colorSlot] = { color };
     updateDefaultThemeColors(newColors);
 
     if (this.props.updater) {

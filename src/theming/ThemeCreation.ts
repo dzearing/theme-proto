@@ -65,11 +65,11 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
           }
           const colors = settings.seeds;
           if (cmd === 'fg:') {
-            colors.fg = newColor;
+            colors.fg = { color: newColor };
           } else if (cmd === 'bg:') {
-            colors.bg = newColor;
+            colors.bg = { color: newColor };
           } else {
-            colors.accent = newColor;
+            colors.accent = { color: newColor};
           }
         }
         break;

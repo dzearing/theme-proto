@@ -55,7 +55,7 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
           />
           <Stack vertical align='stretch' fill>
             <Text>{this.state.currentColor}</Text>
-            <SwatchBar colors={this.props.theme.palette.colors[this.props.colorSlot]} />
+            <SwatchBar colors={this.props.theme.palette[this.props.colorSlot]} />
           </Stack>
         </Stack>
         { this.state.calloutVisible ? (

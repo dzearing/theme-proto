@@ -5,7 +5,7 @@ import { DefaultStyleValues, DefaultStyleFallback } from "./themes/ShadedThemes"
 import { resolveColor, resolveKey } from "./ThemeColors";
 import { mergeObjects } from "./ThemeRegistry";
 import { getColorFromRGBA } from "../coloring/color";
-import { IColorPalette } from "./IColorPalette";
+import { ILayerSets } from "./IColorPalette";
 import { IThemeSettings } from "./IThemeSettings";
 
 const defName: string = 'default';
@@ -49,7 +49,7 @@ const fallbackFg = getColorFromRGBA({r: 0, g: 0, b: 0, a: 100});
 const bgName = 'bg';
 
 function buildColors(
-  palette: IColorPalette, 
+  layers: ILayerSets, 
   colorDefs: { [key: string]: IColorLayerKey }, 
   colorVals: Partial<IStyleColors>, 
   baseline?: IColorLayerKey
@@ -59,17 +59,17 @@ function buildColors(
   if (colorDefs.hasOwnProperty(bgName)) {
     bgKey = resolveKey(colorDefs[bgName], baseline);
     colorDefs[bgName] = bgKey;
-    colorVals[bgName] = resolveColor(palette, bgKey, undefined);
+    colorVals[bgName] = resolveColor(layers, bgKey, undefined);
   }
   for (const key in colorDefs) {
     if (key !== bgName && colorDefs.hasOwnProperty(key)) {
       colorDefs[key] = resolveKey(colorDefs[key], baseline);
-      colorVals[key] = resolveColor(palette, colorDefs[key], bgKey);
+      colorVals[key] = resolveColor(layers, colorDefs[key], bgKey);
     }
   }
 }
 
-function buildStyle(palette: IColorPalette, def: IThemeStyleDefinition, parent?: IThemeStyle): IThemeStyle {
+function buildStyle(layers: ILayerSets, def: IThemeStyleDefinition, parent?: IThemeStyle): IThemeStyle {
   const newDef: IThemeStyleDefinition = parent ? mergeObjects(parent.definition, def) : Object.assign({}, def);
   const newValues = Object.assign({}, DefaultStyleValues, newDef.values);
 
@@ -80,7 +80,7 @@ function buildStyle(palette: IColorPalette, def: IThemeStyleDefinition, parent?:
   const parentColors = parent ? parent.definition.colors : undefined;
   const parentBg = parentColors ? parentColors[bgName] : undefined;
   if (colors) {
-    buildColors(palette, colors, newColors, parentBg);
+    buildColors(layers, colors, newColors, parentBg);
   }
 
   // now build up the states
@@ -97,7 +97,7 @@ function buildStyle(palette: IColorPalette, def: IThemeStyleDefinition, parent?:
         }
         if (state.colors) {
           newStates[key].colors = { };
-          buildColors(palette, state.colors, newStates[key].colors, baseColor);
+          buildColors(layers, state.colors, newStates[key].colors, baseColor);
         }
       }
     }
@@ -113,9 +113,9 @@ function buildStyle(palette: IColorPalette, def: IThemeStyleDefinition, parent?:
  * @param palette color palette to build the set of colors in the default style
  * @param settings theme settings to use to initialize the cache
  */
-export function createThemeCache(palette: IColorPalette, settings: Partial<IThemeSettings>): IThemeCache {
+export function createThemeCache(layers: ILayerSets, settings: Partial<IThemeSettings>): IThemeCache {
   const defaultStyleDefinition = settings.styles ? settings.styles.default : DefaultStyleFallback;
-  const defaultStyle = buildStyle(palette, defaultStyleDefinition);
+  const defaultStyle = buildStyle(layers, defaultStyleDefinition);
   return {
     styles: { default: defaultStyle }
   };

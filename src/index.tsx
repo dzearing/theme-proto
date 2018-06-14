@@ -64,7 +64,7 @@ class App extends React.Component<{}, { gapSize: number }> {
 
             <FocusZone>
               <Stack gap={20} vertical>
-                <Button paletteSet='primary'>hello</Button>
+                <Button>hello</Button>
                 <TaskCard />
 
                 <TaskCard theming='deepen: 1' />

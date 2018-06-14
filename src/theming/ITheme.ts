@@ -1,4 +1,4 @@
-import { IColorPalette } from "./IColorPalette";
+import { ILayerSets } from "./IColorPalette";
 import { IThemeStyle } from "./IThemeStyle";
 import { IThemeSettings } from "./IThemeSettings";
 
@@ -36,6 +36,6 @@ export interface IThemeDefinition {
   Full theme, contains both the inputs and calculated/generated values
 */
 export interface ITheme extends IThemeSettings {
-  palette: IColorPalette;
+  palette: ILayerSets;
   cache: IThemeCache;
 }

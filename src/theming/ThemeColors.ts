@@ -1,4 +1,4 @@
-import { ISeedColors, IColorPalette, ILayerSets } from "./IColorPalette";
+import { ISeedColors, ILayerSets } from "./IColorPalette";
 import { getColorFromString, IColor } from "../coloring/color";
 import { getContrastRatio, getShadeArray } from "../coloring/shading";
 import { IColorLayerKey } from "./IColorLayerKey";
@@ -40,7 +40,7 @@ export function isFnKey(key: IColorLayerKey): boolean {
  * @param base A baseline palette to use for creation.  Unspecfied seed colors will be picked up
  * from here and as will custom swatch arrays.  Default arrays will be recreated. 
  */
-export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPalette): IColorPalette {
+export function createPalette(def: Partial<IColorDefinitions>, base?: ILayerSets): ILayerSets {
   let colors: { [key: string]: IColor[] } = { };
 
   // convert colors in the color definitions
@@ -68,9 +68,7 @@ export function createPalette(def: Partial<IColorDefinitions>, base?: IColorPale
     colors = Object.assign({}, base.colors, colors);
   }
 
-  return {
-    colors: colors as ILayerSets
-  }
+  return colors as ILayerSets;
 }
 
 const fallbackColors: ISeedColors = {
@@ -83,9 +81,9 @@ function convertColorArray(colors: string[], fallback: IColor): IColor[] {
   return colors.map((val) => (getColorFromString(val) || fallback));
 }
 
-function getAutoFg(palette: IColorPalette, bgKey: IColorLayerKey): IColor {
-  const bgColor = resolveColor(palette, bgKey);
-  const fgs = palette.colors.fg;
+function getAutoFg(layers: ILayerSets, bgKey: IColorLayerKey): IColor {
+  const bgColor = resolveColor(layers, bgKey);
+  const fgs = layers.fg;
   let bestIndex = 0;
   let bestRatio: number = getContrastRatio(bgColor, fgs[bestIndex]);
   for (let i = 1; i < fgs.length; i++) {
@@ -98,19 +96,18 @@ function getAutoFg(palette: IColorPalette, bgKey: IColorLayerKey): IColor {
   return fgs[bestIndex];
 }
 
-export function resolveColor(palette: IColorPalette, key: IColorLayerKey, base?: IColorLayerKey): IColor {
-  const colorSets = palette.colors;
-  if (colorSets.hasOwnProperty(key.type)) {
-    const colors = colorSets[key.type];
+export function resolveColor(layers: ILayerSets, key: IColorLayerKey, base?: IColorLayerKey): IColor {
+  if (layers.hasOwnProperty(key.type)) {
+    const colors = layers[key.type];
     return colors[key.shade % colors.length];
   }
   const fallbackKey: IColorLayerKey = { type: bgType, shade: 0 };
 
   if (isFnKey(key) && key.name) {
     if (key.name === 'autofg') {
-      return getAutoFg(palette, base || fallbackKey);
+      return getAutoFg(layers, base || fallbackKey);
     }
   }
 
-  return resolveColor(palette, fallbackKey);
+  return resolveColor(layers, fallbackKey);
 }

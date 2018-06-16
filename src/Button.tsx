@@ -71,7 +71,9 @@ function _getDefaultRootType(props: IButtonProps): string {
 const styles = (
   props: IStyleProps<IButtonProps, IButtonStyles>
 ): IButtonStyles => {
+  const { className } = props;
   let { scheme } = props;
+
   scheme = scheme || (props.primary ? "primary" : "neutral");
   const set = props.theme.schemes[scheme];
 
@@ -93,7 +95,8 @@ const styles = (
         overflow: "hidden",
         padding: "0 20px",
         userSelect: "none"
-      }
+      },
+      className
     ]
   };
 };

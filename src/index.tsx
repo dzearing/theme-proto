@@ -32,13 +32,14 @@ mergeStyles({
   }
 });
 
-const Box = (props: { background?: string }) => (
+const Box = (props: { className?: string; background?: string }) => (
   <div
     style={{
       background: props.background || "rgba(255,0,0,.1)",
       minWidth: 40,
       minHeight: 40
     }}
+    className={props.className}
   />
 );
 
@@ -54,7 +55,7 @@ class App extends React.Component<{}, { gapSize: number }> {
     const { gapSize } = this.state;
 
     return (
-      <Fabric>
+      <div>
         <Grid gap={8} templateColumns="1fr 1fr">
           <Grid.Cell debug>
             <Box background="blue" />
@@ -106,7 +107,7 @@ class App extends React.Component<{}, { gapSize: number }> {
 
           <FocusZone direction={FocusZoneDirection.bidirectional}>
             <Stack vertical gap={gapSize * 2}>
-              <Stack gap={gapSize * 2} justify="center">
+              <Stack gap={gapSize * 2} fill collapseItems justify="center">
                 <TaskCard />
                 <TaskCard scheme="neutral" />
                 <TaskCard scheme="primary" />
@@ -132,7 +133,7 @@ class App extends React.Component<{}, { gapSize: number }> {
           <Text type="caption">I am caption text</Text>
           <Text type="disabled">I am disabled text</Text>
         </Stack>
-      </Fabric>
+      </div>
     );
   }
 

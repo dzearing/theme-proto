@@ -1,7 +1,7 @@
 import * as React from "react";
 import { IStyle } from "@uifabric/styling";
 import { createComponent, IStyleProps, IViewProps } from "./createComponent";
-import StackItem from "./StackItem";
+import StackItem, { IStackItemProps } from "./StackItem";
 
 // Styles for the component
 export interface IStackStyles {
@@ -21,11 +21,13 @@ export interface IStackProps {
   className?: string;
 
   fill?: boolean;
+  collapseItems?: boolean;
 
   inline?: boolean;
   vertical?: boolean;
+
   grow?: boolean;
-  wrap?: boolean;
+  shrink?: boolean;
 
   gap?: number;
   align?: "auto" | "center" | "start" | "baseline" | "stretch" | "end";
@@ -43,23 +45,31 @@ export interface IStackProps {
 }
 
 const view = (props: IViewProps<IStackProps, IStackStyles>) => {
-  const { renderAs: RootType = "div", classNames, gap, vertical } = props;
+  const {
+    renderAs: RootType = "div",
+    classNames,
+    gap,
+    vertical,
+    collapseItems
+  } = props;
 
   const children: React.ReactChild[] = React.Children.map(
     props.children,
-    (child: React.ReactChild, index: number) => {
+    (child: React.ReactElement<IStackItemProps>, index: number) => {
+      const defaultItemProps: IStackItemProps = {
+        gap: index > 0 ? gap : 0,
+        vertical,
+        collapse: collapseItems
+      };
+
       if ((child as any).type === StackItemType) {
         return React.cloneElement(child as any, {
-          gap,
-          vertical,
-          index
+          ...defaultItemProps,
+          ...child.props
         });
       } else {
-        return (
-          <StackItem gap={gap} vertical={vertical} index={index}>
-            {child}
-          </StackItem>
-        );
+        // tslint:disable-next-line:no-console
+        return <StackItem {...defaultItemProps}>{child}</StackItem>;
       }
     }
   );
@@ -89,6 +99,7 @@ const styles = (
     vertical,
     gap,
     grow,
+    shrink,
     margin,
     padding
   } = props;

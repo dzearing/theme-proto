@@ -4,11 +4,11 @@ import Text from "./Text";
 import Card from "./Card";
 import { Icon, Image, ImageFit, PersonaCoin } from "office-ui-fabric-react";
 
-export const PhotoCard = () => {
+export const PhotoCard = (props: React.AllHTMLAttributes<HTMLDivElement>) => {
   const RootType = Card;
 
   return (
-    <RootType width={300} height={280} data-is-focusable="true">
+    <RootType {...props} width={300} height={280} data-is-focusable="true">
       <Stack vertical fill gap={4}>
         <Image
           src="http://www.fillmurray.com/400/400"

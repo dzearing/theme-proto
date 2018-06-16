@@ -3,54 +3,50 @@ import { IStyle } from "@uifabric/styling";
 import { createComponent, IStyleProps, IViewProps } from "./createComponent";
 
 // Styles for the component
-export interface ICardStyles {
+export interface IBoxStyles {
   root: IStyle;
   content: IStyle;
 }
 
 // Inputs to the component
-export interface ICardProps {
-  renderAs?: string | React.ReactType<ICardProps>;
+export interface IBoxProps {
+  renderAs?: string | React.ReactType<IBoxProps>;
   children?: React.ReactNode;
 
   className?: string;
   disabled?: boolean;
   id?: string;
+  for?: string;
   role?: string;
   href?: string;
   onClick?: (ev: React.MouseEvent<HTMLElement>) => void;
 
   scheme?: string;
 
+  elevation?: number;
   padding?: number | string;
   width?: number | string;
   height?: number | string;
 }
 
-const view = (props: IViewProps<ICardProps, ICardStyles>) => {
-  const {
-    renderAs: RootType = "div",
-    classNames,
-    width,
-    height,
-    disabled,
-    id,
-    role,
-    href,
-    onClick,
-    ...rest
-  } = props;
+const view = (props: IViewProps<IBoxProps, IBoxStyles>) => {
+  const { renderAs: RootType = "div", classNames, ...rest } = props;
 
-  return (
-    <RootType {...rest} className={classNames.root}>
-      <div className={classNames.content}>{props.children}</div>
-    </RootType>
-  );
+  return <RootType {...rest} className={classNames.root} />;
 };
 
-const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
-  const { scheme = "default", width, height, padding, className } = props;
+const styles = (props: IStyleProps<IBoxProps, IBoxStyles>): IBoxStyles => {
+  const {
+    className,
+    scheme = "default",
+    width,
+    height,
+    padding,
+    elevation = 5
+  } = props;
   const set = props.theme.schemes[scheme];
+
+  const elevationPx = elevation * 2;
 
   return {
     root: [
@@ -59,7 +55,7 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
         selectors: {
           ":focus": {
             border: "1px solid rgba(0,0,0,.5)",
-            boxShadow: "0 0 2px 0 rgba(255,255,255,.5) inset",
+            boxShadow: `0 0 2px 0 rgba(255,255,255,.5) inset`,
             boxSizing: "border-box"
           }
         }
@@ -72,7 +68,8 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
         overflow: "hidden",
         border: "1px solid #ccc",
         borderRadius: 3,
-        boxShadow: "0 0 10px -4px #000",
+        boxShadow: `0 0 ${elevationPx}px -4px #000`,
+        display: "inline-flex",
         width,
         height,
         padding
@@ -82,16 +79,15 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
     content: {
       overflow: "hidden",
       position: "relative",
-      width: "100%",
-      height: "100%"
+      width: "100%"
     }
   };
 };
 
-export const Card = createComponent<ICardProps, ICardStyles>({
-  displayName: "Card",
+export const Box = createComponent<IBoxProps, IBoxStyles>({
+  displayName: "Box",
   styles,
   view
 });
 
-export default Card;
+export default Box;

@@ -1,7 +1,11 @@
-import { IClassNames, IStyleFunction, mergeStyleSets } from "office-ui-fabric-react";
+import {
+  IClassNames,
+  IStyleFunction,
+  mergeStyleSets
+} from "office-ui-fabric-react";
 import * as React from "react";
-import { ITheme } from './theming/ITheme';
-import { ThemeConsumer } from './theming/ThemeProvider';
+import { ITheme } from "./theming/ITheme";
+import { ThemeConsumer } from "./theming/ThemeProvider";
 
 export type IStyleFunction<TProps, TStyles> = (
   props: TProps
@@ -13,8 +17,10 @@ export interface IPropsWithStyles<TProps, TStyles> {
 
 // Components should accept styling.
 export type IComponentProps<TProps, TStyles> = TProps & {
-  styles?: IStyleFunction<IPropsWithStyles<TProps, TStyles>, TStyles> | Partial<TStyles>;
-}
+  styles?:
+    | IStyleFunction<IPropsWithStyles<TProps, TStyles>, TStyles>
+    | Partial<TStyles>;
+};
 
 export type IStyleProps<TProps, TStyles> = TProps & {
   theme: ITheme;
@@ -23,15 +29,17 @@ export type IStyleProps<TProps, TStyles> = TProps & {
 // Views should accept processed classNames.
 export type IViewProps<TProps, TStyles> = TProps & {
   classNames: IClassNames<TStyles>;
-}
+};
 
 const augmentations = {};
 
 export interface IComponentOptions<TProps, TStyles, TStatics> {
   displayName: string;
   state?: React.ComponentType<IComponentProps<TProps, TStyles>>;
-  styles?: IStyleFunction<IStyleProps<TProps, TStyles>, TStyles> | Partial<TStyles>;
-  view?: React.ComponentType<IViewProps<TProps, TStyles>>;
+  styles?:
+    | IStyleFunction<IStyleProps<TProps, TStyles>, TStyles>
+    | Partial<TStyles>;
+  view?: React.ReactType<IViewProps<TProps, TStyles>>;
   statics?: TStatics;
 }
 
@@ -39,7 +47,7 @@ function evaluateStyle<TProps, TStyles>(
   props: TProps,
   styles?: IStyleFunction<TProps, TStyles> | Partial<TStyles> | undefined
 ): Partial<TStyles> | undefined {
-  if (typeof styles === 'function') {
+  if (typeof styles === "function") {
     return styles(props);
   }
 
@@ -49,39 +57,41 @@ function evaluateStyle<TProps, TStyles>(
 // Helper function to tie them together.
 export function createComponent<TProps, TStyles, TStatics = {}>(
   options: IComponentOptions<TProps, TStyles, TStatics>
-): (React.StatelessComponent<IComponentProps<TProps, TStyles>> & TStatics) {
-
-  const result: (React.StatelessComponent<TProps>) = (userProps: TProps) => {
+): React.StatelessComponent<IComponentProps<TProps, TStyles>> & TStatics {
+  const result: React.StatelessComponent<TProps> = (userProps: TProps) => {
     const augmented = augmentations[options.displayName] || {};
     const ComponentState = augmented.state || options.state;
     const ComponentView = augmented.view || options.view;
     const componentStyles = augmented.styles || options.styles;
 
-    ComponentView.displayName = ComponentView.displayName || options.displayName;
+    ComponentView.displayName =
+      ComponentView.displayName || options.displayName;
 
     const content = (processedProps: IComponentProps<TProps, TStyles>) => {
       const { styles } = processedProps;
 
       return (
-        <ThemeConsumer>{(theme: ITheme) => {
-          const styleProps = { theme, ...(processedProps as {}) };
+        <ThemeConsumer>
+          {(theme: ITheme) => {
+            const styleProps = { theme, ...(processedProps as {}) };
 
-          return ComponentView({
-            ...processedProps as {},
-            classNames: mergeStyleSets(
-              evaluateStyle(styleProps, componentStyles),
-              evaluateStyle(styleProps, styles as any)
-            )
-          });
-        }}</ThemeConsumer>
+            return ComponentView({
+              ...(processedProps as {}),
+              classNames: mergeStyleSets(
+                evaluateStyle(styleProps, componentStyles),
+                evaluateStyle(styleProps, styles as any)
+              )
+            });
+          }}
+        </ThemeConsumer>
       );
     };
 
     return !!ComponentState ? (
       <ComponentState {...userProps}>{content}</ComponentState>
     ) : (
-        content(userProps)
-      );
+      content(userProps)
+    );
   };
 
   // Assign display name.
@@ -90,7 +100,8 @@ export function createComponent<TProps, TStyles, TStatics = {}>(
   // Assign statics.
   Object.assign(result, options.statics);
 
-  return result as (React.StatelessComponent<IComponentProps<TProps, TStyles>> & TStatics);
+  return result as React.StatelessComponent<IComponentProps<TProps, TStyles>> &
+    TStatics;
 }
 
 // Helper function to augment existing components that have been created.

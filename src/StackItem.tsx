@@ -1,9 +1,10 @@
 import * as React from "react";
+// import { css } from "@uifabric/utilities";
 import { IStyle } from "@uifabric/styling";
 import { createComponent, IStyleProps, IViewProps } from "./createComponent";
 
 // Styles for the component
-export interface IStackAreaStyles {
+export interface IStackItemStyles {
   root: IStyle;
 }
 
@@ -14,8 +15,8 @@ const alignMap = {
 const justifyMap = {};
 
 // Inputs to the component
-export interface IStackAreaProps {
-  renderAs?: string | React.ReactType<IStackAreaProps>;
+export interface IStackItemProps {
+  renderAs?: string | React.ReactType<IStackItemProps>;
   children?: React.ReactNode;
 
   gap?: number;
@@ -23,6 +24,8 @@ export interface IStackAreaProps {
   index?: number;
 
   grow?: boolean;
+  collapse?: boolean;
+
   align?: "auto" | "center" | "start" | "baseline" | "stretch" | "end";
   justify?:
     | "start"
@@ -33,35 +36,31 @@ export interface IStackAreaProps {
     | "space-evenly";
 }
 
-const view = (props: IViewProps<IStackAreaProps, IStackAreaStyles>) => {
-  const {
-    // renderAs: RootType = 'span',
-    classNames
-  } = props;
+const view = (props: IViewProps<IStackItemProps, IStackItemStyles>) => {
+  const childNodes: React.ReactElement<{}>[] = React.Children.toArray(
+    props.children
+  ) as React.ReactElement<{}>[];
+  const first = childNodes[0];
 
-  const child = React.Children.only(props.children);
+  if (typeof first === "string") {
+    return <span className={props.classNames.root}>first</span>;
+  }
 
-  return React.cloneElement(child, {
-    className: [classNames.root, child.props.classNames].join(" "),
-    ...child.props
-  });
-
-  // return (
-  //   <RootType className={classNames.root}>
-  //     {props.children}
-  //   </RootType>
-  // );
+  return React.cloneElement(
+    first as React.ReactElement<{ className: string }>,
+    { ...first.props, className: props.classNames.root }
+  );
 };
 
 const styles = (
-  props: IStyleProps<IStackAreaProps, IStackAreaStyles>
-): IStackAreaStyles => {
-  const { grow, align, justify } = props;
+  props: IStyleProps<IStackItemProps, IStackItemStyles>
+): IStackItemStyles => {
+  const { grow, collapse, align, justify, gap, vertical } = props;
 
   return {
     root: [
       grow && { flexGrow: 1 },
-      !grow && { flexShrink: 0 },
+      !grow && !collapse && { flexShrink: 0 },
       align && {
         alignSelf: alignMap[align] || align,
         justifyContent: justifyMap[justify!] || justify
@@ -70,15 +69,30 @@ const styles = (
         overflow: "hidden",
         whiteSpace: "nowrap",
         textOverflow: "ellipsis"
+        // position: "relative",
+        // selectors: {
+        //   ":after": {
+        //     background: "rgba(255, 0, 0, 0.2)",
+        //     content: '""',
+        //     position: "absolute",
+        //     left: 0,
+        //     top: 0,
+        //     right: 0,
+        //     bottom: 0
+        //   }
+        // }
+      },
+      !!gap && {
+        [vertical ? "marginTop" : "marginLeft"]: gap
       }
     ]
   };
 };
 
-export const FlexArea = createComponent<IStackAreaProps, IStackAreaStyles>({
-  displayName: "StackArea",
+export const StackItem = createComponent<IStackItemProps, IStackItemStyles>({
+  displayName: "StackItem",
   styles,
   view
 });
 
-export default FlexArea;
+export default StackItem;

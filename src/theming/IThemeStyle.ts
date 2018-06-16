@@ -9,14 +9,6 @@ import { ITypography } from "./ITypography";
  */
 export interface IStyleValues {
   /**
-   * Fonts for various sizes
-   */
-  fonts: IFonts;
-  /**
-   * Font weights
-   */
-  fontWeights: IFontWeights;
-  /**
    * Border thickness
    */
   borderThickness?: number;

@@ -1,12 +1,9 @@
-import { DefaultFonts, DefaultFontWeights } from './DefaultFonts';
 import { IThemeSettings } from '../IThemeSettings';
 import { IStyleValues, IThemeStyleDefinition } from '../IThemeStyle';
 import { registerTheme } from '../ThemeRegistry';
 import { DefaultTypography as typography } from "./DefaultTypography";
 
 export const DefaultStyleValues: IStyleValues = {
-  fonts: DefaultFonts,
-  fontWeights: DefaultFontWeights,
   typography
 }
 

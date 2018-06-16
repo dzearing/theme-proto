@@ -16,11 +16,13 @@ export const ThemeContext = React.createContext<IThemeContextValue>({
   updateTheme: undefined
 });
 
-export const ThemeConsumer = (props: { children: (theme: ITheme) => JSX.Element }) => (
-  <ThemeContext.Consumer>
-    {({theme, updateTheme}) => props.children(theme)}
-  </ThemeContext.Consumer>
-);
+export const ThemeConsumer = (props: {
+  children: (theme: ITheme) => JSX.Element;
+}) => (
+    <ThemeContext.Consumer>
+      {({ theme, updateTheme }) => props.children(theme)}
+    </ThemeContext.Consumer>
+  );
 
 /*
   state for the provider component, allows for cascading of states and only updating state
@@ -40,9 +42,9 @@ export interface IThemeLayerProps {
 }
 
 export class ThemeLayer extends React.Component<IThemeLayerProps, IThemeLayerState> {
-  constructor (props: IThemeLayerProps) {
+  constructor(props: IThemeLayerProps) {
     super(props);
-    this.state = { };
+    this.state = {};
     this._updateTheme = this._updateTheme.bind(this);
   }
 
@@ -55,7 +57,7 @@ export class ThemeLayer extends React.Component<IThemeLayerProps, IThemeLayerSta
 
     if (needsProvider) {
       return (
-        <ThemeContext.Provider value={{theme, updateTheme: this._updateTheme}}>
+        <ThemeContext.Provider value={{ theme, updateTheme: this._updateTheme }}>
           {this.props.children(theme)}
         </ThemeContext.Provider>
       )
@@ -64,6 +66,6 @@ export class ThemeLayer extends React.Component<IThemeLayerProps, IThemeLayerSta
   }
 
   private _updateTheme(newTheme: ITheme) {
-    this.setState({...this.state, theme: newTheme});
+    this.setState({ ...this.state, theme: newTheme });
   }
 }

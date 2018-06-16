@@ -11,10 +11,10 @@ export interface IButtonStyles {
 
 // Inputs to the component
 export interface IButtonProps {
-  renderAs?: string | React.ReactType<IButtonProps>,
+  renderAs?: string | React.ReactType<IButtonProps>;
   children?: React.ReactNode;
 
-  paletteSet?: string;
+  scheme?: string;
 
   className?: string;
   style?: React.CSSProperties;
@@ -48,7 +48,7 @@ export interface IButtonProps {
   ariaLabel?: string;
   ariaDescribedBy?: string;
 
-  dataAttributes?: { [key: string]: string; };
+  dataAttributes?: { [key: string]: string };
 }
 
 const view = (props: IViewProps<IButtonProps, IButtonStyles>) => {
@@ -59,7 +59,7 @@ const view = (props: IViewProps<IButtonProps, IButtonStyles>) => {
   } = props;
 
   return (
-    <RootType { ...rest } className={classNames.root}>
+    <RootType {...rest} className={classNames.root}>
       {props.text}
       {props.children}
     </RootType>
@@ -67,7 +67,7 @@ const view = (props: IViewProps<IButtonProps, IButtonStyles>) => {
 };
 
 function _getDefaultRootType(props: IButtonProps): string {
-  return (!!props.href ? 'a' : 'button');
+  return !!props.href ? "a" : "button";
 }
 
 const themePropMapping: IThemeRequest = {
@@ -86,7 +86,11 @@ const themePropMapping: IThemeRequest = {
   }
 }
 
-const styles = (props: IStyleProps<IButtonProps, IButtonStyles>): IButtonStyles => {
+const styles = (
+  props: IStyleProps<IButtonProps, IButtonStyles>
+): IButtonStyles => {
+  let { scheme } = props;
+  scheme = scheme || (props.primary ? "primary" : "neutral");
   const layerName = props.primary ? 'themedButton' : 'button';
 
   return {
@@ -94,25 +98,23 @@ const styles = (props: IStyleProps<IButtonProps, IButtonStyles>): IButtonStyles 
       DefaultFontStyles.medium,
       {
         ...fillThemeProps(props.theme, themePropMapping, layerName),
-        alignItems: 'center',
-        textAlign: 'center',
-        cursor: 'default',
-        borderStyle: 'solid',
-        display: props.fullWidth ? 'flex' : 'inline-flex',
-        width: props.fullWidth ? '100%' : 'auto',
+        alignItems: "center",
+        textAlign: "center",
+        cursor: "default",
+        display: props.fullWidth ? "flex" : "inline-flex",
+        width: props.fullWidth ? "100%" : "auto",
         margin: 0,
         minHeight: 32,
-        overflow: 'hidden',
-        padding: '0 20px',
-        userSelect: 'none',
-      },
-
+        overflow: "hidden",
+        padding: "0 20px",
+        userSelect: "none"
+      }
     ]
-  }
+  };
 };
 
 export const Button = createComponent<IButtonProps, IButtonStyles>({
-  displayName: 'Button',
+  displayName: "Button",
   styles,
   view
 });

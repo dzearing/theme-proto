@@ -1,6 +1,7 @@
 import { IColorLayerKey } from "./IColorLayerKey";
 import { IRawStyle } from "@uifabric/styling";
 import { IColor } from "../coloring/color";
+import { ITypography } from "./ITypography";
 
 
 /**
@@ -23,6 +24,10 @@ export interface IStyleValues {
    * Corner radius
    */
   cornerRadius?: number;
+  /**
+   * Typography
+   */
+  typography: ITypography;
 }
 
 /**

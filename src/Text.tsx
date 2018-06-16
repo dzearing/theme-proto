@@ -1,9 +1,16 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { getThemeStyle } from './theming/ThemeCache';
 import { IThemeRequest } from './theming/IThemeStyle';
 import { fillThemeProps } from './theming/ThemeRequest';
+import {
+  IFontTypes,
+  IFontFamilies,
+  IFontSizes,
+  IFontWeights,
+  IFontColors
+} from "./theming/ITypography";
+import { getThemeStyle } from './theming/ThemeCache';
 
 // Styles for the component
 export interface ITextStyles {
@@ -12,49 +19,42 @@ export interface ITextStyles {
 
 // Inputs to the component
 export interface ITextProps {
-  renderAs?: string | React.ReactType<ITextProps>,
+  renderAs?: string | React.ReactType<ITextProps>;
   children?: React.ReactNode;
   className?: string;
 
-  // font type
-  monospace?: boolean;
-
-  // weights
-  bold?: boolean;
-  light?: boolean;
-
-  // colors
-  disabled?: boolean;
-  success?: boolean;
-  failure?: boolean;
-
-  // sizes
-  tiny?: boolean;
-  smaller?: boolean;
-  small?: boolean;
-  h4?: boolean;
-  h3?: boolean;
-  h2?: boolean;
-  h1?: boolean;
+  type?: keyof IFontTypes;
+  family?: keyof IFontFamilies;
+  size?: keyof IFontSizes;
+  weight?: keyof IFontWeights;
+  color?: keyof IFontColors;
 
   paletteSet?: string;
 
-  block?: string;
-  wrap?: string;
+  block?: boolean;
+  wrap?: boolean;
+
+  grow?: boolean;
+  shrink?: boolean;
 }
 
 const view = (props: IViewProps<ITextProps, ITextStyles>) => {
   const {
-    renderAs: RootType = 'span',
+    block,
     classNames,
+    color,
+    family,
+    grow,
+    renderAs: RootType = "span",
+    shrink,
+    size,
+    type,
+    weight,
+    wrap,
     ...rest
   } = props;
 
-  return (
-    <RootType {...rest} className={classNames.root}>
-      {props.children}
-    </RootType>
-  );
+  return <RootType {...rest} className={classNames.root} />;
 };
 
 const requiredColors: IThemeRequest = {
@@ -64,32 +64,50 @@ const requiredColors: IThemeRequest = {
 }
 
 const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
-  const { block, theme, bold, light, wrap } = props;
-  const themeStyle = getThemeStyle(theme);
-  const fontWeights = themeStyle.values.fontWeights;
-  
+  const {
+    block,
+    theme,
+    wrap,
+    grow,
+    shrink,
+    type,
+    family,
+    weight,
+    size
+  } = props;
+  const style = getThemeStyle(theme);
+  const typography = style.values.typography;
+  const themeType = typography.types[type!] || {
+    fontFamily: typography.families[family!] || typography.families.default,
+    fontWeight: typography.weights[weight!] || typography.weights.default,
+    fontSize: typography.sizes[size!] || typography.sizes.medium
+  };
+
   return {
     root: [
-      themeStyle.values.fonts.medium,
+      themeType,
       {
         ...fillThemeProps(theme, requiredColors),
-        display: block ? 'block' : 'inline'
+        display: block ? "block" : "inline"
       },
       !wrap && {
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis"
       },
-
-      bold && fontWeights.emphasized,
-      light && fontWeights.diminished,
+      grow && {
+        flexGrow: 1
+      },
+      shrink && {
+        flexShrink: 0
+      },
       props.className
     ]
-  };
+  } as ITextStyles;
 };
 
 export const Text = createComponent<ITextProps, ITextStyles>({
-  displayName: 'Text',
+  displayName: "Text",
   styles,
   view
 });

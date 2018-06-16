@@ -2,10 +2,12 @@ import { DefaultFonts, DefaultFontWeights } from './DefaultFonts';
 import { IThemeSettings } from '../IThemeSettings';
 import { IStyleValues, IThemeStyleDefinition } from '../IThemeStyle';
 import { registerTheme } from '../ThemeRegistry';
+import { DefaultTypography as typography } from "./DefaultTypography";
 
 export const DefaultStyleValues: IStyleValues = {
   fonts: DefaultFonts,
-  fontWeights: DefaultFontWeights
+  fontWeights: DefaultFontWeights,
+  typography
 }
 
 export const DefaultStyleFallback: IThemeStyleDefinition = {
@@ -44,8 +46,8 @@ export const DefaultShaded: IThemeSettings = {
     },
     themedButton: {
       parent: 'button',
-      colors: { 
-        bg: { type: 'switch', shade: 0 } 
+      colors: {
+        bg: { type: 'switch', shade: 0 }
       }
     }
   }
@@ -60,11 +62,11 @@ const registerDarkTheme = () => registerTheme('DarkTheme', {
   settings: {
     seeds: {
       fg: { color: 'white' },
-      bg: { color: '#c3c3c3'},
-      accent: { color: '#0078d4'}
+      bg: { color: '#c3c3c3' },
+      accent: { color: '#0078d4' }
     },
     styles: {
-      default: { }
+      default: {}
     }
   }
 });

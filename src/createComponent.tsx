@@ -5,7 +5,7 @@ import {
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { ITheme } from "./theming/ITheme";
-import { ThemeConsumer } from "./theming/ThemeProvider";
+import { ThemeContext } from "./theming/ThemeProvider";
 
 export type IStyleFunction<TProps, TStyles> = (
   props: TProps
@@ -57,51 +57,41 @@ function evaluateStyle<TProps, TStyles>(
 // Helper function to tie them together.
 export function createComponent<TProps, TStyles, TStatics = {}>(
   options: IComponentOptions<TProps, TStyles, TStatics>
-): React.StatelessComponent<IComponentProps<TProps, TStyles>> & TStatics {
-  const result: React.StatelessComponent<TProps> = (userProps: TProps) => {
-    const augmented = augmentations[options.displayName] || {};
-    const ComponentState = augmented.state || options.state;
-    const ComponentView = augmented.view || options.view;
-    const componentStyles = augmented.styles || options.styles;
+): React.ComponentClass<IComponentProps<TProps, TStyles>> & TStatics {
+  const augmented = augmentations[options.displayName] || {};
+  const ComponentState = augmented.state || options.state;
+  const ComponentView = augmented.view || options.view;
+  const componentStyles = augmented.styles || options.styles;
 
-    ComponentView.displayName =
+  class Result extends React.PureComponent<IComponentProps<TProps, TStyles>> {
+    public static displayName =
       ComponentView.displayName || options.displayName;
 
-    const content = (processedProps: IComponentProps<TProps, TStyles>) => {
-      const { styles } = processedProps;
+    public render(): JSX.Element {
+      const { styles } = this.props;
 
       return (
-        <ThemeConsumer>
+        <ThemeContext.Consumer>
           {(theme: ITheme) => {
-            const styleProps = { theme, ...(processedProps as {}) };
+            const styleProps = { theme, ...(this.props as {}) };
 
             return ComponentView({
-              ...(processedProps as {}),
+              ...(this.props as {}),
               classNames: mergeStyleSets(
                 evaluateStyle(styleProps, componentStyles),
                 evaluateStyle(styleProps, styles as any)
               )
             });
           }}
-        </ThemeConsumer>
+        </ThemeContext.Consumer>
       );
-    };
-
-    return !!ComponentState ? (
-      <ComponentState {...userProps}>{content}</ComponentState>
-    ) : (
-      content(userProps)
-    );
-  };
-
-  // Assign display name.
-  result.displayName = options.displayName;
+    }
+  }
 
   // Assign statics.
-  Object.assign(result, options.statics);
+  Object.assign(Result, options.statics);
 
-  return result as React.StatelessComponent<IComponentProps<TProps, TStyles>> &
-    TStatics;
+  return Result as any;
 }
 
 // Helper function to augment existing components that have been created.

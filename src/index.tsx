@@ -9,6 +9,7 @@ import {
   Fabric,
   FocusZone,
   Slider,
+  Toggle,
   mergeStyles,
   FocusZoneDirection
 } from "office-ui-fabric-react";
@@ -28,6 +29,9 @@ mergeStyles({
     ":global(body)": {
       padding: 0,
       margin: 0
+    },
+    ":global(*)": {
+      transition: "margin .2s ease-out"
     }
   }
 });
@@ -43,11 +47,12 @@ const Box = (props: { className?: string; background?: string }) => (
   />
 );
 
-class App extends React.Component<{}, { gapSize: number }> {
+class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      gapSize: 4
+      gapSize: 4,
+      checked: false
     };
   }
 
@@ -70,6 +75,8 @@ class App extends React.Component<{}, { gapSize: number }> {
           </Grid.Cell>
         </Grid>
         <Stack vertical gap={20} padding={40}>
+          {/* tslint:disable-next-line:jsx-no-lambda */}
+          <Toggle onChanged={checked => this.setState({ checked })} />
           <Slider
             label="Gap size"
             onChange={this._onGapSizeChange}
@@ -78,7 +85,6 @@ class App extends React.Component<{}, { gapSize: number }> {
             max={40}
             step={4}
           />
-
           <Stack gap={gapSize} align="center">
             <Text>I am text</Text>
 
@@ -102,9 +108,7 @@ class App extends React.Component<{}, { gapSize: number }> {
 
             <Box />
           </Stack>
-
           <Button scheme="primary">hello</Button>
-
           <FocusZone direction={FocusZoneDirection.bidirectional}>
             <Stack vertical gap={gapSize * 2}>
               <Stack gap={gapSize * 2} fill collapseItems justify="center">
@@ -118,15 +122,11 @@ class App extends React.Component<{}, { gapSize: number }> {
               </Stack>
             </Stack>
           </FocusZone>
-
           <Text type="h1" size="tiny">
             I am h1 text
           </Text>
-
           <Text type="h2">I am h2 text</Text>
-
           <Text type="h3">I am h3 text</Text>
-
           <Text type="h4">I am h4 text</Text>
           <Text type="h5">I am h5 text</Text>
           <Text type="default">I am default text</Text>

@@ -11,7 +11,11 @@ function convertColorArray(colors: string[], fallback: IColor): IColor[] {
   return colors.map((val) => (getColorFromString(val) || fallback));
 }
 
-export function resolveSeedColorDefinition(def?: Partial<ISeedColorDefinitions>, parent?: ISeedColors): ISeedColors {
+export function resolveSeedColorDefinition(
+  _obj: any,
+  def?: Partial<ISeedColorDefinitions>,
+  parent?: ISeedColors
+): ISeedColors {
   if (def) {
     // start with the baseline from the bare minimum, then the parent if specified
     const result = Object.assign({}, minimumSeedColors, parent);

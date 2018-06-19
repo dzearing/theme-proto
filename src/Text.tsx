@@ -9,7 +9,7 @@ import {
   IFontSizes,
   IFontWeights,
   IFontColors
-} from "./theming/ITypography";
+} from "./theming/typography/ITypography";
 import { getThemeStyle } from './theming/ThemeCache';
 
 // Styles for the component

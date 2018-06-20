@@ -1,10 +1,17 @@
 import { mergeObjects } from "../ThemeRegistry";
-import { IThemePluginProps } from "./IThemePlugin";
+import { IThemePluginProps, ThemeValueResolver, IThemeValueRequests, ThemeDefinitionResolver } from "./IThemePlugin";
 
-const themePlugins = {};
+const themePlugins: { [key: string]: IThemePluginProps } = {};
 
 export function registerThemePlugIn(props: IThemePluginProps) {
   themePlugins[props.name] = props;
+}
+
+const defaultProps: IThemePluginProps = {
+  name: '',
+  resolveDef: resolveThemeDefinition,
+  resolveValue: defaultValueResolver,
+  default: {}
 }
 
 /**
@@ -40,4 +47,98 @@ export function resolveThemeDefinition(
   }
   const base = parent || defaultDef;
   return mergeObjects(base, definition);
+}
+
+/**
+ * Take the definitions for the style or state and build up the resolved style or state
+ * @param definitions agreggated set of definitions to apply to this style or state
+ * @param allowPartial whether we need a full definition (style) or a partial one (state)
+ * @param parent for a style either null if default or the default style if not.  For state
+ * the parent state.
+ */
+export function resolveDefinitions(
+  definitions: object,
+  allowPartial: boolean,
+  parent?: object
+): any {
+  const done: { [key: string]: boolean } = {};
+  const results = {};
+
+  // if we have a parent loop through that
+  if (parent) {
+    for (const key in parent) {
+      if (parent.hasOwnProperty(key)) {
+        resolveDefToResults(key, results, done, definitions, allowPartial, parent);
+      }
+    }
+  }
+
+  // now loop through any definitions
+  for (const key in definitions) {
+    if (definitions.hasOwnProperty(key)) {
+      resolveDefToResults(key, results, done, definitions, allowPartial, parent);
+    }
+  }
+
+  return results;
+}
+
+function resolveDefToResults(
+  name: string,
+  results: any,
+  done: { [key: string]: boolean },
+  definitions: object,
+  allowPartial: boolean,
+  parent?: object
+): void {
+  if (!done[name]) {
+    done[name] = true;
+    const entry = themePlugins.hasOwnProperty(name) ? themePlugins[name] : defaultProps;
+    if (entry.dependsOn) {
+      for (const dependency of entry.dependsOn) {
+        if (!done[dependency]) {
+          resolveDefToResults(dependency, results, done, definitions, allowPartial, parent);
+        }
+      }
+    }
+    const resolver: ThemeDefinitionResolver = entry.resolveDef || resolveThemeDefinition;
+    const def = definitions[name];
+    const par = parent ? parent[name] : undefined;
+    results[name] = resolver(results, entry.default, allowPartial, def, par);
+  }
+}
+
+/**
+ * Performs value mapping for a given value request
+ * @param moduleName name of the plugin, used to look up the resolver function
+ * @param values set of potential values to use for lookup purposes
+ * @param request requested values to extract
+ */
+export function resolveValues(moduleName: string, values: object, request: IThemeValueRequests): any {
+  const resolver: ThemeValueResolver = getValueResolver(moduleName);
+  const result = {};
+  for (const key in request) {
+    if (request.hasOwnProperty(key)) {
+      const entry = request[key];
+      const valueName = typeof entry === 'string' ? entry : entry.value;
+      if (values.hasOwnProperty(valueName)) {
+        const mod = typeof entry !== 'string' ? entry.mod : undefined;
+        result[key] = resolver(values[valueName], mod);
+      }
+    }
+  }
+}
+
+function defaultValueResolver(val: any, mod?: string): any {
+  return val;
+}
+
+function getValueResolver(moduleName: string): ThemeValueResolver {
+  if (themePlugins.hasOwnProperty(moduleName)) {
+    const entry = themePlugins[moduleName];
+    if (entry.resolveValue) {
+      return entry.resolveValue;
+    }
+  }
+  return defaultValueResolver;
 }

@@ -1,5 +1,5 @@
 import { DefaultTypography } from "./DefaultTypography";
-import { IThemePluginProps } from "../plugins/IThemePlugin";
+import { IThemePluginProps } from "../IThemePlugin";
 
 export const typographyPluginProps: IThemePluginProps = {
   name: 'typography',

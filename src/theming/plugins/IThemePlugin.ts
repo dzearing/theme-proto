@@ -61,3 +61,13 @@ export interface IThemePluginProps {
   resolveDef?: ThemeDefinitionResolver;
   resolveValue?: ThemeValueResolver;
 }
+
+/**
+ * Requests for theme values from a plugin, the object name should map to the plugin name
+ * key - name of the property to set in the results
+ * value - name of the property to query from in the plugin data
+ * mod - optional parameter
+ */
+export interface IThemeValueRequests {
+  [key: string]: string | { value: string, mod?: string };
+}

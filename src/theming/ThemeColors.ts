@@ -1,8 +1,8 @@
 import { ISeedColors, ILayerSets } from "./IColorPalette";
 import { getColorFromString, IColor } from "../coloring/color";
 import { getContrastRatio, getShadeArray } from "../coloring/shading";
-import { IColorLayerKey } from "./IColorLayerKey";
 import { IColorDefinitions } from "./IThemeSettings";
+import { IColorLayerKey } from "./colorSets/IColorSet";
 
 const bgType = 'bg';
 const accentType = 'accent';
@@ -41,7 +41,7 @@ export function isFnKey(key: IColorLayerKey): boolean {
  * from here and as will custom swatch arrays.  Default arrays will be recreated. 
  */
 export function createPalette(def: Partial<IColorDefinitions>, base?: ILayerSets): ILayerSets {
-  let colors: { [key: string]: IColor[] } = { };
+  let colors: { [key: string]: IColor[] } = {};
 
   // convert colors in the color definitions
   for (const key in def) {

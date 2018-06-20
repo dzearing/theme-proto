@@ -1,7 +1,7 @@
 import { IRawStyle } from "@uifabric/styling";
 import { IColor } from "../coloring/color";
 import { ITypography } from "./typography/ITypography";
-import { IColorLayerKey } from "./colorSets/IColorLayerKey";
+import { IColorLayerKey } from "./colorSets/IColorSet";
 
 
 /**

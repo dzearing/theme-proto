@@ -73,3 +73,9 @@ export interface ISeedColors {
    */
   [key: string]: IColor[];
 }
+
+export const DefaultSeedColors: ISeedColorDefinitions = {
+  fg: { color: 'black' },
+  bg: { color: '#f3f2f1' },
+  accent: { color: '#0078d4', anchorColor: true }
+}

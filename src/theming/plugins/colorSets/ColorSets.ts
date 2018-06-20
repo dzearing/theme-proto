@@ -1,9 +1,15 @@
-import { IColorSetDefinitions, IColorSet, IResolvedColor } from "./IColorSet";
+import {
+  DefaultColorSet,
+  IColorSetDefinitions,
+  IColorSet,
+  IResolvedColor,
+  IColorLayerKey
+} from "./IColorSet";
 import { ISeedColors } from "../seedColors/ISeedColors";
-import { resolveSeedColorDefinition } from "../seedColors/SeedColors";
 import { IColor, getColorFromString } from "../../coloring/color";
-import { IColorLayerKey } from "./IColorLayerKey";
 import { getContrastRatio } from "../../coloring/shading";
+import { IThemePluginProps } from "../plugins/IThemePlugin";
+import { seedColorsPluginName } from "../seedColors/SeedColors";
 
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
@@ -14,6 +20,15 @@ const fallbackSet: IColorSet = {
 const bgType = 'bg';
 const accentType = 'accent';
 
+export const colorsPluginName: string = 'colors';
+export const colorsPluginProps: IThemePluginProps = {
+  name: colorsPluginName,
+  default: DefaultColorSet,
+  dependsOn: [seedColorsPluginName],
+  resolveDef: resolveColorSetDefinition,
+  resolveValue: resolveColorValue
+}
+
 /**
  * 
  * @param obj The new theme or style that is being constructed.  Provided so that the seedColors can
@@ -22,17 +37,28 @@ const accentType = 'accent';
  * @param parent the parent element in the inheritance chain.  If this is the default style and this is
  * specified it should be a parent theme
  */
-export function resolveColorSetDefinition(
+function resolveColorSetDefinition(
   obj: any,
+  defaultDef: IColorSetDefinitions,
+  allowPartial: boolean,
   def?: Partial<IColorSetDefinitions>,
   parent?: IColorSet
-): IColorSet {
-  const seedKey = 'seedColors';
-  const seedColors = obj.hasOwnProperty(seedKey) ?
-    obj[seedKey] as ISeedColors :
-    resolveSeedColorDefinition(obj);
+): any {
+  // a state with nothing overriden?  No values to report
+  if (allowPartial && !def) {
+    return undefined;
+  }
 
-  const result: IColorSet = Object.assign({}, fallbackSet, parent);
+  // try to get the seed colors
+  const seedKey = seedColorsPluginName;
+  const seedColors = obj.hasOwnProperty(seedKey) ? obj[seedKey] as ISeedColors : undefined;
+
+  // use the default definitions if totally empty
+  if (!def && !parent) {
+    def = defaultDef;
+  }
+
+  const result = (allowPartial) ? {} : Object.assign({}, fallbackSet, parent);
   if (def) {
     for (const key in def) {
       if (def.hasOwnProperty(key)) {
@@ -52,13 +78,17 @@ export function resolveColorSetDefinition(
   for (const key in result) {
     if (result.hasOwnProperty(key)) {
       const entry = result[key];
-      if (entry.key) {
+      if (entry.key && seedColors) {
         entry.val = resolveColor(seedColors, entry.key, baseKey);
       }
     }
   }
 
   return result;
+}
+
+function resolveColorValue(value: IColor, _modifier?: string): string {
+  return value.str;
 }
 
 function resolveColor(layers: ISeedColors, key: IColorLayerKey, base?: IColorLayerKey): IColor {

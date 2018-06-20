@@ -1,3 +1,24 @@
+import { IColor } from "../../../coloring/color";
+
+export type IColorReference = string | IColorLayerKey;
+
+export interface IColorSetDefinitions {
+  fg: IColorReference;
+  bg: IColorReference;
+  [key: string]: IColorReference;
+}
+
+export interface IResolvedColor {
+  val: IColor;
+  key?: IColorLayerKey;
+}
+
+export interface IColorSet {
+  fg: IResolvedColor;
+  bg: IResolvedColor;
+  [key: string]: IResolvedColor;
+}
+
 /*
   Key for indexing and referring to colors and layers.
   type: should be one of:
@@ -14,4 +35,9 @@ export interface IColorLayerKey {
   type: string;
   shade: number;
   name?: string;
+}
+
+export const DefaultColorSet: IColorSetDefinitions = {
+  bg: { type: 'bg', shade: 0 },
+  fg: { type: 'fn', shade: 0, name: 'autofg' }
 }

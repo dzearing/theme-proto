@@ -1,7 +1,7 @@
 import { IThemeSettings } from '../IThemeSettings';
 import { IStyleValues, IThemeStyleDefinition } from '../IThemeStyle';
 import { registerTheme } from '../ThemeRegistry';
-import { DefaultTypography as typography } from "./DefaultTypography";
+import { DefaultTypography as typography } from "../typography/DefaultTypography";
 
 export const DefaultStyleValues: IStyleValues = {
   typography

@@ -1,0 +1,22 @@
+import { DefaultTypography } from "./DefaultTypography";
+import { IThemePluginProps } from "../plugins/IThemePlugin";
+
+export const typographyPluginProps: IThemePluginProps = {
+  name: 'typography',
+  default: DefaultTypography,
+  resolveValue: resolveTypographyValue
+}
+
+const defaultKey = 'default';
+
+function resolveTypographyValue(value: any, modifier?: string): any {
+  if (typeof value === 'object') {
+    if (modifier && value.hasOwnProperty(modifier)) {
+      return value[modifier];
+    }
+    if (value.hasOwnProperty(defaultKey)) {
+      return value[defaultKey];
+    }
+  }
+  return value;
+}

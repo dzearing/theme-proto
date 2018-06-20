@@ -1,24 +1,46 @@
-import { ISeedColorDefinitions, ISeedColors } from "./ISeedColors";
+import { DefaultSeedColors, ISeedColorDefinitions, ISeedColors } from "./ISeedColors";
 import { getColorFromString, IColor } from "../../coloring/color";
 import { getShadeArray } from "../../coloring/shading";
+import { IThemePluginProps } from "../plugins/IThemePlugin";
 
-const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
-const fallbackAccent: IColor = { h: 212.26, s: 100, v: 83.14, a: 100, str: '#0062d4' };
-const minimumSeedColors: ISeedColors = { fg: [fallbackFg], bg: [fallbackBg], accent: [fallbackAccent] };
 
-function convertColorArray(colors: string[], fallback: IColor): IColor[] {
-  return colors.map((val) => (getColorFromString(val) || fallback));
+export const seedColorsPluginName: string = 'seedColors';
+export const seedColorsPluginProps: IThemePluginProps = {
+  name: seedColorsPluginName,
+  default: DefaultSeedColors,
+  resolveDef: resolveSeedColorDefinition
 }
 
+/**
+ * In the default style case we
+ * @param _obj object being built, ignored
+ * @param defaultDef definition to use if nothing is passed in
+ * @param allowPartial whether a full or partial object should be returned
+ * @param def partial definition to use
+ * @param parent parent object
+ */
 export function resolveSeedColorDefinition(
   _obj: any,
+  defaultDef: ISeedColorDefinitions,
+  allowPartial: boolean,
   def?: Partial<ISeedColorDefinitions>,
   parent?: ISeedColors
-): ISeedColors {
+): any {
+  // state with nothing specified, just return nothing
+  if (allowPartial && !def) {
+    return undefined;
+  }
+
+  // default style with no definition, use the default
+  if (!def && !parent) {
+    def = defaultDef;
+  }
+
+  // if we have something to do then do conversions
   if (def) {
     // start with the baseline from the bare minimum, then the parent if specified
-    const result = Object.assign({}, minimumSeedColors, parent);
+    const result = Object.assign({}, parent);
 
     // convert colors in the color definitions
     for (const key in def) {
@@ -42,10 +64,9 @@ export function resolveSeedColorDefinition(
 
     // return the built up seed colors
     return result;
-  } else if (parent) {
-    // just pass on the parent without modification if no override definition is specified
-    return parent;
   }
-  // just return basic color arrays of length 1
-  return Object.assign({}, minimumSeedColors);
+}
+
+function convertColorArray(colors: string[], fallback: IColor): IColor[] {
+  return colors.map((val) => (getColorFromString(val) || fallback));
 }

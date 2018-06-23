@@ -71,3 +71,10 @@ export interface IThemePluginProps {
 export interface IThemeValueRequests {
   [key: string]: string | { value: string, mod?: string };
 }
+
+/**
+ * Overall request for theme values.  Each key should correspond to a module/plugin name
+ */
+export interface IThemeRequest {
+  [key: string]: IThemeValueRequests;
+}

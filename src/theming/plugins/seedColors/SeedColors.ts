@@ -1,7 +1,7 @@
 import { DefaultSeedColors, ISeedColorDefinitions, ISeedColors } from "./ISeedColors";
-import { getColorFromString, IColor } from "../../coloring/color";
-import { getShadeArray } from "../../coloring/shading";
-import { IThemePluginProps } from "../plugins/IThemePlugin";
+import { getColorFromString, IColor } from "../../../coloring/color";
+import { getShadeArray } from "../../../coloring/shading";
+import { IThemePluginProps } from "../../plugins/IThemePlugin";
 
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 

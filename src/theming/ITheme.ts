@@ -1,41 +1,44 @@
-import { ILayerSets } from "./IColorPalette";
-import { IThemeStyle } from "./IThemeStyle";
-import { IThemeSettings } from "./IThemeSettings";
+import { ISeedColorDefinitions, ISeedColors } from "./plugins/seedColors/ISeedColors";
+import { IColorSetDefinitions, IColorSet } from "./plugins/colorSets/IColorSet";
+import { ITypography } from "./plugins/typography/ITypography";
+import { IStyleValues } from "./plugins/styleProps/IStyleProps";
 
-/*
-  Overall a theme has:
-    colors - core color values referenced by the layers
-    settings/constants - properties for various layers
-    rules - how to generate colors/layers
-*/
 
-export interface IThemeCache {
-  styles: {
-    default: IThemeStyle;
-    [key: string]: IThemeStyle;
+export interface IThemeStyleDefinition {
+  seedColors: ISeedColorDefinitions,
+  colors: IColorSetDefinitions,
+  typography: ITypography,
+  values: IStyleValues,
+  states: {
+    seedColors?: Partial<ISeedColorDefinitions>,
+    colors?: Partial<IColorSetDefinitions>,
+    typography?: Partial<ITypography>,
+    values?: Partial<IStyleValues>
   }
 }
 
-/**
- * Theme definitions are used to create a theme based upon an existing theme.  If no parent is
- * specified this will be based upon the default theme.
- */
-export interface IThemeDefinition {
-  /**
-   * name of the parent theme.  Cascading theme settings are not resolved until the theme is
-   * actually created.
-   */
-  parent?: string;
-  /**
-   * settings for this theme
-   */
-  settings: IThemeSettings;
+export interface IThemeDefinition extends IThemeStyleDefinition {
+  styles: {
+    [key: string]: Partial<IThemeStyleDefinition>
+  }
 }
 
-/*
-  Full theme, contains both the inputs and calculated/generated values
-*/
-export interface ITheme extends IThemeSettings {
-  palette: ILayerSets;
-  cache: IThemeCache;
+export interface IThemeStyle {
+  seedColors: ISeedColors,
+  colors: IColorSet,
+  typography: ITypography,
+  values: IStyleValues,
+  states: {
+    seedColors?: Partial<ISeedColors>,
+    colors?: Partial<IColorSet>,
+    typography?: Partial<ITypography>,
+    values?: Partial<IStyleValues>
+  }
+}
+
+export interface ITheme extends IThemeStyle {
+  definition: IThemeDefinition,
+  styles: {
+    [key: string]: IThemeStyle
+  }
 }

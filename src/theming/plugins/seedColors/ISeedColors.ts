@@ -1,4 +1,4 @@
-import { IColor } from "../../coloring/color";
+import { IColor } from "../../../coloring/color";
 
 /**
  * interface defining how an array of colors should be generated.  This either happens

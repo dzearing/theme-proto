@@ -7,6 +7,10 @@ export function registerThemePlugIn(props: IThemePluginProps) {
   themePlugins[props.name] = props;
 }
 
+function isReserved(name: string): boolean {
+  return (name === 'definition' || name === 'states' || name === 'styles');
+}
+
 const defaultProps: IThemePluginProps = {
   name: '',
   resolveDef: resolveThemeDefinition,
@@ -67,7 +71,7 @@ export function resolveDefinitions(
   // if we have a parent loop through that
   if (parent) {
     for (const key in parent) {
-      if (parent.hasOwnProperty(key)) {
+      if (parent.hasOwnProperty(key) && !isReserved(key)) {
         resolveDefToResults(key, results, done, definitions, allowPartial, parent);
       }
     }
@@ -75,7 +79,7 @@ export function resolveDefinitions(
 
   // now loop through any definitions
   for (const key in definitions) {
-    if (definitions.hasOwnProperty(key)) {
+    if (definitions.hasOwnProperty(key) && !isReserved(key)) {
       resolveDefToResults(key, results, done, definitions, allowPartial, parent);
     }
   }

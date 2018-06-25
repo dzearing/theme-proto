@@ -70,6 +70,8 @@ export function resolveSeedColorDefinition(
     // return the built up seed colors
     return result;
   }
+
+  return parent;
 }
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {

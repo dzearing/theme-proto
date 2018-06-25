@@ -34,4 +34,5 @@ function fillThemePropsWorker(style: object, request: IThemeRequest, recurse: bo
       }
     }
   }
+  return result;
 }

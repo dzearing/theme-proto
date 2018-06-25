@@ -93,8 +93,8 @@ function resolveColorSetDefinition(
   return result;
 }
 
-function resolveColorValue(value: IColor, _modifier?: string): string {
-  return value.str;
+function resolveColorValue(value: IResolvedColor, _modifier?: string): string {
+  return value.val.str;
 }
 
 function resolveColor(layers: ISeedColors, key: IColorLayerKey, base?: IColorLayerKey): IColor {

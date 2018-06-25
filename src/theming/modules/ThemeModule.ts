@@ -152,6 +152,7 @@ export function resolveValues(moduleName: string, values: object, request: IThem
       }
     }
   }
+  return result;
 }
 
 function defaultValueResolver(val: any, mod?: string): any {

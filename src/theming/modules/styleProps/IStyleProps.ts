@@ -12,6 +12,10 @@ export interface IStyleValues {
    * Corner radius
    */
   cornerRadius?: number;
+  /**
+   * Border style
+   */
+  borderStyle?: string;
 }
 
 export const DefaultStyleValues: IStyleValues = {

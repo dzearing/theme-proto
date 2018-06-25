@@ -7,13 +7,9 @@ const registerRainbowTheme = () => registerTheme('TasteTheRainbow', {
     bg: { color: ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'] },
     accent: { color: '#0078d4' }
   },
-  styles: {
-    default: {
-      colors: {
-        bg: { type: 'bg', shade: 0 },
-        fg: { type: 'fn', shade: 0, name: 'autofg' },
-      }
-    }
+  colors: {
+    bg: { type: 'bg', shade: 0 },
+    fg: { type: 'fn', shade: 0, name: 'autofg' },
   }
 });
 
@@ -24,13 +20,9 @@ const registerOfficeStyleTheme = () => registerTheme('OfficeStyle', {
     bg: { color: 'black' },
     accent: { color: '#0078d4' }
   },
-  styles: {
-    default: {
-      colors: {
-        bg: { type: 'bg', shade: 0 },
-        fg: { type: 'fn', shade: 0, name: 'autofg' },
-      }
-    }
+  colors: {
+    bg: { type: 'bg', shade: 0 },
+    fg: { type: 'fn', shade: 0, name: 'autofg' },
   }
 });
 

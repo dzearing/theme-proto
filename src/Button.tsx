@@ -77,7 +77,8 @@ const themePropMapping: IThemeRequest = {
   },
   values: {
     borderRadius: 'cornerRadius',
-    borderWidth: 'borderThickness'
+    borderWidth: 'borderThickness',
+    borderStyle: 'borderStyle'
   },
   states: {
     ':hover': 'hover',

@@ -1,20 +1,21 @@
 import { registerTheme } from "..";
 
-const resisterHighContrastTheme = () => registerTheme('HighContrast', {
+const registerHighContrastTheme = () => registerTheme('HighContrast', {
   parent: 'DarkTheme',
   seedColors: {
     fg: { color: 'white' },
     bg: { color: 'black' },
     accent: { color: '#0078d4' }
   },
+  colors: {
+    bg: { type: 'bg', shade: 0 },
+    fg: { type: 'fn', shade: 0, name: 'autofg' },
+    border: { type: 'fn', shade: 0, name: 'autofg' }
+  },
+  values: {
+    borderStyle: 'solid'
+  },
   styles: {
-    default: {
-      colors: {
-        bg: { type: 'bg', shade: 0 },
-        fg: { type: 'fn', shade: 0, name: 'autofg' },
-        border: { type: 'fn', shade: 0, name: 'autofg' }
-      }
-    },
     container: {
       values: {
         borderThickness: 1
@@ -35,13 +36,10 @@ const registerOverlayTheme = () => registerTheme('Overlay', {
     fg: { color: 'rgba(255, 255, 255, 0.8)' },
     bg: { color: 'rgba(0, 0, 0, 0.4)' },
     accent: { color: 'rgba(0, 120, 212, 0.4)' }
-  },
-  styles: {
-    default: {}
   }
 })
 
 export function registerContrastThemes() {
-  resisterHighContrastTheme();
+  registerHighContrastTheme();
   registerOverlayTheme();
 }

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IThemeRequest } from './theming/IThemeStyle';
-import { fillThemeProps } from './theming/ThemeRequest';
+import { IThemeRequest, fillThemeProps } from './theming';
 
 // Styles for the component
 export interface ICardStyles {

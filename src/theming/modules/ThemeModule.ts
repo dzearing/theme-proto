@@ -1,14 +1,26 @@
-import { mergeObjects } from "../ThemeRegistry";
-import { IThemePluginProps, ThemeValueResolver, IThemeValueRequests, ThemeDefinitionResolver } from "./IThemePlugin";
+import { IThemePluginProps, ThemeValueResolver, IThemeValueRequests, ThemeDefinitionResolver, ThemeStringHandler } from "./IThemeModule";
+import { mergeObjects } from "../core/mergeObjects";
+import { baseStructure } from "../core/baseStructure";
 
 const themePlugins: { [key: string]: IThemePluginProps } = {};
 
+const stringChangeHandlers: ThemeStringHandler[] = [];
+
+/**
+ * This registers the theme plugin, as you would expect, from something called registerThemePlugIn...
+ * @param props plugin props that configure behavior of this plug in
+ */
 export function registerThemePlugIn(props: IThemePluginProps) {
-  themePlugins[props.name] = props;
+  if (!themePlugins.hasOwnProperty(props.name)) {
+    themePlugins[props.name] = props;
+    if (props.stringConfig) {
+      stringChangeHandlers.push(props.stringConfig);
+    }
+  }
 }
 
 function isReserved(name: string): boolean {
-  return (name === 'definition' || name === 'states' || name === 'styles');
+  return baseStructure.hasOwnProperty(name);
 }
 
 const defaultProps: IThemePluginProps = {
@@ -84,6 +96,15 @@ export function resolveDefinitions(
     }
   }
 
+  if (!allowPartial) {
+    // finally create values for any registered plugins that haven't been done already
+    for (const key in themePlugins) {
+      if (themePlugins.hasOwnProperty(key) && !done[key]) {
+        resolveDefToResults(key, results, done, definitions, false);
+      }
+    }
+  }
+
   return results;
 }
 
@@ -145,4 +166,28 @@ function getValueResolver(moduleName: string): ThemeValueResolver {
     }
   }
   return defaultValueResolver;
+}
+
+/**
+ * This iterates through plugins that have string change handlers to build up an override
+ * definition based on an input string.  This will return the number of handled terms and modify
+ * the definition in place.
+ * @param theme Current theme to modify for reference
+ * @param definition New definition that is being built up, this should be modified in place
+ * @param term Parse term being evaluated
+ * @param param Optional parameter (basically the next parse term if available)
+ */
+export function handleStringChange(
+  theme: object,
+  definition: object,
+  term: string,
+  param?: string
+): number {
+  for (const handler of stringChangeHandlers) {
+    const result = handler(theme, definition, term, param);
+    if (result !== 0) {
+      return result;
+    }
+  }
+  return 0;
 }

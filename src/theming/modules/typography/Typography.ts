@@ -1,10 +1,12 @@
 import { DefaultTypography } from "./DefaultTypography";
-import { IThemePluginProps } from "../IThemePlugin";
+import { registerThemePlugIn } from "../ThemePlugin";
 
-export const typographyPluginProps: IThemePluginProps = {
-  name: 'typography',
-  default: DefaultTypography,
-  resolveValue: resolveTypographyValue
+export function registerTypographyModule() {
+  registerThemePlugIn({
+    name: 'typography',
+    default: DefaultTypography,
+    resolveValue: resolveTypographyValue
+  })
 }
 
 const defaultKey = 'default';

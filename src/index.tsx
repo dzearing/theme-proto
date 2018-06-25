@@ -15,10 +15,10 @@ import TaskCard from "./TaskCard";
 import Grid from "./Grid";
 import AnotherCard from "./AnotherCard";
 import PhotoCard from "./PhotoCard";
-import { initializeTheming } from "./theming/ThemeRegistry";
 import { ThemeLayer } from "./theming/ThemeProvider";
 import { Configurator } from "./Configurator";
 import { Card } from "./Card";
+import { initializeTheming } from "./theming";
 
 initializeIcons();
 initializeTheming();

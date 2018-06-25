@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ITheme } from './ITheme';
-import { getDefaultTheme } from './ThemeRegistry';
-import { themeFromChangeString } from './ThemeCreation';
+import { getDefaultTheme, themeFromChangeString } from '.';
 
 /*
   value stored in the context that is available at each level to consumers.

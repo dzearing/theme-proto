@@ -1,25 +1,25 @@
-import { ISeedColorDefinitions, ISeedColors } from "./plugins/seedColors/ISeedColors";
-import { IColorSetDefinitions, IColorSet } from "./plugins/colorSets/IColorSet";
-import { ITypography } from "./plugins/typography/ITypography";
-import { IStyleValues } from "./plugins/styleProps/IStyleProps";
+import { ISeedColorDefinitions, ISeedColors } from "./modules/seedColors/ISeedColors";
+import { IColorSetDefinitions, IColorSet } from "./modules/colorSets/IColorSet";
+import { ITypography } from "./modules/typography/ITypography";
+import { IStyleValues } from "./modules/styleProps/IStyleProps";
 
+export interface IThemeModuleDefinitions {
+  seedColors?: Partial<ISeedColorDefinitions>,
+  colors?: Partial<IColorSetDefinitions>,
+  typography?: Partial<ITypography>,
+  values?: Partial<IStyleValues>
+}
 
-export interface IThemeStyleDefinition {
-  seedColors: ISeedColorDefinitions,
-  colors: IColorSetDefinitions,
-  typography: ITypography,
-  values: IStyleValues,
-  states: {
-    seedColors?: Partial<ISeedColorDefinitions>,
-    colors?: Partial<IColorSetDefinitions>,
-    typography?: Partial<ITypography>,
-    values?: Partial<IStyleValues>
+export interface IThemeStyleDefinition extends IThemeModuleDefinitions {
+  parent?: string;
+  states?: {
+    [key: string]: IThemeModuleDefinitions
   }
 }
 
 export interface IThemeDefinition extends IThemeStyleDefinition {
-  styles: {
-    [key: string]: Partial<IThemeStyleDefinition>
+  styles?: {
+    [key: string]: Partial<IThemeStyleDefinition>;
   }
 }
 
@@ -42,3 +42,4 @@ export interface ITheme extends IThemeStyle {
     [key: string]: IThemeStyle
   }
 }
+

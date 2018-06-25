@@ -6,10 +6,11 @@ import {
   IColorLayerKey
 } from "./IColorSet";
 import { ISeedColors } from "../seedColors/ISeedColors";
-import { IColor, getColorFromString } from "../../coloring/color";
-import { getContrastRatio } from "../../coloring/shading";
-import { IThemePluginProps } from "../plugins/IThemePlugin";
-import { seedColorsPluginName } from "../seedColors/SeedColors";
+import { seedColorsPluginName, registerSeedColorsModule } from "../seedColors/SeedColors";
+import { IColor, getColorFromString } from "../../../coloring/color";
+import { getContrastRatio } from "../../../coloring/shading";
+import { mergeObjects } from "../../core/mergeObjects";
+import { registerThemePlugIn } from "../ThemeModule";
 
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
@@ -21,12 +22,17 @@ const bgType = 'bg';
 const accentType = 'accent';
 
 export const colorsPluginName: string = 'colors';
-export const colorsPluginProps: IThemePluginProps = {
-  name: colorsPluginName,
-  default: DefaultColorSet,
-  dependsOn: [seedColorsPluginName],
-  resolveDef: resolveColorSetDefinition,
-  resolveValue: resolveColorValue
+
+export function registerColorSetModule() {
+  registerSeedColorsModule();
+  registerThemePlugIn({
+    name: colorsPluginName,
+    default: DefaultColorSet,
+    dependsOn: [seedColorsPluginName],
+    resolveDef: resolveColorSetDefinition,
+    resolveValue: resolveColorValue,
+    stringConfig: parseColorsString
+  });
 }
 
 /**
@@ -146,4 +152,37 @@ function getAutoFg(layers: ISeedColors, bgColor: IColor): IColor {
 
 function isFnKey(key: IColorLayerKey): boolean {
   return key.type === 'fn' && key.name !== undefined;
+}
+
+function parseColorsString(
+  theme: object,
+  definition: object,
+  term: string,
+  param?: string
+): number {
+  if (param
+    && theme.hasOwnProperty(colorsPluginName)
+    && (term === 'type:' || term === 'deepen:' || term === 'shade:')
+  ) {
+    const baseColors = theme[colorsPluginName] as IColorSet;
+    const bgKey: IColorLayerKey = baseColors.bg.key || { type: 'bg', shade: 0 };
+    if (term === 'type:') {
+      if (param === 'switch') {
+        bgKey.type = flipType(bgKey.type);
+      } else {
+        bgKey.type = param;
+      }
+    } else {
+      const shade: number = parseInt(param, 10);
+      if (isNaN(shade)) {
+        return 0;
+      }
+      bgKey.shade = (term === 'deepen:') ? bgKey.shade + shade : shade;
+    }
+    const defToAdd = {};
+    defToAdd[colorsPluginName] = { bg: bgKey };
+    definition = mergeObjects(definition, defToAdd);
+    return 2;
+  }
+  return 0;
 }

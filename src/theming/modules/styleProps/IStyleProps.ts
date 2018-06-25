@@ -1,4 +1,4 @@
-import { IThemePluginProps } from "../IThemePlugin";
+import { registerThemePlugIn } from "../ThemePlugin";
 
 /**
  * Various non-color properties that can be referenced by the theming system
@@ -17,7 +17,10 @@ export interface IStyleValues {
 export const DefaultStyleValues: IStyleValues = {
 }
 
-export const styleValuesPluginProps: IThemePluginProps = {
-  name: 'values',
-  default: DefaultStyleValues
+export function registerStylePropsModule() {
+  registerThemePlugIn({
+    name: 'values',
+    default: DefaultStyleValues
+  })
 }
+

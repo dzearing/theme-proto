@@ -1,8 +1,7 @@
 import { DefaultFontStyles, IStyle } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IThemeRequest } from './theming/IThemeStyle';
-import { fillThemeProps } from './theming/ThemeRequest';
+import { IThemeRequest, fillThemeProps } from './theming';
 
 // Styles for the component
 export interface IButtonStyles {

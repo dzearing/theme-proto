@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IThemeRequest } from './theming/IThemeStyle';
-import { fillThemeProps } from './theming/ThemeRequest';
 import {
   IFontTypes,
   IFontFamilies,
   IFontSizes,
   IFontWeights,
   IFontColors
-} from "./theming/typography/ITypography";
-import { getThemeStyle } from './theming/ThemeCache';
+} from "./theming/modules/typography/ITypography";
+import { IThemeRequest, fillThemeProps } from './theming';
 
 // Styles for the component
 export interface ITextStyles {
@@ -70,24 +68,25 @@ const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
     wrap,
     grow,
     shrink,
-    type,
+    //    type,
     family,
     weight,
     size
   } = props;
-  const style = getThemeStyle(theme);
-  const typography = style.values.typography;
-  const themeType = typography.types[type!] || {
-    fontFamily: typography.families[family!] || typography.families.default,
-    fontWeight: typography.weights[weight!] || typography.weights.default,
-    fontSize: typography.sizes[size!] || typography.sizes.medium
-  };
+  const typographyRequest: IThemeRequest = {
+    typography: {
+      fontFamily: { value: 'families', mod: family },
+      fontWeight: { value: 'weights', mod: weight },
+      fontSize: { value: 'sizes', mod: size }
+    }
+  }
+  // TODO: add typography.types[type] support.  Likely based around a second parameter
+  // passed to fontFamily, fontWeight, etc with a handler in the plugin.
 
   return {
     root: [
-      themeType,
       {
-        ...fillThemeProps(theme, requiredColors),
+        ...fillThemeProps(theme, Object.assign({}, typographyRequest, requiredColors)),
         display: block ? "block" : "inline"
       },
       !wrap && {

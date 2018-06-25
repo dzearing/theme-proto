@@ -1,15 +1,20 @@
 import { DefaultSeedColors, ISeedColorDefinitions, ISeedColors } from "./ISeedColors";
 import { getColorFromString, IColor } from "../../../coloring/color";
 import { getShadeArray } from "../../../coloring/shading";
-import { IThemePluginProps } from "../../plugins/IThemePlugin";
+import { mergeObjects } from "../../core/mergeObjects";
+import { registerThemePlugIn } from "../ThemePlugin";
 
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 
 export const seedColorsPluginName: string = 'seedColors';
-export const seedColorsPluginProps: IThemePluginProps = {
-  name: seedColorsPluginName,
-  default: DefaultSeedColors,
-  resolveDef: resolveSeedColorDefinition
+
+export function registerSeedColorsModule() {
+  registerThemePlugIn({
+    name: seedColorsPluginName,
+    default: DefaultSeedColors,
+    resolveDef: resolveSeedColorDefinition,
+    stringConfig: parseSeedColorString
+  });
 }
 
 /**
@@ -69,4 +74,21 @@ export function resolveSeedColorDefinition(
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {
   return colors.map((val) => (getColorFromString(val) || fallback));
+}
+
+function parseSeedColorString(
+  _theme: object,
+  definition: object,
+  term: string,
+  param?: string
+): number {
+  if (param && (term === 'fg:' || term === 'bg:' || term === 'accent:')) {
+    const newSeedColors = {};
+    newSeedColors[term.slice(0, -1)] = param;
+    const newDef = {};
+    newDef[seedColorsPluginName] = newSeedColors;
+    mergeObjects(definition, newDef);
+    return 2;
+  }
+  return 0;
 }

@@ -1,18 +1,20 @@
-import { IThemeSettings } from '../IThemeSettings';
-import { IStyleValues, IThemeStyleDefinition } from '../IThemeStyle';
-import { registerTheme } from '../ThemeRegistry';
-import { DefaultTypography as typography } from "../typography/DefaultTypography";
+import { IThemeDefinition } from '../ITheme';
+import { DefaultTypography } from '../modules/typography/DefaultTypography';
+import { DefaultStyleValues } from '../modules/styleProps/IStyleProps';
+import { registerTheme } from '..';
 
-export const DefaultStyleValues: IStyleValues = {
-  typography
-}
-
-export const DefaultStyleFallback: IThemeStyleDefinition = {
+export const DefaultShadedTheme: IThemeDefinition = {
+  seedColors: {
+    fg: { color: 'black' },
+    bg: { color: '#f3f2f1' },
+    accent: { color: '#0078d4', anchorColor: true }
+  },
   colors: {
     bg: { type: 'bg', shade: 0 },
     fg: { type: 'fn', shade: 0, name: 'autofg' },
     border: { type: 'rel', shade: 2 }
   },
+  typography: DefaultTypography,
   values: DefaultStyleValues,
   states: {
     press: {
@@ -21,17 +23,8 @@ export const DefaultStyleFallback: IThemeStyleDefinition = {
     hover: {
       colors: { bg: { type: 'rel', shade: 3 } }
     }
-  }
-}
-
-export const DefaultShaded: IThemeSettings = {
-  seeds: {
-    fg: { color: 'black' },
-    bg: { color: '#f3f2f1' },
-    accent: { color: '#0078d4', anchorColor: true }
   },
   styles: {
-    default: DefaultStyleFallback,
     button: {
       colors: {
         bg: { type: 'rel', shade: 2 }
@@ -48,23 +41,19 @@ export const DefaultShaded: IThemeSettings = {
       }
     }
   }
-};
+}
 
-const registerLightTheme = () => registerTheme('LightTheme', {
-  settings: DefaultShaded
-});
+const registerLightTheme = () => registerTheme('LightTheme', DefaultShadedTheme);
 
 const registerDarkTheme = () => registerTheme('DarkTheme', {
   parent: 'LightTheme',
-  settings: {
-    seeds: {
-      fg: { color: 'white' },
-      bg: { color: '#c3c3c3' },
-      accent: { color: '#0078d4' }
-    },
-    styles: {
-      default: {}
-    }
+  seedColors: {
+    fg: { color: 'white' },
+    bg: { color: '#c3c3c3' },
+    accent: { color: '#0078d4' }
+  },
+  styles: {
+    default: {}
   }
 });
 
@@ -73,5 +62,5 @@ export function registerShadedThemes() {
   registerDarkTheme();
 }
 
-export const DefaultTheme = DefaultShaded;
+export const DefaultTheme = DefaultShadedTheme;
 

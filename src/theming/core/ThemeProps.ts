@@ -1,6 +1,6 @@
 import { IThemeRequest } from "../plugins/IThemePlugin";
 import { resolveValues } from "../plugins/ThemePlugin";
-import { getThemeStyle } from "./ThemeCreation";
+import { getThemeStyleCore } from "./ThemeCreation";
 
 /**
  * Extract (while potentially transforming) a number of props from the theme and turn them into a
@@ -9,8 +9,8 @@ import { getThemeStyle } from "./ThemeCreation";
  * @param request request for properties this object cares about
  * @param styleName name of the style to use.  If undefined the default style will be used
  */
-export function fillThemeProps(theme: object, request: IThemeRequest, styleName?: string): any {
-  const style = getThemeStyle(theme, styleName);
+export function fillThemePropsCore(theme: object, request: IThemeRequest, styleName?: string): any {
+  const style = getThemeStyleCore(theme, styleName);
   return fillThemePropsWorker(style, request, true);
 }
 

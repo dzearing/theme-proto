@@ -34,6 +34,23 @@ export type ThemeValueResolver = (
 ) => any;
 
 /**
+ * When building up a one off theme this gives a chance for the plugin to create a definition
+ * based on the input string
+ * @param theme previous theme to base things on
+ * @param definition definition that is being built up.  This will be added to by this call.
+ * @param term the current term to parse
+ * @param param the next parsed string value (if it exists)
+ * returns the number of terms that were handled.  If param is ignored then 1, if param is used
+ * then 2
+ */
+export type ThemeStringHandler = (
+  theme: object,
+  definition: object,
+  term: string,
+  param?: string
+) => number;
+
+/**
  * Interface used to register a theme plugin.  Name is the key value for the plugin.  A complex plugin
  * will have a structure like:
  *  ThemeDefinition {
@@ -53,6 +70,7 @@ export type ThemeValueResolver = (
  * resolver
  * @param resolveDef optional resolver function
  * @param resolveValue optional function which allows transformation of values when queried by clients
+ * @param stringConfig handler for using input strings to configure settings
  */
 export interface IThemePluginProps {
   name: string;
@@ -60,6 +78,7 @@ export interface IThemePluginProps {
   dependsOn?: string[];
   resolveDef?: ThemeDefinitionResolver;
   resolveValue?: ThemeValueResolver;
+  stringConfig?: ThemeStringHandler;
 }
 
 /**
@@ -78,3 +97,4 @@ export interface IThemeValueRequests {
 export interface IThemeRequest {
   [key: string]: IThemeValueRequests;
 }
+

@@ -10,7 +10,7 @@ import { seedColorsPluginName, registerSeedColorsModule } from "../seedColors/Se
 import { IColor, getColorFromString } from "../../../coloring/color";
 import { getContrastRatio } from "../../../coloring/shading";
 import { mergeObjects } from "../../core/mergeObjects";
-import { registerThemePlugIn } from "../ThemeModule";
+import { registerThemeModule } from "../ThemeModule";
 
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
@@ -25,7 +25,7 @@ export const colorsPluginName: string = 'colors';
 
 export function registerColorSetModule() {
   registerSeedColorsModule();
-  registerThemePlugIn({
+  registerThemeModule({
     name: colorsPluginName,
     default: DefaultColorSet,
     dependsOn: [seedColorsPluginName],

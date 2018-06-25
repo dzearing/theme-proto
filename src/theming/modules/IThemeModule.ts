@@ -23,7 +23,7 @@ export type ThemeDefinitionResolver = (
 /**
  * This function is used to transofrm a value into a form suitable for external consumption.
  * For colors this would take in an IColor and return the IColor.str field.  Modifier is an
- * optional argument in case this plug in support parameterization.
+ * optional argument in case this module supports parameterization.
  * @param value the value to extract.  If a value resolver is not specified this will just return
  * the value directly.
  * @param modifier optional modifier to allow lookups into the value.  By default this is ignored.
@@ -34,7 +34,7 @@ export type ThemeValueResolver = (
 ) => any;
 
 /**
- * When building up a one off theme this gives a chance for the plugin to create a definition
+ * When building up a one off theme this gives a chance for the module to create a definition
  * based on the input string
  * @param theme previous theme to base things on
  * @param definition definition that is being built up.  This will be added to by this call.
@@ -51,15 +51,15 @@ export type ThemeStringHandler = (
 ) => number;
 
 /**
- * Interface used to register a theme plugin.  Name is the key value for the plugin.  A complex plugin
+ * Interface used to register a theme module.  Name is the key value for the module.  A complex module
  * will have a structure like:
  *  ThemeDefinition {
- *    pluginName: { plugin definition }
+ *    pluginName: { module definition }
  *    ...
  *  }
  * which will produce:
  *  Theme {
- *    pluginName: { resolved plugin data }
+ *    pluginName: { resolved module data }
  *    ...
  *  }
  * If no resolver is specified then the definition will be merged and copied to the theme.
@@ -72,7 +72,7 @@ export type ThemeStringHandler = (
  * @param resolveValue optional function which allows transformation of values when queried by clients
  * @param stringConfig handler for using input strings to configure settings
  */
-export interface IThemePluginProps {
+export interface IThemeModuleProps {
   name: string;
   default: any;
   dependsOn?: string[];
@@ -82,9 +82,9 @@ export interface IThemePluginProps {
 }
 
 /**
- * Requests for theme values from a plugin, the object name should map to the plugin name
+ * Requests for theme values from a module, the object name should map to the module name
  * key - name of the property to set in the results
- * value - name of the property to query from in the plugin data
+ * value - name of the property to query from in the module data
  * mod - optional parameter
  */
 export interface IThemeValueRequests {
@@ -92,7 +92,7 @@ export interface IThemeValueRequests {
 }
 
 /**
- * Overall request for theme values.  Each key should correspond to a module/plugin name
+ * Overall request for theme values.  Each key should correspond to a module name
  */
 export interface IThemeRequest {
   [key: string]: IThemeValueRequests;

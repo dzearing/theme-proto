@@ -1,16 +1,16 @@
-import { IThemePluginProps, ThemeValueResolver, IThemeValueRequests, ThemeDefinitionResolver, ThemeStringHandler } from "./IThemeModule";
+import { IThemeModuleProps, ThemeValueResolver, IThemeValueRequests, ThemeDefinitionResolver, ThemeStringHandler } from "./IThemeModule";
 import { mergeObjects } from "../core/mergeObjects";
 import { baseStructure } from "../core/baseStructure";
 
-const themePlugins: { [key: string]: IThemePluginProps } = {};
+const themePlugins: { [key: string]: IThemeModuleProps } = {};
 
 const stringChangeHandlers: ThemeStringHandler[] = [];
 
 /**
- * This registers the theme plugin, as you would expect, from something called registerThemePlugIn...
- * @param props plugin props that configure behavior of this plug in
+ * This registers the theme module, as you would expect, from something called registerThemeModule...
+ * @param props module props that configure behavior of this module
  */
-export function registerThemePlugIn(props: IThemePluginProps) {
+export function registerThemeModule(props: IThemeModuleProps) {
   if (!themePlugins.hasOwnProperty(props.name)) {
     themePlugins[props.name] = props;
     if (props.stringConfig) {
@@ -23,7 +23,7 @@ function isReserved(name: string): boolean {
   return baseStructure.hasOwnProperty(name);
 }
 
-const defaultProps: IThemePluginProps = {
+const defaultProps: IThemeModuleProps = {
   name: '',
   resolveDef: resolveThemeDefinition,
   resolveValue: defaultValueResolver,
@@ -135,7 +135,7 @@ function resolveDefToResults(
 
 /**
  * Performs value mapping for a given value request
- * @param moduleName name of the plugin, used to look up the resolver function
+ * @param moduleName name of the module, used to look up the resolver function
  * @param values set of potential values to use for lookup purposes
  * @param request requested values to extract
  */

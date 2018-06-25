@@ -1,5 +1,5 @@
-import { IThemeRequest } from "../plugins/IThemePlugin";
-import { resolveValues } from "../plugins/ThemePlugin";
+import { IThemeRequest } from "../modules/IThemeModule";
+import { resolveValues } from "../modules/ThemeModule";
 import { getThemeStyleCore } from "./ThemeCreation";
 
 /**

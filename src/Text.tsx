@@ -81,7 +81,7 @@ const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
     }
   }
   // TODO: add typography.types[type] support.  Likely based around a second parameter
-  // passed to fontFamily, fontWeight, etc with a handler in the plugin.
+  // passed to fontFamily, fontWeight, etc with a handler in the module.
 
   return {
     root: [

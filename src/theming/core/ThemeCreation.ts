@@ -1,4 +1,4 @@
-import { resolveDefinitions, handleStringChange } from "../modules/ThemePlugin";
+import { resolveDefinitions, handleStringChange } from "../modules/ThemeModule";
 import { mergeObjects } from "./mergeObjects";
 import { hasTheme, getThemeCore } from "./ThemeRegistry";
 
@@ -24,19 +24,17 @@ export function createThemeCore(definition: object, parentTheme?: object): objec
   return {
     ...baseStyle,
     definition: newDef,
-    styles: {
-      ...Object.keys(styleDefinitions).map((key: string) => {
-        // return a function that will create the style on demand when requested
-        () => {
-          const styleDef = styleDefinitions[key];
-          const newStyle = resolveDefinitions(styleDef, false, baseStyle);
-          return {
-            ...newStyle,
-            states: createStatesForStyle(newStyle, styleDef[statesKey])
-          }
+    styles: Object.keys(styleDefinitions).reduce((styles, styleName) => {
+      styles[styleName] = () => {
+        const styleDef = styleDefinitions[styleName];
+        const newStyle = resolveDefinitions(styleDef, false, baseStyle);
+        return {
+          ...newStyle,
+          states: createStatesForStyle(newStyle, styleDef[statesKey])
         }
-      })
-    },
+      }
+      return styles;
+    }, {}),
     states: createStatesForStyle(baseStyle, newDef[statesKey])
   };
 }
@@ -95,12 +93,11 @@ export function getThemeStyleCore(theme: object, name?: string): object {
 
 function createStatesForStyle(baseStyle: object, stateDefinitions?: object) {
   if (stateDefinitions) {
-    return {
-      ...Object.keys(stateDefinitions).map((key: string) => {
-        const stateDef = stateDefinitions[key];
-        return resolveDefinitions(stateDef, true, baseStyle);
-      })
-    }
+    return Object.keys(stateDefinitions).reduce((obj, key) => {
+      const stateDef = stateDefinitions[key];
+      obj[key] = resolveDefinitions(stateDef, true, baseStyle);
+      return obj;
+    }, {});
   }
   return {};
 }

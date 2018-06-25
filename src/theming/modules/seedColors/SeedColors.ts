@@ -2,14 +2,14 @@ import { DefaultSeedColors, ISeedColorDefinitions, ISeedColors } from "./ISeedCo
 import { getColorFromString, IColor } from "../../../coloring/color";
 import { getShadeArray } from "../../../coloring/shading";
 import { mergeObjects } from "../../core/mergeObjects";
-import { registerThemePlugIn } from "../ThemePlugin";
+import { registerThemeModule } from "../ThemeModule";
 
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 
 export const seedColorsPluginName: string = 'seedColors';
 
 export function registerSeedColorsModule() {
-  registerThemePlugIn({
+  registerThemeModule({
     name: seedColorsPluginName,
     default: DefaultSeedColors,
     resolveDef: resolveSeedColorDefinition,

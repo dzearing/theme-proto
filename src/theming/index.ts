@@ -29,6 +29,7 @@ export function registerTheme(name: string, definition: IThemeDefinition) {
  * @param name Name of the theme to retrieve/create
  */
 export function getTheme(name: string): ITheme {
+  initializeTheming();
   return getThemeCore(name) as ITheme;
 }
 
@@ -36,6 +37,7 @@ export function getTheme(name: string): ITheme {
  * This returns the current default theme
  */
 export function getDefaultTheme(): ITheme {
+  initializeTheming();
   return getDefaultThemeCore() as ITheme;
 }
 
@@ -56,10 +58,12 @@ export function getDefaultTheme(): ITheme {
  * @param baseline the theme to apply the modifications on top of
  */
 export function themeFromChangeString(update: string, baseline: ITheme): ITheme {
+  initializeTheming();
   return themeFromChangeStringCore(update, baseline) as ITheme;
 }
 
 export function createTheme(definition: Partial<IThemeDefinition>, parentTheme?: ITheme): ITheme {
+  initializeTheming();
   return createThemeCore(definition, parentTheme) as ITheme;
 }
 
@@ -74,13 +78,19 @@ export function fillThemeProps(theme: ITheme, request: IThemeRequest, styleName?
   return fillThemePropsCore(theme, request, styleName);
 }
 
-export function initializeTheming() {
-  // register the plugin modules, the color set module will register the seed colors
-  registerColorSetModule();
-  registerTypographyModule();
-  registerStylePropsModule();
+let themingInitialized: boolean = false;
 
-  // load up some default theme defintions
-  registerShadedThemes();
-  registerContrastThemes();
+export function initializeTheming() {
+  if (!themingInitialized) {
+    themingInitialized = true;
+
+    // register the modules, the color set module will register the seed colors
+    registerColorSetModule();
+    registerTypographyModule();
+    registerStylePropsModule();
+
+    // load up some default theme defintions
+    registerShadedThemes();
+    registerContrastThemes();
+  }
 }

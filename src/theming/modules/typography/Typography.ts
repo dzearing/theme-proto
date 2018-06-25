@@ -1,8 +1,8 @@
 import { DefaultTypography } from "./DefaultTypography";
-import { registerThemePlugIn } from "../ThemePlugin";
+import { registerThemeModule } from "../ThemeModule";
 
 export function registerTypographyModule() {
-  registerThemePlugIn({
+  registerThemeModule({
     name: 'typography',
     default: DefaultTypography,
     resolveValue: resolveTypographyValue

@@ -26,7 +26,7 @@ export function createThemeCore(definition: object, parentTheme?: object): objec
     definition: newDef,
     styles: Object.keys(styleDefinitions).reduce((styles, styleName) => {
       styles[styleName] = () => {
-        const styleDef = styleDefinitions[styleName];
+        const styleDef = aggregateStyleDefinition(styleDefinitions, styleName);
         const newStyle = resolveDefinitions(styleDef, false, baseStyle);
         return {
           ...newStyle,
@@ -37,6 +37,16 @@ export function createThemeCore(definition: object, parentTheme?: object): objec
     }, {}),
     states: createStatesForStyle(baseStyle, newDef[statesKey])
   };
+}
+
+function aggregateStyleDefinition(styleDefinitions: object, styleName: string): any {
+  if (styleDefinitions.hasOwnProperty(styleName)) {
+    const styleDef = styleDefinitions[styleName];
+    if (styleDef.parent && typeof styleDef.parent === 'string') {
+      return mergeObjects(aggregateStyleDefinition(styleDefinitions, styleDef.parent), styleDef);
+    }
+    return styleDef;
+  }
 }
 
 /*

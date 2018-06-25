@@ -30,7 +30,7 @@ export const DefaultShadedTheme: IThemeDefinition = {
         bg: { type: 'rel', shade: 2 }
       },
       values: {
-        borderThickness: 1,
+        borderThickness: 0,
         cornerRadius: 2
       }
     },

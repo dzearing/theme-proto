@@ -22,6 +22,9 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
       }
     },
     button: {
+      colors: {
+        bg: { type: 'bg', shade: 0 }
+      },
       values: {
         borderThickness: 1,
         cornerRadius: 0

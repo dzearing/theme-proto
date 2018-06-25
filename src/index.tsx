@@ -116,7 +116,7 @@ class App extends React.Component<{}, { gapSize: number }> {
                   <TaskCard theming='shade: 1' />
                 </Stack>
                 <Stack gap={gapSize * 2} justify="center">
-                  <TaskCard theming='type: themed' />
+                  <TaskCard theming='type: accent' />
                   <TaskCard theming='theme: HighContrast' />
                 </Stack>
                 <Stack gap={gapSize * 2} justify="center">

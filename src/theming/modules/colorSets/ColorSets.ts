@@ -165,7 +165,15 @@ function parseColorsString(
     && (term === 'type:' || term === 'deepen:' || term === 'shade:')
   ) {
     const baseColors = theme[colorsPluginName] as IColorSet;
-    const bgKey: IColorLayerKey = baseColors.bg.key || { type: 'bg', shade: 0 };
+    const colorsDefinition: IColorSetDefinitions = definition[colorsPluginName];
+
+    let bgKey: IColorLayerKey = { type: 'bg', shade: 0 };
+    if (colorsDefinition && colorsDefinition.bg && typeof colorsDefinition.bg !== 'string') {
+      bgKey = colorsDefinition.bg;
+    } else if (baseColors.bg.key) {
+      bgKey = { ...baseColors.bg.key };
+    }
+
     if (term === 'type:') {
       if (param === 'switch') {
         bgKey.type = flipType(bgKey.type);
@@ -179,9 +187,7 @@ function parseColorsString(
       }
       bgKey.shade = (term === 'deepen:') ? bgKey.shade + shade : shade;
     }
-    const defToAdd = {};
-    defToAdd[colorsPluginName] = { bg: bgKey };
-    definition = mergeObjects(definition, defToAdd);
+    definition[colorsPluginName] = mergeObjects(colorsDefinition, { bg: bgKey });
     return 2;
   }
   return 0;

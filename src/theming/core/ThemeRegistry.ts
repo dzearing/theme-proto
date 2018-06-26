@@ -1,22 +1,23 @@
 import { mergeObjects } from "./mergeObjects";
 import { createThemeCore } from "./ThemeCreation";
 import { DefaultTheme } from "../themes/ShadedThemes";
+import { IBaseTheme, IBaseThemeDefinition } from "./baseStructure";
 
 interface IThemeReference {
   parent?: string;
-  definition: object;
+  definition: IBaseThemeDefinition;
 }
 
 const defaultName: string = 'default';
 const parentKey: string = 'parent';
 
-const themeRegistry: { [key: string]: object } = {
+const themeRegistry: { [key: string]: IBaseTheme } = {
 }
 
 let themeDefinitions: { [key: string]: IThemeReference } = {
 }
 
-export function registerThemeCore(name: string, definition: object) {
+export function registerThemeCore(name: string, definition: IBaseThemeDefinition) {
   const parent = definition.hasOwnProperty(parentKey) ? definition[parentKey] : undefined;
   if (!themeDefinitions) {
     themeDefinitions = {};
@@ -24,11 +25,11 @@ export function registerThemeCore(name: string, definition: object) {
   themeDefinitions[name] = { parent, definition };
 }
 
-export function registerDefaultThemeCore(defaultTheme: object) {
+export function registerDefaultThemeCore(defaultTheme: IBaseTheme) {
   themeRegistry[defaultName] = defaultTheme;
 }
 
-function getResolvedDefinition(name: string): object | undefined {
+function getResolvedDefinition(name: string): IBaseThemeDefinition | undefined {
   if (themeDefinitions.hasOwnProperty(name)) {
     const thisDef = themeDefinitions[name];
     const parent = thisDef.parent;
@@ -40,7 +41,7 @@ function getResolvedDefinition(name: string): object | undefined {
   return undefined;
 }
 
-export function getThemeCore(name: string): object {
+export function getThemeCore(name: string): IBaseTheme {
   if (themeRegistry.hasOwnProperty(name)) {
     // theme has already been created
     return themeRegistry[name];
@@ -62,9 +63,10 @@ export function hasTheme(name: string): boolean {
   return themeDefinitions.hasOwnProperty(name);
 }
 
-export function getDefaultThemeCore(): object {
+export function getDefaultThemeCore(): IBaseTheme {
+  // TODO: this should just use module fallbacks
   if (!themeRegistry[defaultName]) {
-    themeRegistry[defaultName] = createThemeCore(DefaultTheme);
+    themeRegistry[defaultName] = createThemeCore(DefaultTheme as IBaseThemeDefinition);
   }
   return themeRegistry[defaultName];
 }

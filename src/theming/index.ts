@@ -8,6 +8,7 @@ import { registerContrastThemes } from "./themes/ContrastThemes";
 import { themeFromChangeStringCore, createThemeCore } from "./core/ThemeCreation";
 import { IThemeRequest } from "./modules/IThemeModule";
 import { fillThemePropsCore } from "./core/ThemeProps";
+import { IBaseTheme, IBaseThemeDefinition } from "./core/baseStructure";
 
 export { IThemeDefinition, ITheme } from "./ITheme";
 export { IThemeRequest } from "./modules/IThemeModule";
@@ -20,7 +21,7 @@ export { IThemeRequest } from "./modules/IThemeModule";
  * @param definition Definition used to create the theme
  */
 export function registerTheme(name: string, definition: IThemeDefinition) {
-  registerThemeCore(name, definition);
+  registerThemeCore(name, definition as IBaseThemeDefinition);
 }
 
 /**
@@ -59,12 +60,12 @@ export function getDefaultTheme(): ITheme {
  */
 export function themeFromChangeString(update: string, baseline: ITheme): ITheme {
   initializeTheming();
-  return themeFromChangeStringCore(update, baseline) as ITheme;
+  return themeFromChangeStringCore(update, baseline as IBaseTheme) as ITheme;
 }
 
 export function createTheme(definition: Partial<IThemeDefinition>, parentTheme?: ITheme): ITheme {
   initializeTheming();
-  return createThemeCore(definition, parentTheme) as ITheme;
+  return createThemeCore(definition as IBaseThemeDefinition, parentTheme as IBaseTheme) as ITheme;
 }
 
 /**
@@ -75,7 +76,7 @@ export function createTheme(definition: Partial<IThemeDefinition>, parentTheme?:
  * default
  */
 export function fillThemeProps(theme: ITheme, request: IThemeRequest, styleName?: string): any {
-  return fillThemePropsCore(theme, request, styleName);
+  return fillThemePropsCore(theme as IBaseTheme, request, styleName);
 }
 
 let themingInitialized: boolean = false;

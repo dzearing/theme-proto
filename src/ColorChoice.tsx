@@ -8,6 +8,7 @@ import { SwatchBar } from './SwatchBar';
 import { ITheme, getDefaultTheme, createTheme } from './theming';
 import { registerDefaultThemeCore } from './theming/core/ThemeRegistry';
 import { ISeedColorDefinitions } from './theming/modules/seedColors/ISeedColors';
+import { IBaseTheme } from './theming/core/baseStructure';
 
 export interface IColorChoiceProps {
   title: string;
@@ -24,7 +25,7 @@ export interface IColorChoiceState {
 export function updateDefaultThemeColors(newColors: Partial<ISeedColorDefinitions>) {
   const defaultTheme = getDefaultTheme();
   const newTheme = createTheme({ seedColors: newColors }, defaultTheme);
-  registerDefaultThemeCore(newTheme);
+  registerDefaultThemeCore(newTheme as IBaseTheme);
 }
 
 export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoiceState> {

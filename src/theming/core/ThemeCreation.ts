@@ -1,6 +1,7 @@
 import { resolveDefinitions, handleStringChange } from "../modules/ThemeModule";
 import { mergeObjects } from "./mergeObjects";
 import { hasTheme, getThemeCore } from "./ThemeRegistry";
+import { IBaseTheme, IBaseStyle, IBaseThemeDefinition, IBaseStateDefinition } from "./baseStructure";
 
 const stylesKey = 'styles';
 const statesKey = 'states';
@@ -13,7 +14,7 @@ const defaultName = 'default';
  * @param parentTheme optional parent theme to use as a baseline.  Primarily used for creating
  * runtime theme overrides
  */
-export function createThemeCore(definition: object, parentTheme?: object): object {
+export function createThemeCore(definition: IBaseThemeDefinition, parentTheme?: IBaseTheme): object {
   // start with the base style definition
   const baseStyle = resolveDefinitions(definition, false, parentTheme);
   const newDef = parentTheme && parentTheme.hasOwnProperty(defKey)
@@ -39,10 +40,10 @@ export function createThemeCore(definition: object, parentTheme?: object): objec
   };
 }
 
-function aggregateStyleDefinition(styleDefinitions: object, styleName: string): any {
+function aggregateStyleDefinition(styleDefinitions: IBaseStyle, styleName: string): any {
   if (styleDefinitions.hasOwnProperty(styleName)) {
     const styleDef = styleDefinitions[styleName];
-    if (styleDef.parent && typeof styleDef.parent === 'string') {
+    if (styleDef.parent) {
       return mergeObjects(aggregateStyleDefinition(styleDefinitions, styleDef.parent), styleDef);
     }
     return styleDef;
@@ -57,7 +58,7 @@ function aggregateStyleDefinition(styleDefinitions: object, styleName: string): 
     shade: number                       - set the current shade to the specified value
     fg|bg|accent: color                 - override the seed colors for the theme
 */
-export function themeFromChangeStringCore(update: string, baseline: object): object {
+export function themeFromChangeStringCore(update: string, baseline: IBaseTheme): IBaseTheme {
   const terms = update.split(' ');
   const definition = {};
   let updated = false;
@@ -88,20 +89,21 @@ export function themeFromChangeStringCore(update: string, baseline: object): obj
  * @param theme Theme from which to obtain the style
  * @param name Name of the style to obtain.  If undefined it is the equivalent of default
  */
-export function getThemeStyleCore(theme: object, name?: string): object {
-  const styles = theme[stylesKey];
-  if (name && name !== defaultName && styles.hasOwnProperty(name)) {
-    if (typeof styles[name] === 'function') {
+export function getThemeStyleCore(theme: IBaseTheme, name?: string): IBaseStyle {
+  const styles = theme.styles;
+  if (styles && name && name !== defaultName && styles.hasOwnProperty(name)) {
+    const styleVal = styles[name];
+    if (typeof styleVal === 'function') {
       // if this is a factory function call the function to resolve the style
-      styles[name] = styles[name]();
+      styles[name] = styleVal();
     }
-    return styles[name];
+    return styles[name] as IBaseStyle;
   }
   // failing a name lookup (or if we just want the default) return the base theme
   return theme;
 }
 
-function createStatesForStyle(baseStyle: object, stateDefinitions?: object) {
+function createStatesForStyle(baseStyle: IBaseStyle, stateDefinitions?: { [key: string]: IBaseStateDefinition }) {
   if (stateDefinitions) {
     return Object.keys(stateDefinitions).reduce((obj, key) => {
       const stateDef = stateDefinitions[key];

@@ -75,9 +75,9 @@ const themePropMapping: IThemeRequest = {
     backgroundColor: 'bg',
     borderColor: 'border'
   },
-  values: {
-    borderRadius: 'cornerRadius',
-    borderWidth: 'borderThickness',
+  props: {
+    borderRadius: 'borderRadius',
+    borderWidth: 'borderWidth',
     borderStyle: 'borderStyle'
   },
   states: {

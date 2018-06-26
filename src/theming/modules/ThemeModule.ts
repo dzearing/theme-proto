@@ -20,7 +20,7 @@ export function registerThemeModule(props: IThemeModuleProps) {
 }
 
 function isReserved(name: string): boolean {
-  return baseStructure.hasOwnProperty(name);
+  return baseStructure.hasOwnProperty(name) && name !== 'props';
 }
 
 const defaultProps: IThemeModuleProps = {

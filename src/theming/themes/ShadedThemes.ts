@@ -1,6 +1,5 @@
 import { IThemeDefinition } from '../ITheme';
 import { DefaultTypography } from '../modules/typography/DefaultTypography';
-import { DefaultStyleValues } from '../modules/styleProps/IStyleProps';
 import { registerTheme } from '..';
 
 export const DefaultShadedTheme: IThemeDefinition = {
@@ -15,7 +14,6 @@ export const DefaultShadedTheme: IThemeDefinition = {
     border: { type: 'rel', shade: 2 }
   },
   typography: DefaultTypography,
-  values: DefaultStyleValues,
   states: {
     press: {
       colors: { bg: { type: 'rel', shade: 2 } }
@@ -29,9 +27,9 @@ export const DefaultShadedTheme: IThemeDefinition = {
       colors: {
         bg: { type: 'rel', shade: 2 }
       },
-      values: {
-        borderThickness: 0,
-        cornerRadius: 2
+      props: {
+        borderWidth: 0,
+        borderRadius: 2
       }
     },
     themedButton: {

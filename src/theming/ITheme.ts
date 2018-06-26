@@ -1,13 +1,13 @@
 import { ISeedColorDefinitions, ISeedColors } from "./modules/seedColors/ISeedColors";
 import { IColorSetDefinitions, IColorSet } from "./modules/colorSets/IColorSet";
 import { ITypography } from "./modules/typography/ITypography";
-import { IStyleValues } from "./modules/styleProps/IStyleProps";
+import { IRawStyle } from "@uifabric/styling";
 
 export interface IThemeModuleDefinitions {
-  seedColors?: Partial<ISeedColorDefinitions>,
-  colors?: Partial<IColorSetDefinitions>,
-  typography?: Partial<ITypography>,
-  values?: Partial<IStyleValues>
+  props?: IRawStyle;
+  seedColors?: Partial<ISeedColorDefinitions>;
+  colors?: Partial<IColorSetDefinitions>;
+  typography?: Partial<ITypography>;
 }
 
 export interface IThemeStyleDefinition extends IThemeModuleDefinitions {
@@ -24,15 +24,15 @@ export interface IThemeDefinition extends IThemeStyleDefinition {
 }
 
 export interface IThemeStyle {
+  props: IRawStyle,
   seedColors: ISeedColors,
   colors: IColorSet,
   typography: ITypography,
-  values: IStyleValues,
   states: {
+    props: IRawStyle,
     seedColors?: Partial<ISeedColors>,
     colors?: Partial<IColorSet>,
     typography?: Partial<ITypography>,
-    values?: Partial<IStyleValues>
   }
 }
 

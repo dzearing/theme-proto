@@ -2,14 +2,12 @@ import { IThemeDefinition, ITheme } from "./ITheme";
 import { registerThemeCore, getThemeCore, getDefaultThemeCore } from "./core/ThemeRegistry";
 import { registerColorSetModule } from "./modules/colorSets/ColorSets";
 import { registerTypographyModule } from "./modules/typography/Typography";
-import { registerStylePropsModule } from "./modules/styleProps/IStyleProps";
 import { registerShadedThemes } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
 import { themeFromChangeStringCore, createThemeCore } from "./core/ThemeCreation";
 import { IThemeRequest } from "./modules/IThemeModule";
 import { fillThemePropsCore } from "./core/ThemeProps";
 import { IBaseTheme, IBaseThemeDefinition } from "./core/baseStructure";
-
 export { IThemeDefinition, ITheme } from "./ITheme";
 export { IThemeRequest } from "./modules/IThemeModule";
 
@@ -88,7 +86,6 @@ export function initializeTheming() {
     // register the modules, the color set module will register the seed colors
     registerColorSetModule();
     registerTypographyModule();
-    registerStylePropsModule();
 
     // load up some default theme defintions
     registerShadedThemes();

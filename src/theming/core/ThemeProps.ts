@@ -32,7 +32,7 @@ function fillThemePropsWorker(style: IBaseStyle, request: IThemeRequest, recurse
             Object.assign(result, { selectors: stateResults });
           }
         }
-      } else if (style.hasOwnProperty(key)) {
+      } else if (style.hasOwnProperty(key) && style[key]) {
         Object.assign(result, resolveValues(key, style[key], request[key]));
       }
     }

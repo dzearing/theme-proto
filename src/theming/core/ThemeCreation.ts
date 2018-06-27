@@ -21,13 +21,15 @@ export function createThemeCore(definition: IBaseThemeDefinition, parentTheme?: 
     ? mergeObjects(parentTheme[defKey], definition)
     : definition;
   const styleDefinitions = newDef.hasOwnProperty(stylesKey) ? newDef[stylesKey] : {};
+  const baseStateDef = newDef.states || {};
 
   return {
     ...baseStyle,
     definition: newDef,
     styles: Object.keys(styleDefinitions).reduce((styles, styleName) => {
       styles[styleName] = () => {
-        const styleDef = aggregateStyleDefinition(styleDefinitions, styleName);
+        const base = { states: baseStateDef };
+        const styleDef = mergeObjects(base, aggregateStyleDefinition(styleDefinitions, styleName));
         const newStyle = resolveDefinitions(styleDef, false, baseStyle);
         return {
           ...newStyle,
@@ -103,7 +105,10 @@ export function getThemeStyleCore(theme: IBaseTheme, name?: string): IBaseStyle 
   return theme;
 }
 
-function createStatesForStyle(baseStyle: IBaseStyle, stateDefinitions?: { [key: string]: IBaseStateDefinition }) {
+function createStatesForStyle(
+  baseStyle: IBaseStyle,
+  stateDefinitions: { [key: string]: IBaseStateDefinition }
+) {
   if (stateDefinitions) {
     return Object.keys(stateDefinitions).reduce((obj, key) => {
       const stateDef = stateDefinitions[key];

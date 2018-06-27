@@ -107,7 +107,7 @@ const styles = (
         minHeight: 32,
         overflow: "hidden",
         padding: "0 20px",
-        userSelect: "none"
+        userSelect: "none",
       }
     ]
   };

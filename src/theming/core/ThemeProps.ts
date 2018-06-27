@@ -21,12 +21,15 @@ function fillThemePropsWorker(style: IBaseStyle, request: IThemeRequest, recurse
     if (request.hasOwnProperty(key)) {
       if (key === 'states') {
         if (recurse && style.hasOwnProperty(key)) {
+          const stateRequest = request[key];
           const styleStates = style[key];
           if (styleStates) {
             const stateResults = {};
-            for (const state in styleStates) {
-              if (styleStates.hasOwnProperty(state)) {
-                stateResults[state] = fillThemePropsWorker(styleStates[state], request, false);
+            for (const state in stateRequest) {
+              if (stateRequest.hasOwnProperty(state)) {
+                const entry = stateRequest[state];
+                const styleKey = typeof entry === 'string' ? entry : entry.value;
+                stateResults[state] = fillThemePropsWorker(styleStates[styleKey], request, false);
               }
             }
             Object.assign(result, { selectors: stateResults });

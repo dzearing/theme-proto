@@ -1,3 +1,7 @@
+import { IBaseStyle, IBaseTheme, IBaseThemeDefinition } from "../core/baseStructure";
+
+export type IModuleDefinition = object;
+export type IModuleResolved = object;
 
 /**
  * Function to resolve a definition object to a full theme object
@@ -13,11 +17,12 @@
  * will follow standard merging rules.
  */
 export type ThemeDefinitionResolver = (
-  obj: any,
-  defaultDef: any,
+  obj: IBaseStyle,
+  defaultDef: IModuleDefinition | undefined,
   allowPartial: boolean,
-  definition?: any,
-  parent?: any
+  definition?: IModuleDefinition,
+  parentStyle?: IBaseStyle,
+  parent?: IModuleResolved,
 ) => any;
 
 /**
@@ -44,8 +49,8 @@ export type ThemeValueResolver = (
  * then 2
  */
 export type ThemeStringHandler = (
-  theme: object,
-  definition: object,
+  theme: IBaseTheme,
+  definition: IBaseThemeDefinition,
   term: string,
   param?: string
 ) => number;
@@ -74,7 +79,7 @@ export type ThemeStringHandler = (
  */
 export interface IThemeModuleProps {
   name: string;
-  default: any;
+  default?: IModuleDefinition;
   dependsOn?: string[];
   resolveDef?: ThemeDefinitionResolver;
   resolveValue?: ThemeValueResolver;

@@ -1,5 +1,5 @@
 import { DefaultTypography } from "./DefaultTypography";
-import { registerThemeModule } from "../ThemeModule";
+import { registerThemeModule } from "../../modules/ThemeModule";
 
 export function registerTypographyModule() {
   registerThemeModule({

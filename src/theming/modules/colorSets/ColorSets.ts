@@ -10,7 +10,8 @@ import { seedColorsPluginName, registerSeedColorsModule } from "../seedColors/Se
 import { IColor, getColorFromString } from "../../../coloring/color";
 import { getContrastRatio } from "../../../coloring/shading";
 import { mergeObjects } from "../../core/mergeObjects";
-import { registerThemeModule } from "../ThemeModule";
+import { registerThemeModule } from "../../modules/ThemeModule";
+import { IBaseStyle } from "../../core/baseStructure";
 
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
@@ -48,6 +49,7 @@ function resolveColorSetDefinition(
   defaultDef: IColorSetDefinitions,
   allowPartial: boolean,
   def?: Partial<IColorSetDefinitions>,
+  parentStyle?: IBaseStyle,
   parent?: IColorSet
 ): any {
   // a state with nothing overriden?  No values to report
@@ -57,7 +59,9 @@ function resolveColorSetDefinition(
 
   // try to get the seed colors
   const seedKey = seedColorsPluginName;
-  const seedColors = obj.hasOwnProperty(seedKey) ? obj[seedKey] as ISeedColors : undefined;
+  const seedColors = obj.hasOwnProperty(seedKey) ? obj[seedKey] as ISeedColors
+    : (parentStyle && parentStyle.hasOwnProperty(seedKey)) ?
+      parentStyle[seedKey] as ISeedColors : undefined;
 
   // use the default definitions if totally empty
   if (!def && !parent) {

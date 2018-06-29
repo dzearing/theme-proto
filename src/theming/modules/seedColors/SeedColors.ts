@@ -2,7 +2,8 @@ import { DefaultSeedColors, ISeedColorDefinitions, ISeedColors } from "./ISeedCo
 import { getColorFromString, IColor } from "../../../coloring/color";
 import { getShadeArray } from "../../../coloring/shading";
 import { mergeObjects } from "../../core/mergeObjects";
-import { registerThemeModule } from "../ThemeModule";
+import { registerThemeModule } from "../../modules/ThemeModule";
+import { IBaseStyle } from "../../core/baseStructure";
 
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 
@@ -30,6 +31,7 @@ export function resolveSeedColorDefinition(
   defaultDef: ISeedColorDefinitions,
   allowPartial: boolean,
   def?: Partial<ISeedColorDefinitions>,
+  _parentStyle?: IBaseStyle,
   parent?: ISeedColors
 ): any {
   // state with nothing specified, just return nothing

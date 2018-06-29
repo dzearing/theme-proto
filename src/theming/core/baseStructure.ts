@@ -3,6 +3,9 @@ import { IRawStyle } from "@uifabric/styling";
 export interface IBaseState {
   props?: IRawStyle;
   // other theme modules will be in here as well
+  // seedColors:
+  // colors:
+  // typography:
 }
 
 export interface IBaseStyle extends IBaseState {

@@ -59,7 +59,7 @@ function resolveColorSetDefinition(
 
   // try to get the seed colors
   const seedKey = seedColorsPluginName;
-  const seedColors = obj.hasOwnProperty(seedKey) ? obj[seedKey] as ISeedColors
+  const seedColors = (obj.hasOwnProperty(seedKey) && obj[seedKey]) ? obj[seedKey] as ISeedColors
     : (parentStyle && parentStyle.hasOwnProperty(seedKey)) ?
       parentStyle[seedKey] as ISeedColors : undefined;
 

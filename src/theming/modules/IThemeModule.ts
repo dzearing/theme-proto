@@ -17,12 +17,12 @@ export type IModuleResolved = object;
  * will follow standard merging rules.
  */
 export type ThemeDefinitionResolver = (
+  name: string,
   obj: IBaseStyle,
   defaultDef: IModuleDefinition | undefined,
   allowPartial: boolean,
   definition?: IModuleDefinition,
-  parentStyle?: IBaseStyle,
-  parent?: IModuleResolved,
+  parent?: IBaseStyle,
 ) => any;
 
 /**

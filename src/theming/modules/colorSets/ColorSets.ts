@@ -45,30 +45,32 @@ export function registerColorSetModule() {
  * specified it should be a parent theme
  */
 function resolveColorSetDefinition(
+  name: string,
   obj: any,
   defaultDef: IColorSetDefinitions,
   allowPartial: boolean,
   def?: Partial<IColorSetDefinitions>,
-  parentStyle?: IBaseStyle,
-  parent?: IColorSet
+  parent?: IBaseStyle
 ): any {
   // a state with nothing overriden?  No values to report
   if (allowPartial && !def) {
     return undefined;
   }
 
+  const parentSet = parent ? parent[name] : undefined;
+
   // try to get the seed colors
   const seedKey = seedColorsPluginName;
   const seedColors = (obj.hasOwnProperty(seedKey) && obj[seedKey]) ? obj[seedKey] as ISeedColors
-    : (parentStyle && parentStyle.hasOwnProperty(seedKey)) ?
-      parentStyle[seedKey] as ISeedColors : undefined;
+    : (parentSet && parentSet.hasOwnProperty(seedKey)) ?
+      parentSet[seedKey] as ISeedColors : undefined;
 
   // use the default definitions if totally empty
-  if (!def && !parent) {
+  if (!def && !parentSet) {
     def = defaultDef;
   }
 
-  const result = (allowPartial) ? {} : Object.assign({}, fallbackSet, parent);
+  const result = (allowPartial) ? {} : Object.assign({}, fallbackSet, parentSet);
   if (def) {
     for (const key in def) {
       if (def.hasOwnProperty(key)) {
@@ -84,7 +86,7 @@ function resolveColorSetDefinition(
   }
 
   // now iterate through the result values and resolve any ones specified by key
-  const baseKey = (parent && parent.bg.key) ? parent.bg.key : undefined;
+  const baseKey = (parentSet) ? parentSet.bg.key : undefined;
   for (const key in result) {
     if (result.hasOwnProperty(key)) {
       const entry = result[key];

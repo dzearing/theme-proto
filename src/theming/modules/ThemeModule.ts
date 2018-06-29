@@ -1,6 +1,6 @@
 import { IThemeModuleProps, ThemeValueResolver, IThemeValueRequests, ThemeDefinitionResolver, ThemeStringHandler } from "./IThemeModule";
 import { mergeObjects } from "../core/mergeObjects";
-import { baseStructure, IBaseStyle } from "../core/baseStructure";
+import { baseStructure } from "../core/baseStructure";
 
 const themePlugins: { [key: string]: IThemeModuleProps } = {};
 
@@ -52,17 +52,17 @@ const defaultProps: IThemeModuleProps = {
  * @param parent default style for a style variant or base style for a state
  */
 export function resolveThemeDefinition(
+  name: string,
   _obj: any,
   defaultDef: any,
   allowPartial: boolean,
   definition?: any,
-  _parentStyle?: IBaseStyle,
   parent?: any
 ): any {
   if (allowPartial && !definition) {
     return definition;
   }
-  const base = parent || defaultDef;
+  const base = (parent && parent[name]) ? parent[name] : defaultDef;
   return mergeObjects(base, definition);
 }
 
@@ -129,8 +129,7 @@ function resolveDefToResults(
     }
     const resolver: ThemeDefinitionResolver = entry.resolveDef || resolveThemeDefinition;
     const def = definitions[name];
-    const par = parent ? parent[name] : undefined;
-    results[name] = resolver(results, entry.default, allowPartial, def, parent, par);
+    results[name] = resolver(name, results, entry.default, allowPartial, def, parent);
   }
 }
 

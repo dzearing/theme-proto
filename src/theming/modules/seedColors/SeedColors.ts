@@ -1,4 +1,4 @@
-import { DefaultSeedColors, ISeedColorDefinitions, ISeedColors } from "./ISeedColors";
+import { DefaultSeedColors, ISeedColorDefinitions } from "./ISeedColors";
 import { getColorFromString, IColor } from "../../../coloring/color";
 import { getShadeArray } from "../../../coloring/shading";
 import { mergeObjects } from "../../core/mergeObjects";
@@ -27,27 +27,29 @@ export function registerSeedColorsModule() {
  * @param parent parent object
  */
 export function resolveSeedColorDefinition(
+  name: string,
   _obj: any,
   defaultDef: ISeedColorDefinitions,
   allowPartial: boolean,
   def?: Partial<ISeedColorDefinitions>,
-  _parentStyle?: IBaseStyle,
-  parent?: ISeedColors
+  parent?: IBaseStyle
 ): any {
   // state with nothing specified, just return nothing
   if (allowPartial && !def) {
     return undefined;
   }
 
+  const parentSeeds = parent ? parent[name] : undefined;
+
   // default style with no definition, use the default
-  if (!def && !parent) {
+  if (!def && !parentSeeds) {
     def = defaultDef;
   }
 
   // if we have something to do then do conversions
   if (def) {
     // start with the baseline from the bare minimum, then the parent if specified
-    const result = Object.assign({}, parent);
+    const result = Object.assign({}, parentSeeds);
 
     // convert colors in the color definitions
     for (const key in def) {
@@ -73,7 +75,7 @@ export function resolveSeedColorDefinition(
     return result;
   }
 
-  return parent;
+  return parentSeeds;
 }
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {

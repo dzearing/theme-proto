@@ -89,7 +89,9 @@ function resolveColorSetDefinition(
     if (result.hasOwnProperty(key)) {
       const entry = result[key];
       if (entry.key && seedColors) {
-        entry.val = resolveColor(seedColors, entry.key, baseKey);
+        const entryVals = resolveColor(seedColors, entry.key, baseKey);
+        entry.val = entryVals.val;
+        entry.key = entryVals.key;
       }
     }
   }
@@ -101,20 +103,21 @@ function resolveColorValue(value: IResolvedColor, _modifier?: string): string {
   return value.val.str;
 }
 
-function resolveColor(layers: ISeedColors, key: IColorLayerKey, base?: IColorLayerKey): IColor {
+function resolveColor(layers: ISeedColors, key: IColorLayerKey, base?: IColorLayerKey): IResolvedColor {
   // make sure the key is converted to a non-relative key
   key = resolveKey(key, base);
 
   // now look up the layer if the type is an index into the layers
   if (layers.hasOwnProperty(key.type)) {
     const colors = layers[key.type];
-    return colors[key.shade % colors.length];
+    return { val: colors[key.shade % colors.length], key };
   }
   const fallbackKey: IColorLayerKey = { type: bgType, shade: 0 };
 
   if (isFnKey(key) && key.name) {
     if (key.name === 'autofg') {
-      return getAutoFg(layers, resolveColor(layers, base || fallbackKey));
+      const bgVal = resolveColor(layers, base || fallbackKey);
+      return { val: getAutoFg(layers, bgVal.val), key };
     }
   }
 

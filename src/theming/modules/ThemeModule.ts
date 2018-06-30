@@ -1,10 +1,8 @@
-import { IThemeModuleProps, ThemeValueResolver, IThemeValueRequests, ThemeDefinitionResolver, ThemeStringHandler } from "./IThemeModule";
+import { IThemeModuleProps, ThemeValueResolver, IThemeValueRequests, ThemeStringHandler } from "./IThemeModule";
 import { mergeObjects } from "../core/mergeObjects";
-import { baseStructure } from "../core/baseStructure";
 
 const rawStyleKey = 'props';
-const themeModules: { [key: string]: IThemeModuleProps } = {
-};
+const themeModules: { [key: string]: IThemeModuleProps } = {};
 const moduleArray: IThemeModuleProps[] = [];
 const stringChangeHandlers: ThemeStringHandler[] = [];
 
@@ -42,13 +40,8 @@ export function registerThemeModule(props: Partial<IThemeModuleProps>) {
     let newPos = length;
     for (let i = 0; i < length && newPos === length; i++) {
       const dependencies = moduleArray[i].dependsOn;
-      if (dependencies) {
-        for (const dependency of dependencies) {
-          if (dependency === name) {
-            newPos = i;
-            break;
-          }
-        }
+      if (dependencies && dependencies.indexOf(name) > -1) {
+        newPos = i;
       }
     }
     if (newPos < length) {
@@ -57,17 +50,6 @@ export function registerThemeModule(props: Partial<IThemeModuleProps>) {
       moduleArray.push(newProps);
     }
   }
-}
-
-function isReserved(name: string): boolean {
-  return baseStructure.hasOwnProperty(name) && name !== 'props';
-}
-
-const defaultProps: IThemeModuleProps = {
-  name: '',
-  resolveDef: resolveThemeDefinition,
-  resolveValue: defaultValueResolver,
-  default: {}
 }
 
 /**
@@ -118,59 +100,18 @@ export function resolveDefinitions(
   allowPartial: boolean,
   parent?: object
 ): any {
-  const done: { [key: string]: boolean } = {};
   const results = {};
 
-  // if we have a parent loop through that
-  if (parent) {
-    for (const key in parent) {
-      if (parent.hasOwnProperty(key) && !isReserved(key)) {
-        resolveDefToResults(key, results, done, definitions, allowPartial, parent);
-      }
-    }
-  }
-
-  // now loop through any definitions
-  for (const key in definitions) {
-    if (definitions.hasOwnProperty(key) && !isReserved(key)) {
-      resolveDefToResults(key, results, done, definitions, allowPartial, parent);
-    }
-  }
-
-  if (!allowPartial) {
-    // finally create values for any registered plugins that haven't been done already
-    for (const key in themeModules) {
-      if (themeModules.hasOwnProperty(key) && !done[key]) {
-        resolveDefToResults(key, results, done, definitions, false);
-      }
+  // go through the modules of note in the order they appear in the array
+  for (const module of moduleArray) {
+    const name = module.name;
+    const def = definitions[name];
+    if (!allowPartial || def) {
+      results[name] = module.resolveDef(name, results, module.default, allowPartial, def, parent);
     }
   }
 
   return results;
-}
-
-function resolveDefToResults(
-  name: string,
-  results: any,
-  done: { [key: string]: boolean },
-  definitions: object,
-  allowPartial: boolean,
-  parent?: object
-): void {
-  if (!done[name]) {
-    done[name] = true;
-    const entry = themeModules.hasOwnProperty(name) ? themeModules[name] : defaultProps;
-    if (entry.dependsOn) {
-      for (const dependency of entry.dependsOn) {
-        if (!done[dependency]) {
-          resolveDefToResults(dependency, results, done, definitions, allowPartial, parent);
-        }
-      }
-    }
-    const resolver: ThemeDefinitionResolver = entry.resolveDef || resolveThemeDefinition;
-    const def = definitions[name];
-    results[name] = resolver(name, results, entry.default, allowPartial, def, parent);
-  }
 }
 
 /**

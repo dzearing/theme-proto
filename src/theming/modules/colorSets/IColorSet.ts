@@ -3,8 +3,8 @@ import { IColor } from "../../../coloring/color";
 export type IColorReference = string | IColorLayerKey;
 
 export interface IColorSetDefinitions {
-  fg: IColorReference;
-  bg: IColorReference;
+  color: IColorReference;
+  backgroundColor: IColorReference;
   [key: string]: IColorReference;
 }
 
@@ -14,8 +14,8 @@ export interface IResolvedColor {
 }
 
 export interface IColorSet {
-  fg: IResolvedColor;
-  bg: IResolvedColor;
+  color: IResolvedColor;
+  backgroundColor: IResolvedColor;
   [key: string]: IResolvedColor;
 }
 
@@ -38,6 +38,6 @@ export interface IColorLayerKey {
 }
 
 export const DefaultColorSet: IColorSetDefinitions = {
-  bg: { type: 'bg', shade: 0 },
-  fg: { type: 'fn', shade: 0, name: 'autofg' }
+  backgroundColor: { type: 'bg', shade: 0 },
+  color: { type: 'fn', shade: 0, name: 'autofg' }
 }

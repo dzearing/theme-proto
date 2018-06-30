@@ -71,9 +71,9 @@ function _getDefaultRootType(props: IButtonProps): string {
 
 const themePropMapping: IThemeRequest = {
   colors: {
-    color: 'fg',
-    backgroundColor: 'bg',
-    borderColor: 'border'
+    color: 'color',
+    backgroundColor: 'backgroundColor',
+    borderColor: 'borderColor'
   },
   props: {
     borderRadius: 'borderRadius',

@@ -1,4 +1,5 @@
 import { IBaseStyle, IBaseTheme, IBaseThemeDefinition } from "../core/baseStructure";
+import { IRawStyle } from "@uifabric/styling";
 
 export type IModuleDefinition = object;
 export type IModuleResolved = object;
@@ -24,6 +25,18 @@ export type ThemeDefinitionResolver = (
   definition?: IModuleDefinition,
   parent?: IBaseStyle,
 ) => any;
+
+/**
+ * This takes information from the resolved module and applies it to the style.
+ * @param style style to modify in place.  Similar to object.assign, this both modifies and returns
+ * @param module resolved module at this level
+ * @param params optional, module specific parameters which can adjust behavior
+ */
+export type StyleUpdater = (
+  style: IRawStyle,
+  module: IModuleResolved,
+  params?: object
+) => IRawStyle;
 
 /**
  * This function is used to transofrm a value into a form suitable for external consumption.

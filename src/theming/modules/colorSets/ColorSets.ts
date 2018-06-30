@@ -16,8 +16,8 @@ import { IBaseStyle } from "../../core/baseStructure";
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 const fallbackSet: IColorSet = {
-  fg: { val: fallbackFg },
-  bg: { val: fallbackBg }
+  color: { val: fallbackFg },
+  backgroundColor: { val: fallbackBg }
 }
 const bgType = 'bg';
 const accentType = 'accent';
@@ -86,7 +86,7 @@ function resolveColorSetDefinition(
   }
 
   // now iterate through the result values and resolve any ones specified by key
-  const baseKey = (parentSet) ? parentSet.bg.key : undefined;
+  const baseKey = (parentSet) ? parentSet.backgroundColor.key : undefined;
   for (const key in result) {
     if (result.hasOwnProperty(key)) {
       const entry = result[key];
@@ -177,10 +177,10 @@ function parseColorsString(
     const colorsDefinition: IColorSetDefinitions = definition[colorsPluginName];
 
     let bgKey: IColorLayerKey = { type: 'bg', shade: 0 };
-    if (colorsDefinition && colorsDefinition.bg && typeof colorsDefinition.bg !== 'string') {
-      bgKey = colorsDefinition.bg;
-    } else if (baseColors.bg.key) {
-      bgKey = { ...baseColors.bg.key };
+    if (colorsDefinition && colorsDefinition.backgroundColor && typeof colorsDefinition.backgroundColor !== 'string') {
+      bgKey = colorsDefinition.backgroundColor;
+    } else if (baseColors.backgroundColor.key) {
+      bgKey = { ...baseColors.backgroundColor.key };
     }
 
     if (term === 'type:') {
@@ -196,7 +196,7 @@ function parseColorsString(
       }
       bgKey.shade = (term === 'deepen:') ? bgKey.shade + shade : shade;
     }
-    definition[colorsPluginName] = mergeObjects(colorsDefinition, { bg: bgKey });
+    definition[colorsPluginName] = mergeObjects(colorsDefinition, { backgroundColor: bgKey });
     return 2;
   }
   return 0;

@@ -9,23 +9,23 @@ export const DefaultShadedTheme: IThemeDefinition = {
     accent: { color: '#0078d4', anchorColor: true }
   },
   colors: {
-    bg: { type: 'bg', shade: 0 },
-    fg: { type: 'fn', shade: 0, name: 'autofg' },
-    border: { type: 'rel', shade: 2 }
+    backgroundColor: { type: 'bg', shade: 0 },
+    color: { type: 'fn', shade: 0, name: 'autofg' },
+    borderColor: { type: 'rel', shade: 2 }
   },
   typography: DefaultTypography,
   states: {
     press: {
-      colors: { bg: { type: 'rel', shade: 2 } }
+      colors: { backgroundColor: { type: 'rel', shade: 2 } }
     },
     hover: {
-      colors: { bg: { type: 'rel', shade: 3 } }
+      colors: { backgroundColor: { type: 'rel', shade: 3 } }
     }
   },
   styles: {
     button: {
       colors: {
-        bg: { type: 'rel', shade: 2 }
+        backgroundColor: { type: 'rel', shade: 2 }
       },
       props: {
         borderWidth: 0,
@@ -35,7 +35,7 @@ export const DefaultShadedTheme: IThemeDefinition = {
     themedButton: {
       parent: 'button',
       colors: {
-        bg: { type: 'switch', shade: 0 }
+        backgroundColor: { type: 'switch', shade: 0 }
       }
     }
   }

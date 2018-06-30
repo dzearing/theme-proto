@@ -41,9 +41,9 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
 
 const requiredColors: IThemeRequest = {
   colors: {
-    background: 'bg',
-    color: 'fg',
-    borderColor: 'border'
+    backgroundColor: 'backgroundColor',
+    color: 'color',
+    borderColor: 'borderColor'
   }
 }
 

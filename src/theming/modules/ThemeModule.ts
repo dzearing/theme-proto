@@ -2,19 +2,59 @@ import { IThemeModuleProps, ThemeValueResolver, IThemeValueRequests, ThemeDefini
 import { mergeObjects } from "../core/mergeObjects";
 import { baseStructure } from "../core/baseStructure";
 
-const themePlugins: { [key: string]: IThemeModuleProps } = {};
-
+const rawStyleKey = 'props';
+const themeModules: { [key: string]: IThemeModuleProps } = {
+};
+const moduleArray: IThemeModuleProps[] = [];
 const stringChangeHandlers: ThemeStringHandler[] = [];
+
+function resolveModuleProps(props: Partial<IThemeModuleProps>): IThemeModuleProps {
+  return {
+    name: props.name || 'bogus',
+    default: props.default || {},
+    dependsOn: props.dependsOn,
+    resolveDef: props.resolveDef || resolveThemeDefinition,
+    resolveValue: props.resolveValue || defaultValueResolver,
+    stringConfig: props.stringConfig
+  }
+}
 
 /**
  * This registers the theme module, as you would expect, from something called registerThemeModule...
  * @param props module props that configure behavior of this module
  */
-export function registerThemeModule(props: IThemeModuleProps) {
-  if (!themePlugins.hasOwnProperty(props.name)) {
-    themePlugins[props.name] = props;
+export function registerThemeModule(props: Partial<IThemeModuleProps>) {
+  const name = props.name;
+  if (!name) {
+    throw Error('Theme modules require a name property');
+  }
+  if (name !== rawStyleKey && !themeModules.hasOwnProperty(rawStyleKey)) {
+    registerThemeModule({ name: rawStyleKey });
+  }
+  if (!themeModules.hasOwnProperty(name)) {
+    const newProps = resolveModuleProps(props);
+    themeModules[name] = newProps;
     if (props.stringConfig) {
       stringChangeHandlers.push(props.stringConfig);
+    }
+
+    const length = moduleArray.length;
+    let newPos = length;
+    for (let i = 0; i < length && newPos === length; i++) {
+      const dependencies = moduleArray[i].dependsOn;
+      if (dependencies) {
+        for (const dependency of dependencies) {
+          if (dependency === name) {
+            newPos = i;
+            break;
+          }
+        }
+      }
+    }
+    if (newPos < length) {
+      moduleArray.splice(newPos, 0, newProps);
+    } else {
+      moduleArray.push(newProps);
     }
   }
 }
@@ -99,8 +139,8 @@ export function resolveDefinitions(
 
   if (!allowPartial) {
     // finally create values for any registered plugins that haven't been done already
-    for (const key in themePlugins) {
-      if (themePlugins.hasOwnProperty(key) && !done[key]) {
+    for (const key in themeModules) {
+      if (themeModules.hasOwnProperty(key) && !done[key]) {
         resolveDefToResults(key, results, done, definitions, false);
       }
     }
@@ -119,7 +159,7 @@ function resolveDefToResults(
 ): void {
   if (!done[name]) {
     done[name] = true;
-    const entry = themePlugins.hasOwnProperty(name) ? themePlugins[name] : defaultProps;
+    const entry = themeModules.hasOwnProperty(name) ? themeModules[name] : defaultProps;
     if (entry.dependsOn) {
       for (const dependency of entry.dependsOn) {
         if (!done[dependency]) {
@@ -160,8 +200,8 @@ function defaultValueResolver(val: any, mod?: string): any {
 }
 
 function getValueResolver(moduleName: string): ThemeValueResolver {
-  if (themePlugins.hasOwnProperty(moduleName)) {
-    const entry = themePlugins[moduleName];
+  if (themeModules.hasOwnProperty(moduleName)) {
+    const entry = themeModules[moduleName];
     if (entry.resolveValue) {
       return entry.resolveValue;
     }

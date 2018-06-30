@@ -79,10 +79,10 @@ export type ThemeStringHandler = (
  */
 export interface IThemeModuleProps {
   name: string;
-  default?: IModuleDefinition;
+  default: IModuleDefinition;
   dependsOn?: string[];
-  resolveDef?: ThemeDefinitionResolver;
-  resolveValue?: ThemeValueResolver;
+  resolveDef: ThemeDefinitionResolver;
+  resolveValue: ThemeValueResolver;
   stringConfig?: ThemeStringHandler;
 }
 

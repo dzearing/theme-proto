@@ -95,6 +95,7 @@ export interface IThemeModuleProps {
   default: IModuleDefinition;
   dependsOn?: string[];
   resolveDef: ThemeDefinitionResolver;
+  updateStyle?: StyleUpdater;
   resolveValue: ThemeValueResolver;
   stringConfig?: ThemeStringHandler;
 }

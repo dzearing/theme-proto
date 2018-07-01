@@ -2,6 +2,7 @@ import { IThemeRequest } from "../modules/IThemeModule";
 import { resolveValues } from "../modules/ThemeModule";
 import { getThemeStyleCore } from "./ThemeCreation";
 import { IBaseTheme, IBaseStyle } from "./baseStructure";
+import { IRawStyle } from "@uifabric/styling";
 
 /**
  * Extract (while potentially transforming) a number of props from the theme and turn them into a
@@ -41,4 +42,13 @@ function fillThemePropsWorker(style: IBaseStyle, request: IThemeRequest, recurse
     }
   }
   return result;
+}
+
+export interface IStyleRequestProps {
+  name?: string;
+  modules?: { [key: string]: object };
+}
+
+export function themeStyle(theme: IBaseTheme, props?: string | IStyleRequestProps): IRawStyle {
+  return {};
 }

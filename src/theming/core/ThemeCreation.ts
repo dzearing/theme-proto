@@ -1,4 +1,4 @@
-import { resolveDefinitions, handleStringChange } from "../modules/ThemeModule";
+import { createStyleOrState, handleStringChange } from "../modules/ThemeModule";
 import { mergeObjects } from "./mergeObjects";
 import { hasTheme, getThemeCore } from "./ThemeRegistry";
 import { IBaseTheme, IBaseStyle, IBaseThemeDefinition, IBaseStateDefinition } from "./baseStructure";
@@ -16,7 +16,7 @@ const defaultName = 'default';
  */
 export function createThemeCore(definition: IBaseThemeDefinition, parentTheme?: IBaseTheme): object {
   // start with the base style definition
-  const baseStyle = resolveDefinitions(definition, false, parentTheme);
+  const baseStyle = createStyleOrState(definition, false, parentTheme);
   const newDef = parentTheme && parentTheme.hasOwnProperty(defKey)
     ? mergeObjects(parentTheme[defKey], definition)
     : definition;
@@ -30,7 +30,7 @@ export function createThemeCore(definition: IBaseThemeDefinition, parentTheme?: 
       styles[styleName] = () => {
         const base = { states: baseStateDef };
         const styleDef = mergeObjects(base, aggregateStyleDefinition(styleDefinitions, styleName));
-        const newStyle = resolveDefinitions(styleDef, false, baseStyle);
+        const newStyle = createStyleOrState(styleDef, false, baseStyle);
         return {
           ...newStyle,
           states: createStatesForStyle(newStyle, styleDef[statesKey])
@@ -112,7 +112,7 @@ function createStatesForStyle(
   if (stateDefinitions) {
     return Object.keys(stateDefinitions).reduce((obj, key) => {
       const stateDef = stateDefinitions[key];
-      obj[key] = resolveDefinitions(stateDef, true, baseStyle);
+      obj[key] = createStyleOrState(stateDef, true, baseStyle);
       return obj;
     }, {});
   }

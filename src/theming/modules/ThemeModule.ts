@@ -95,12 +95,12 @@ export function resolveThemeDefinition(
  * @param parent for a style either null if default or the default style if not.  For state
  * the parent state.
  */
-export function resolveDefinitions(
+export function createStyleOrState(
   definitions: object,
   allowPartial: boolean,
   parent?: object
 ): any {
-  const results = {};
+  const results = { [rawStyleKey]: {} };
 
   // go through the modules of note in the order they appear in the array
   for (const module of moduleArray) {
@@ -108,6 +108,9 @@ export function resolveDefinitions(
     const def = definitions[name];
     if (!allowPartial || def) {
       results[name] = module.resolveDef(name, results, module.default, allowPartial, def, parent);
+    }
+    if (results[name] && module.updateStyle) {
+      results.props = module.updateStyle(results[rawStyleKey], results[name]);
     }
   }
 

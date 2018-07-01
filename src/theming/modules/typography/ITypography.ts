@@ -54,3 +54,10 @@ export interface ITypography {
   colors: IFontColors;
   types: IFontTypes;
 }
+
+export interface ITypographyProps {
+  type?: keyof IFontTypes;
+  family?: keyof IFontFamilies;
+  size?: keyof IFontSizes;
+  weight?: keyof IFontWeights;
+}

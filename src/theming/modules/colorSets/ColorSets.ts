@@ -12,6 +12,7 @@ import { getContrastRatio } from "../../../coloring/shading";
 import { mergeObjects } from "../../core/mergeObjects";
 import { registerThemeModule } from "../../modules/ThemeModule";
 import { IBaseStyle } from "../../core/baseStructure";
+import { IRawStyle } from "@uifabric/styling";
 
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
@@ -31,6 +32,7 @@ export function registerColorSetModule() {
     default: DefaultColorSet,
     dependsOn: [seedColorsPluginName],
     resolveDef: resolveColorSetDefinition,
+    updateStyle: addColorsToStyle,
     resolveValue: resolveColorValue,
     stringConfig: parseColorsString
   });
@@ -99,6 +101,15 @@ function resolveColorSetDefinition(
   }
 
   return result;
+}
+
+function addColorsToStyle(style: IRawStyle, colorSet: IColorSet, _params?: object): IRawStyle {
+  for (const colorName in colorSet) {
+    if (colorSet.hasOwnProperty(colorName)) {
+      style[colorName] = colorSet[colorName].val.str;
+    }
+  }
+  return style;
 }
 
 function resolveColorValue(value: IResolvedColor, _modifier?: string): string {

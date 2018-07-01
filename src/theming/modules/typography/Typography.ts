@@ -7,27 +7,14 @@ export function registerTypographyModule() {
   registerThemeModule({
     name: 'typography',
     default: DefaultTypography,
-    resolveValue: resolveTypographyValue,
     updateStyle: addTypographyToStyle
   })
 }
 
 const defaultKey = 'default';
 
-function resolveTypographyValue(value: any, modifier?: string): any {
-  if (typeof value === 'object') {
-    if (modifier && value.hasOwnProperty(modifier)) {
-      return value[modifier];
-    }
-    if (value.hasOwnProperty(defaultKey)) {
-      return value[defaultKey];
-    }
-  }
-  return value;
-}
-
 function addTypographyToStyle(style: IRawStyle, typography: ITypography, props?: ITypographyProps): IRawStyle {
-  const defaultProps: ITypographyProps = { family: 'default', weight: 'default', size: 'medium' };
+  const defaultProps: ITypographyProps = { family: defaultKey, weight: defaultKey, size: 'medium' };
   props = Object.assign({}, defaultProps, props);
   if (props.type) {
     const fontType = typography.types[props.type];

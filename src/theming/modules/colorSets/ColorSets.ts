@@ -33,7 +33,6 @@ export function registerColorSetModule() {
     dependsOn: [seedColorsPluginName],
     resolveDef: resolveColorSetDefinition,
     updateStyle: addColorsToStyle,
-    resolveValue: resolveColorValue,
     stringConfig: parseColorsString
   });
 }
@@ -110,10 +109,6 @@ function addColorsToStyle(style: IRawStyle, colorSet: IColorSet, _params?: objec
     }
   }
   return style;
-}
-
-function resolveColorValue(value: IResolvedColor, _modifier?: string): string {
-  return value.val.str;
 }
 
 function resolveColor(layers: ISeedColors, key: IColorLayerKey, base?: IColorLayerKey): IResolvedColor {

@@ -39,19 +39,6 @@ export type StyleUpdater = (
 ) => IRawStyle;
 
 /**
- * This function is used to transofrm a value into a form suitable for external consumption.
- * For colors this would take in an IColor and return the IColor.str field.  Modifier is an
- * optional argument in case this module supports parameterization.
- * @param value the value to extract.  If a value resolver is not specified this will just return
- * the value directly.
- * @param modifier optional modifier to allow lookups into the value.  By default this is ignored.
- */
-export type ThemeValueResolver = (
-  value: any,
-  modifier?: string
-) => any;
-
-/**
  * When building up a one off theme this gives a chance for the module to create a definition
  * based on the input string
  * @param theme previous theme to base things on
@@ -96,24 +83,5 @@ export interface IThemeModuleProps {
   dependsOn?: string[];
   resolveDef: ThemeDefinitionResolver;
   updateStyle?: StyleUpdater;
-  resolveValue: ThemeValueResolver;
   stringConfig?: ThemeStringHandler;
 }
-
-/**
- * Requests for theme values from a module, the object name should map to the module name
- * key - name of the property to set in the results
- * value - name of the property to query from in the module data
- * mod - optional parameter
- */
-export interface IThemeValueRequests {
-  [key: string]: string | { value: string, mod?: string };
-}
-
-/**
- * Overall request for theme values.  Each key should correspond to a module name
- */
-export interface IThemeRequest {
-  [key: string]: IThemeValueRequests;
-}
-

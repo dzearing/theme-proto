@@ -1,4 +1,4 @@
-import { IThemeModuleProps, ThemeValueResolver, IThemeValueRequests, ThemeStringHandler } from "./IThemeModule";
+import { IThemeModuleProps, ThemeStringHandler } from "./IThemeModule";
 import { mergeObjects } from "../core/mergeObjects";
 import { IRawStyle } from "@uifabric/styling";
 import { IBaseStyle } from "../core/baseStructure";
@@ -14,7 +14,6 @@ function resolveModuleProps(props: Partial<IThemeModuleProps>): IThemeModuleProp
     default: props.default || {},
     dependsOn: props.dependsOn,
     resolveDef: props.resolveDef || resolveThemeDefinition,
-    resolveValue: props.resolveValue || defaultValueResolver,
     stringConfig: props.stringConfig,
     updateStyle: props.updateStyle
   }
@@ -131,42 +130,6 @@ export function adjustStyleProps(style: IBaseStyle, rawStyle: IRawStyle, modules
     }
   }
   return rawStyle;
-}
-
-/**
- * Performs value mapping for a given value request
- * @param moduleName name of the module, used to look up the resolver function
- * @param values set of potential values to use for lookup purposes
- * @param request requested values to extract
- */
-export function resolveValues(moduleName: string, values: object, request: IThemeValueRequests): any {
-  const resolver: ThemeValueResolver = getValueResolver(moduleName);
-  const result = {};
-  for (const key in request) {
-    if (request.hasOwnProperty(key)) {
-      const entry = request[key];
-      const valueName = typeof entry === 'string' ? entry : entry.value;
-      if (values.hasOwnProperty(valueName)) {
-        const mod = typeof entry !== 'string' ? entry.mod : undefined;
-        result[key] = resolver(values[valueName], mod);
-      }
-    }
-  }
-  return result;
-}
-
-function defaultValueResolver(val: any, mod?: string): any {
-  return val;
-}
-
-function getValueResolver(moduleName: string): ThemeValueResolver {
-  if (themeModules.hasOwnProperty(moduleName)) {
-    const entry = themeModules[moduleName];
-    if (entry.resolveValue) {
-      return entry.resolveValue;
-    }
-  }
-  return defaultValueResolver;
 }
 
 /**

@@ -5,12 +5,10 @@ import { registerTypographyModule } from "./modules/typography/Typography";
 import { registerShadedThemes } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
 import { themeFromChangeStringCore, createThemeCore } from "./core/ThemeCreation";
-import { IThemeRequest } from "./modules/IThemeModule";
-import { fillThemePropsCore, IStyleRequestProps, themeStyleCore } from "./core/ThemeProps";
-import { IBaseTheme, IBaseThemeDefinition } from "./core/baseStructure";
+import { themeStyleCore } from "./core/ThemeProps";
+import { IBaseTheme, IBaseThemeDefinition, IStyleRequestProps } from "./core/baseStructure";
 import { IRawStyle } from "@uifabric/styling";
 export { IThemeDefinition, ITheme } from "./ITheme";
-export { IThemeRequest } from "./modules/IThemeModule";
 
 /**
  * This registers a theme into the theming system.  The team can optionally use another
@@ -65,17 +63,6 @@ export function themeFromChangeString(update: string, baseline: ITheme): ITheme 
 export function createTheme(definition: Partial<IThemeDefinition>, parentTheme?: ITheme): ITheme {
   initializeTheming();
   return createThemeCore(definition as IBaseThemeDefinition, parentTheme as IBaseTheme) as ITheme;
-}
-
-/**
- * Map properties from a particular style of a theme into the schema of the requestor
- * @param theme Theme to obtain properties from
- * @param request Property mappings to perform
- * @param styleName Name of the style to get props for.  undefined is the equivalent of
- * default
- */
-export function fillThemeProps(theme: ITheme, request: IThemeRequest, styleName?: string): any {
-  return fillThemePropsCore(theme as IBaseTheme, request, styleName);
 }
 
 export function themeStyle(theme: ITheme, props?: string | IStyleRequestProps): IRawStyle {

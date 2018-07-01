@@ -26,10 +26,7 @@ export type IBaseStateDefinition = IBaseState;
 export type IBaseStyleDefinition = IBaseStyle;
 export type IBaseThemeDefinition = IBaseTheme;
 
-export const baseStructure = {
-  parent: 'default',
-  props: {},
-  states: {},
-  definition: {},
-  styles: {}
+export interface IStyleRequestProps {
+  name?: string;
+  modules?: { [key: string]: object };
 }

@@ -1,7 +1,7 @@
 import { DefaultFontStyles, IStyle } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IThemeRequest, fillThemeProps } from './theming';
+import { themeStyle } from './theming';
 
 // Styles for the component
 export interface IButtonStyles {
@@ -69,23 +69,6 @@ function _getDefaultRootType(props: IButtonProps): string {
   return !!props.href ? "a" : "button";
 }
 
-const themePropMapping: IThemeRequest = {
-  colors: {
-    color: 'color',
-    backgroundColor: 'backgroundColor',
-    borderColor: 'borderColor'
-  },
-  props: {
-    borderRadius: 'borderRadius',
-    borderWidth: 'borderWidth',
-    borderStyle: 'borderStyle'
-  },
-  states: {
-    ':hover': 'hover',
-    ':active': 'press'
-  }
-}
-
 const styles = (
   props: IStyleProps<IButtonProps, IButtonStyles>
 ): IButtonStyles => {
@@ -97,7 +80,7 @@ const styles = (
     root: [
       DefaultFontStyles.medium,
       {
-        ...fillThemeProps(props.theme, themePropMapping, layerName),
+        ...themeStyle(props.theme, layerName),
         alignItems: "center",
         textAlign: "center",
         cursor: "default",

@@ -1,5 +1,7 @@
 import { IThemeModuleProps, ThemeValueResolver, IThemeValueRequests, ThemeStringHandler } from "./IThemeModule";
 import { mergeObjects } from "../core/mergeObjects";
+import { IRawStyle } from "@uifabric/styling";
+import { IBaseStyle } from "../core/baseStructure";
 
 const rawStyleKey = 'props';
 const themeModules: { [key: string]: IThemeModuleProps } = {};
@@ -13,7 +15,8 @@ function resolveModuleProps(props: Partial<IThemeModuleProps>): IThemeModuleProp
     dependsOn: props.dependsOn,
     resolveDef: props.resolveDef || resolveThemeDefinition,
     resolveValue: props.resolveValue || defaultValueResolver,
-    stringConfig: props.stringConfig
+    stringConfig: props.stringConfig,
+    updateStyle: props.updateStyle
   }
 }
 
@@ -115,6 +118,19 @@ export function createStyleOrState(
   }
 
   return results;
+}
+
+export function adjustStyleProps(style: IBaseStyle, rawStyle: IRawStyle, modules: { [key: string]: object }): IRawStyle {
+  for (const key in modules) {
+    if (modules.hasOwnProperty(key) && style[key] && themeModules.hasOwnProperty(key)) {
+      const styleDef = style[key];
+      const updateStyle = themeModules[key].updateStyle;
+      if (updateStyle) {
+        rawStyle = updateStyle(rawStyle, styleDef, modules[key]);
+      }
+    }
+  }
+  return rawStyle;
 }
 
 /**

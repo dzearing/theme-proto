@@ -13,12 +13,13 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
     borderColor: { type: 'fn', shade: 0, name: 'autofg' }
   },
   props: {
-    borderStyle: 'solid'
+
   },
   styles: {
     container: {
       props: {
-        borderWidth: 1
+        borderWidth: 1,
+        borderStyle: 'solid'
       }
     },
     button: {
@@ -27,7 +28,8 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
       },
       props: {
         borderWidth: 1,
-        borderRadius: 0
+        borderRadius: 0,
+        borderStyle: 'solid'
       }
     },
   }

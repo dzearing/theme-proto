@@ -6,8 +6,9 @@ import { registerShadedThemes } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
 import { themeFromChangeStringCore, createThemeCore } from "./core/ThemeCreation";
 import { IThemeRequest } from "./modules/IThemeModule";
-import { fillThemePropsCore } from "./core/ThemeProps";
+import { fillThemePropsCore, IStyleRequestProps, themeStyleCore } from "./core/ThemeProps";
 import { IBaseTheme, IBaseThemeDefinition } from "./core/baseStructure";
+import { IRawStyle } from "@uifabric/styling";
 export { IThemeDefinition, ITheme } from "./ITheme";
 export { IThemeRequest } from "./modules/IThemeModule";
 
@@ -75,6 +76,10 @@ export function createTheme(definition: Partial<IThemeDefinition>, parentTheme?:
  */
 export function fillThemeProps(theme: ITheme, request: IThemeRequest, styleName?: string): any {
   return fillThemePropsCore(theme as IBaseTheme, request, styleName);
+}
+
+export function themeStyle(theme: ITheme, props?: string | IStyleRequestProps): IRawStyle {
+  return themeStyleCore(theme as IBaseTheme, props);
 }
 
 let themingInitialized: boolean = false;

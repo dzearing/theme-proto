@@ -8,7 +8,7 @@ import {
   IFontWeights,
   IFontColors
 } from "./theming/modules/typography/ITypography";
-import { IThemeRequest, fillThemeProps } from './theming';
+import { themeStyle } from './theming';
 
 // Styles for the component
 export interface ITextStyles {
@@ -55,12 +55,6 @@ const view = (props: IViewProps<ITextProps, ITextStyles>) => {
   return <RootType {...rest} className={classNames.root} />;
 };
 
-const requiredColors: IThemeRequest = {
-  colors: {
-    color: 'fg'
-  }
-}
-
 const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
   const {
     block,
@@ -68,25 +62,19 @@ const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
     wrap,
     grow,
     shrink,
-    //    type,
+    type,
     family,
     weight,
     size
   } = props;
-  const typographyRequest: IThemeRequest = {
-    typography: {
-      fontFamily: { value: 'families', mod: family },
-      fontWeight: { value: 'weights', mod: weight },
-      fontSize: { value: 'sizes', mod: size }
-    }
-  }
-  // TODO: add typography.types[type] support.  Likely based around a second parameter
-  // passed to fontFamily, fontWeight, etc with a handler in the module.
+
+  const textParams: any = (type || family || size || weight) ?
+    { modules: { typography: { type, family, size, weight } } } : undefined;
 
   return {
     root: [
       {
-        ...fillThemeProps(theme, Object.assign({}, typographyRequest, requiredColors)),
+        ...themeStyle(theme, textParams),
         display: block ? "block" : "inline"
       },
       !wrap && {

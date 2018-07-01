@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IThemeRequest, fillThemeProps } from './theming';
+import { themeStyle } from './theming';
 
 // Styles for the component
 export interface ICardStyles {
@@ -39,14 +39,6 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
   );
 };
 
-const requiredColors: IThemeRequest = {
-  colors: {
-    backgroundColor: 'backgroundColor',
-    color: 'color',
-    borderColor: 'borderColor'
-  }
-}
-
 const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
   const { width, height, padding } = props;
 
@@ -63,7 +55,7 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
         }
       },
       {
-        ...fillThemeProps(props.theme, requiredColors, 'container'),
+        ...themeStyle(props.theme, 'container'),
         outline: "none",
         boxSizing: "border-box",
         overflow: "hidden",

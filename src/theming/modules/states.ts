@@ -1,5 +1,5 @@
-import { IBaseState, IBaseStyle } from "../../core/baseStructure";
-import { createStyleOrState, adjustStyleProps, registerThemeModule } from "../ThemeModule";
+import { IBaseState, IBaseStyle } from "../core/baseStructure";
+import { createStyleOrState, adjustStyleProps, registerThemeModule } from "../core/ThemeModule";
 import { IRawStyle } from "@uifabric/styling";
 
 export function registerStatesModule() {

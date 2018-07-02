@@ -1,4 +1,4 @@
-import { IThemeModuleProps, ThemeStringHandler } from "./IThemeModule";
+import { IThemeModuleProps, ThemeStringHandler } from "../core/IThemeModule";
 import { mergeObjects } from "../core/mergeObjects";
 import { IRawStyle } from "@uifabric/styling";
 import { IBaseStyle } from "../core/baseStructure";

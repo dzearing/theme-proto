@@ -1,18 +1,11 @@
-import {
-  DefaultColorSet,
-  IColorSetDefinitions,
-  IColorSet,
-  IResolvedColor,
-  IColorLayerKey
-} from "./IColorSet";
-import { ISeedColors } from "../seedColors/ISeedColors";
-import { seedColorsPluginName, registerSeedColorsModule } from "../seedColors/SeedColors";
-import { IColor, getColorFromString } from "../../../coloring/color";
-import { getContrastRatio } from "../../../coloring/shading";
-import { mergeObjects } from "../../core/mergeObjects";
-import { registerThemeModule } from "../../modules/ThemeModule";
-import { IBaseStyle } from "../../core/baseStructure";
 import { IRawStyle } from "@uifabric/styling";
+import { IColor, getColorFromString } from "../../coloring/color";
+import { registerSeedColorsModule } from "./seedColors";
+import { registerThemeModule } from "../core/ThemeModule";
+import { IBaseStyle } from "../core/baseStructure";
+import { ISeedColors } from "./seedColors";
+import { getContrastRatio } from "../../coloring/shading";
+import { mergeObjects } from "../core/mergeObjects";
 
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
@@ -23,13 +16,58 @@ const fallbackSet: IColorSet = {
 const bgType = 'bg';
 const accentType = 'accent';
 
-export const colorsPluginName: string = 'colors';
+let colorsPluginName: string = 'colorSet';
+let seedColorsPluginName: string = 'seedColors';
 
-export function registerColorSetModule() {
+export type IColorReference = string | IColorLayerKey;
+
+export interface IColorSetDefinitions {
+  color: IColorReference;
+  backgroundColor: IColorReference;
+  [key: string]: IColorReference;
+}
+
+export interface IResolvedColor {
+  val: IColor;
+  key?: IColorLayerKey;
+}
+
+export interface IColorSet {
+  color: IResolvedColor;
+  backgroundColor: IResolvedColor;
+  [key: string]: IResolvedColor;
+}
+
+/*
+  Key for indexing and referring to colors and layers.
+  type: should be one of:
+    bg|accent|fg  - index into the layers for backgrounds, themed colors, and fg colors
+    switch        - given a base key, switch from bg to accent or vice versa
+    rel           - given a base key, adjust the shade value by the amount specified
+    relswitch     - combine switch and rel functionality
+    fn            - use a function to calculate the value.  In this case name is the function
+                    name and shade is an optional parameter
+  shade: which color shade numerically is being referenced
+  name: specified for custom layers, if valid it is assumed to be custom
+*/
+export interface IColorLayerKey {
+  type: string;
+  shade: number;
+  name?: string;
+}
+
+export function registerColorSetModule(dependencyName: string, thisModuleName?: string) {
+  seedColorsPluginName = dependencyName;
+  if (thisModuleName) {
+    colorsPluginName = thisModuleName;
+  }
   registerSeedColorsModule();
   registerThemeModule({
     name: colorsPluginName,
-    default: DefaultColorSet,
+    default: {
+      backgroundColor: { type: 'bg', shade: 0 },
+      color: { type: 'fn', shade: 0, name: 'autofg' },
+    },
     dependsOn: [seedColorsPluginName],
     resolveDef: resolveColorSetDefinition,
     updateStyle: addColorsToStyle,

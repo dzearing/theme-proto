@@ -5,8 +5,7 @@ import {
   IFontTypes,
   IFontFamilies,
   IFontSizes,
-  IFontWeights,
-  IFontColors
+  IFontWeights
 } from "./theming/modules/typography/ITypography";
 import { themeStyle } from './theming';
 
@@ -25,7 +24,6 @@ export interface ITextProps {
   family?: keyof IFontFamilies;
   size?: keyof IFontSizes;
   weight?: keyof IFontWeights;
-  color?: keyof IFontColors;
 
   paletteSet?: string;
 
@@ -40,7 +38,6 @@ const view = (props: IViewProps<ITextProps, ITextStyles>) => {
   const {
     block,
     classNames,
-    color,
     family,
     grow,
     renderAs: RootType = "span",

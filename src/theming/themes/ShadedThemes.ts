@@ -8,7 +8,7 @@ export const DefaultShadedTheme: IThemeDefinition = {
     bg: { color: '#f3f2f1' },
     accent: { color: '#0078d4', anchorColor: true }
   },
-  colors: {
+  colorSet: {
     backgroundColor: { type: 'bg', shade: 0 },
     color: { type: 'fn', shade: 0, name: 'autofg' },
     borderColor: { type: 'rel', shade: 2 }
@@ -16,7 +16,7 @@ export const DefaultShadedTheme: IThemeDefinition = {
   typography: DefaultTypography,
   styles: {
     button: {
-      colors: {
+      colorSet: {
         backgroundColor: { type: 'rel', shade: 2 }
       },
       props: {
@@ -25,16 +25,16 @@ export const DefaultShadedTheme: IThemeDefinition = {
       },
       states: {
         ':active': {
-          colors: { backgroundColor: { type: 'rel', shade: 2 } }
+          colorSet: { backgroundColor: { type: 'rel', shade: 2 } }
         },
         ':hover': {
-          colors: { backgroundColor: { type: 'rel', shade: 3 } }
+          colorSet: { backgroundColor: { type: 'rel', shade: 3 } }
         }
       },
     },
     themedButton: {
       parent: 'button',
-      colors: {
+      colorSet: {
         backgroundColor: { type: 'switch', shade: 0 }
       }
     }

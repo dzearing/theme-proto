@@ -21,19 +21,10 @@ export interface IFontWeights {
   bold: number | string;
 }
 
-export interface IFontColors {
-  default: string;
-  caption: string;
-  disabled: string;
-  success: string;
-  error: string;
-}
-
 export interface IFontType {
   fontFamily: keyof IFontFamilies | string;
   fontSize: keyof IFontSizes | number | string;
   fontWeight: keyof IFontWeights | number;
-  color: keyof IFontColors | string;
 }
 
 export interface IFontTypes {
@@ -51,7 +42,6 @@ export interface ITypography {
   families: IFontFamilies;
   sizes: IFontSizes;
   weights: IFontWeights;
-  colors: IFontColors;
   types: IFontTypes;
 }
 

@@ -1,12 +1,12 @@
-import { ISeedColorDefinitions, ISeedColors } from "./modules/seedColors/ISeedColors";
-import { IColorSetDefinitions, IColorSet } from "./modules/colorSets/IColorSet";
+import { ISeedColorDefinitions, ISeedColors } from "./modules/seedColors";
+import { IColorSetDefinitions, IColorSet } from "./modules/colorSet";
 import { ITypography } from "./modules/typography/ITypography";
 import { IRawStyle } from "@uifabric/styling";
 
 export interface IThemeModuleDefinitions {
   props?: IRawStyle;
   seedColors?: Partial<ISeedColorDefinitions>;
-  colors?: Partial<IColorSetDefinitions>;
+  colorSet?: Partial<IColorSetDefinitions>;
   typography?: Partial<ITypography>;
 }
 

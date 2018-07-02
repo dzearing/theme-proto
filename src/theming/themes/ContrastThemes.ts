@@ -7,7 +7,7 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
     bg: { color: 'black' },
     accent: { color: '#0078d4' }
   },
-  colors: {
+  colorSet: {
     backgroundColor: { type: 'bg', shade: 0 },
     color: { type: 'fn', shade: 0, name: 'autofg' },
     borderColor: { type: 'fn', shade: 0, name: 'autofg' }
@@ -23,7 +23,7 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
       }
     },
     button: {
-      colors: {
+      colorSet: {
         backgroundColor: { type: 'bg', shade: 0 }
       },
       props: {

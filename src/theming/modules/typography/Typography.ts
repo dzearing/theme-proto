@@ -1,5 +1,5 @@
 import { DefaultTypography } from "./DefaultTypography";
-import { registerThemeModule } from "../../modules/ThemeModule";
+import { registerThemeModule } from "../../core/ThemeModule";
 import { IRawStyle } from "@uifabric/styling";
 import { ITypography, ITypographyProps } from "./ITypography";
 

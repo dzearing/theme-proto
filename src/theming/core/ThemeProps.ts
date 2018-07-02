@@ -1,4 +1,4 @@
-import { adjustStyleProps } from "../modules/ThemeModule";
+import { adjustStyleProps } from "../core/ThemeModule";
 import { getThemeStyleCore } from "./ThemeCreation";
 import { IBaseTheme, IStyleRequestProps } from "./baseStructure";
 import { IRawStyle } from "@uifabric/styling";

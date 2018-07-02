@@ -1,6 +1,6 @@
 import { IThemeDefinition, ITheme } from "./ITheme";
 import { registerThemeCore, getThemeCore, getDefaultThemeCore } from "./core/ThemeRegistry";
-import { registerColorSetModule } from "./modules/colorSets/ColorSets";
+import { registerColorSetModule } from "./modules/colorSet";
 import { registerTypographyModule } from "./modules/typography/Typography";
 import { registerShadedThemes } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
@@ -77,7 +77,7 @@ export function initializeTheming() {
     themingInitialized = true;
 
     // register the modules, the color set module will register the seed colors
-    registerColorSetModule();
+    registerColorSetModule('seedColors', 'colorSet');
     registerTypographyModule();
     registerStatesModule();
 

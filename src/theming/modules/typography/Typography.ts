@@ -18,13 +18,12 @@ function addTypographyToStyle(style: IRawStyle, typography: ITypography, props?:
   props = Object.assign({}, defaultProps, props);
   if (props.type) {
     const fontType = typography.types[props.type];
-    style.fontFamily = fontType.fontFamily;
-    style.fontWeight = fontType.fontWeight as any;
-    style.fontSize = fontType.fontSize;
-  } else {
-    style.fontFamily = typography.families[props.family!];
-    style.fontWeight = typography.weights[props.weight!] as any;
-    style.fontSize = typography.sizes[props.size!];
+    props.family = fontType.fontFamily || props.family as any;
+    props.size = fontType.fontSize || props.size as any;
+    props.weight = fontType.fontWeight || props.weight as any;
   }
+  style.fontFamily = typography.families[props.family!];
+  style.fontWeight = typography.weights[props.weight!] as any;
+  style.fontSize = typography.sizes[props.size!];
   return style;
 }

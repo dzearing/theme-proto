@@ -1,10 +1,9 @@
 import { createStyleOrState, handleStringChange } from "../modules/ThemeModule";
 import { mergeObjects } from "./mergeObjects";
 import { hasTheme, getThemeCore } from "./ThemeRegistry";
-import { IBaseTheme, IBaseStyle, IBaseThemeDefinition, IBaseStateDefinition } from "./baseStructure";
+import { IBaseTheme, IBaseStyle, IBaseThemeDefinition } from "./baseStructure";
 
 const stylesKey = 'styles';
-const statesKey = 'states';
 const defKey = 'definition';
 const defaultName = 'default';
 
@@ -30,15 +29,10 @@ export function createThemeCore(definition: IBaseThemeDefinition, parentTheme?: 
       styles[styleName] = () => {
         const base = { states: baseStateDef };
         const styleDef = mergeObjects(base, aggregateStyleDefinition(styleDefinitions, styleName));
-        const newStyle = createStyleOrState(styleDef, false, baseStyle);
-        return {
-          ...newStyle,
-          states: createStatesForStyle(newStyle, styleDef[statesKey])
-        }
+        return createStyleOrState(styleDef, false, baseStyle);
       }
       return styles;
     }, {}),
-    states: createStatesForStyle(baseStyle, newDef[statesKey])
   };
 }
 
@@ -103,18 +97,4 @@ export function getThemeStyleCore(theme: IBaseTheme, name?: string): IBaseStyle 
   }
   // failing a name lookup (or if we just want the default) return the base theme
   return theme;
-}
-
-function createStatesForStyle(
-  baseStyle: IBaseStyle,
-  stateDefinitions: { [key: string]: IBaseStateDefinition }
-) {
-  if (stateDefinitions) {
-    return Object.keys(stateDefinitions).reduce((obj, key) => {
-      const stateDef = stateDefinitions[key];
-      obj[key] = createStyleOrState(stateDef, true, baseStyle);
-      return obj;
-    }, {});
-  }
-  return {};
 }

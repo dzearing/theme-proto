@@ -8,6 +8,7 @@ import { themeFromChangeStringCore, createThemeCore } from "./core/ThemeCreation
 import { themeStyleCore } from "./core/ThemeProps";
 import { IBaseTheme, IBaseThemeDefinition, IStyleRequestProps } from "./core/baseStructure";
 import { IRawStyle } from "@uifabric/styling";
+import { registerStatesModule } from "./modules/states";
 export { IThemeDefinition, ITheme } from "./ITheme";
 
 /**
@@ -78,6 +79,7 @@ export function initializeTheming() {
     // register the modules, the color set module will register the seed colors
     registerColorSetModule();
     registerTypographyModule();
+    registerStatesModule();
 
     // load up some default theme defintions
     registerShadedThemes();

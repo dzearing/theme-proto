@@ -26,7 +26,7 @@ export function registerSeedColorsModule() {
  * @param def partial definition to use
  * @param parent parent object
  */
-export function resolveSeedColorDefinition(
+function resolveSeedColorDefinition(
   name: string,
   _obj: any,
   defaultDef: ISeedColorDefinitions,

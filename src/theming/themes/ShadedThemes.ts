@@ -14,14 +14,6 @@ export const DefaultShadedTheme: IThemeDefinition = {
     borderColor: { type: 'rel', shade: 2 }
   },
   typography: DefaultTypography,
-  states: {
-    press: {
-      colors: { backgroundColor: { type: 'rel', shade: 2 } }
-    },
-    hover: {
-      colors: { backgroundColor: { type: 'rel', shade: 3 } }
-    }
-  },
   styles: {
     button: {
       colors: {
@@ -30,7 +22,15 @@ export const DefaultShadedTheme: IThemeDefinition = {
       props: {
         borderWidth: 0,
         borderRadius: 2
-      }
+      },
+      states: {
+        ':active': {
+          colors: { backgroundColor: { type: 'rel', shade: 2 } }
+        },
+        ':hover': {
+          colors: { backgroundColor: { type: 'rel', shade: 3 } }
+        }
+      },
     },
     themedButton: {
       parent: 'button',

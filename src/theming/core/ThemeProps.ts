@@ -17,7 +17,7 @@ export function themeStyleCore(theme: IBaseTheme, props?: string | IStyleRequest
   const style = getThemeStyleCore(theme, styleName);
   let rawStyle: IRawStyle = style.props || {};
   if (modules) {
-    rawStyle = adjustStyleProps(style, rawStyle, modules);
+    rawStyle = adjustStyleProps(style, rawStyle, modules, modules);
   }
   return rawStyle;
 }

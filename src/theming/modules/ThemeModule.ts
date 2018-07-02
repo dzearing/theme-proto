@@ -119,13 +119,14 @@ export function createStyleOrState(
   return results;
 }
 
-export function adjustStyleProps(style: IBaseStyle, rawStyle: IRawStyle, modules: { [key: string]: object }): IRawStyle {
-  for (const key in modules) {
-    if (modules.hasOwnProperty(key) && style[key] && themeModules.hasOwnProperty(key)) {
+export function adjustStyleProps(style: IBaseStyle, rawStyle: IRawStyle, keysToTraverse: object, modules?: { [key: string]: object }): IRawStyle {
+  for (const key in keysToTraverse) {
+    if (keysToTraverse.hasOwnProperty(key) && style[key] && themeModules.hasOwnProperty(key)) {
       const styleDef = style[key];
       const updateStyle = themeModules[key].updateStyle;
+      const thisModule = modules ? modules[key] : undefined;
       if (updateStyle) {
-        rawStyle = updateStyle(rawStyle, styleDef, modules[key]);
+        rawStyle = updateStyle(rawStyle, styleDef, thisModule);
       }
     }
   }

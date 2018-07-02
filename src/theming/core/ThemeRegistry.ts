@@ -1,7 +1,7 @@
 import { mergeObjects } from "./mergeObjects";
 import { createThemeCore } from "./ThemeCreation";
 import { DefaultTheme } from "../themes/ShadedThemes";
-import { IBaseTheme, IBaseThemeDefinition } from "./baseStructure";
+import { IBaseTheme, IBaseThemeDefinition } from "./ICoreTypes";
 
 interface IThemeReference {
   parent?: string;

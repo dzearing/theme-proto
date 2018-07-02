@@ -8,7 +8,7 @@ import { SwatchBar } from './SwatchBar';
 import { ITheme, getDefaultTheme, createTheme } from './theming';
 import { registerDefaultThemeCore } from './theming/core/ThemeRegistry';
 import { ISeedColorDefinitions } from './theming/modules/seedColors';
-import { IBaseTheme } from './theming/core/baseStructure';
+import { IBaseTheme } from './theming/core/ICoreTypes';
 
 export interface IColorChoiceProps {
   title: string;

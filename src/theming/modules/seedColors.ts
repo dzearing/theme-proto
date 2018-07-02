@@ -2,7 +2,7 @@ import { getColorFromString, IColor } from "../../coloring/color";
 import { getShadeArray } from "../../coloring/shading";
 import { mergeObjects } from "../core/mergeObjects";
 import { registerThemeModule } from "../core/ThemeModule";
-import { IBaseStyle } from "../core/baseStructure";
+import { IBaseStyle } from "../core/ICoreTypes";
 
 /**
  * interface defining how an array of colors should be generated.  This either happens

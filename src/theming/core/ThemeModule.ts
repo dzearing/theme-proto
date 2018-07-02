@@ -1,7 +1,7 @@
-import { IThemeModuleProps, ThemeStringHandler } from "../core/IThemeModule";
-import { mergeObjects } from "../core/mergeObjects";
+import { IThemeModuleProps, ThemeStringHandler } from "./ICoreTypes";
+import { mergeObjects } from "./mergeObjects";
 import { IRawStyle } from "@uifabric/styling";
-import { IBaseStyle } from "../core/baseStructure";
+import { IBaseStyle } from "./ICoreTypes";
 
 const rawStyleKey = 'props';
 const themeModules: { [key: string]: IThemeModuleProps } = {};

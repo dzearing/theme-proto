@@ -1,12 +1,48 @@
-import { IBaseStyle, IBaseTheme, IBaseThemeDefinition } from "../core/baseStructure";
 import { IRawStyle } from "@uifabric/styling";
+
+export interface IBaseState {
+  props?: IRawStyle;
+  /*
+  other theme modules will be in here as well
+    seedColors:
+    colorSet:
+    typography:
+    states: {
+      ':hover': {
+        ...IBaseState
+      }
+  */
+}
+
+export interface IBaseStyle extends IBaseState {
+  parent?: string;
+}
+
+export type ThemeResolver = () => IBaseStyle;
+
+export interface IBaseTheme extends IBaseStyle {
+  definition?: any;
+  styles?: {
+    [key: string]: IBaseStyle | ThemeResolver;
+  }
+}
+
+export type IBaseStateDefinition = IBaseState;
+export type IBaseStyleDefinition = IBaseStyle;
+export type IBaseThemeDefinition = IBaseTheme;
+
+export interface IStyleRequestProps {
+  name?: string;
+  modules?: { [key: string]: object };
+}
 
 export type IModuleDefinition = object;
 export type IModuleResolved = object;
 
 /**
  * Function to resolve a definition object to a full theme object
- * @param obj partially built style or state.  Used for querying other plug ins
+ * @param name name of this module
+ * @param obj partially built style or state.  Used for querying other modules
  * @param defaultDef default definition to use as a fallback
  * @param allowPartial if false this should return a full object.  If true only return an
  * object with the specified overrides.  True for state overrides, false for styles

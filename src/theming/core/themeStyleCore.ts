@@ -1,6 +1,6 @@
 import { adjustStyleProps } from "../core/ThemeModule";
 import { getThemeStyleCore } from "./ThemeCreation";
-import { IBaseTheme, IStyleRequestProps } from "./baseStructure";
+import { IBaseTheme, IStyleRequestProps } from "./ICoreTypes";
 import { IRawStyle } from "@uifabric/styling";
 
 export function themeStyleCore(theme: IBaseTheme, props?: string | IStyleRequestProps): IRawStyle {

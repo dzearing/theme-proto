@@ -1,4 +1,4 @@
-import { IBaseState, IBaseStyle } from "../core/baseStructure";
+import { IBaseState, IBaseStyle } from "../core/ICoreTypes";
 import { createStyleOrState, adjustStyleProps, registerThemeModule } from "../core/ThemeModule";
 import { IRawStyle } from "@uifabric/styling";
 

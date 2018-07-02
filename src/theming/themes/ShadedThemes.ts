@@ -15,10 +15,10 @@ export const DefaultShadedTheme: IThemeDefinition = {
   },
   typography: DefaultTypography,
   states: {
-    press: {
+    ':active': {
       colors: { backgroundColor: { type: 'rel', shade: 2 } }
     },
-    hover: {
+    ':hover': {
       colors: { backgroundColor: { type: 'rel', shade: 3 } }
     }
   },

@@ -101,8 +101,8 @@ function resolveColorSetDefinition(
   // try to get the seed colors
   const seedKey = seedColorsPluginName;
   const seedColors = (obj.hasOwnProperty(seedKey) && obj[seedKey]) ? obj[seedKey] as ISeedColors
-    : (parentSet && parentSet.hasOwnProperty(seedKey)) ?
-      parentSet[seedKey] as ISeedColors : undefined;
+    : (parent && parent.hasOwnProperty(seedKey)) ?
+      parent[seedKey] as ISeedColors : undefined;
 
   // use the default definitions if totally empty
   if (!def && !parentSet) {

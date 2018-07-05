@@ -1,7 +1,7 @@
 import { createStyleOrState, handleStringChange } from "../core/ThemeModule";
 import { mergeObjects } from "./mergeObjects";
 import { hasTheme, getThemeCore } from "./ThemeRegistry";
-import { IBaseTheme, IBaseStyle, IBaseThemeDefinition } from "./ICoreTypes";
+import { IBaseTheme, IBaseStyle, IBaseStyleDef, IBaseThemeDef } from "./ICoreTypes";
 
 const stylesKey = 'styles';
 const defKey = 'definition';
@@ -13,7 +13,10 @@ const defaultName = 'default';
  * @param parentTheme optional parent theme to use as a baseline.  Primarily used for creating
  * runtime theme overrides
  */
-export function createThemeCore(definition: IBaseThemeDefinition, parentTheme?: IBaseTheme): object {
+export function createThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends IBaseTheme>(
+  definition: IThemeDef,
+  parentTheme?: ITheme
+): ITheme {
   // start with the base style definition
   const baseStyle = createStyleOrState(definition, false, parentTheme);
   const newDef = parentTheme && parentTheme.hasOwnProperty(defKey)
@@ -36,14 +39,18 @@ export function createThemeCore(definition: IBaseThemeDefinition, parentTheme?: 
   };
 }
 
-function aggregateStyleDefinition(styleDefinitions: IBaseStyle, styleName: string): any {
+function aggregateStyleDefinition<IThemeStyleDefinition extends IBaseStyleDef>(
+  styleDefinitions: { [key: string]: Partial<IThemeStyleDefinition> },
+  styleName: string
+): Partial<IThemeStyleDefinition> {
   if (styleDefinitions.hasOwnProperty(styleName)) {
     const styleDef = styleDefinitions[styleName];
     if (styleDef.parent) {
-      return mergeObjects(aggregateStyleDefinition(styleDefinitions, styleDef.parent), styleDef);
+      return mergeObjects(aggregateStyleDefinition(styleDefinitions, styleDef.parent!), styleDef);
     }
     return styleDef;
   }
+  return {};
 }
 
 /*
@@ -54,7 +61,7 @@ function aggregateStyleDefinition(styleDefinitions: IBaseStyle, styleName: strin
     shade: number                       - set the current shade to the specified value
     fg|bg|accent: color                 - override the seed colors for the theme
 */
-export function themeFromChangeStringCore(update: string, baseline: IBaseTheme): IBaseTheme {
+export function themeFromChangeStringCore<ITheme extends IBaseTheme>(update: string, baseline: ITheme): ITheme {
   const terms = update.split(' ');
   const definition = {};
   let updated = false;
@@ -85,7 +92,10 @@ export function themeFromChangeStringCore(update: string, baseline: IBaseTheme):
  * @param theme Theme from which to obtain the style
  * @param name Name of the style to obtain.  If undefined it is the equivalent of default
  */
-export function getThemeStyleCore(theme: IBaseTheme, name?: string): IBaseStyle {
+export function getThemeStyleCore<ITheme extends IBaseTheme & IStyle, IStyle extends IBaseStyle>(
+  theme: ITheme,
+  name?: string
+): IStyle {
   const styles = theme.styles;
   if (styles && name && name !== defaultName && styles.hasOwnProperty(name)) {
     const styleVal = styles[name];
@@ -93,8 +103,8 @@ export function getThemeStyleCore(theme: IBaseTheme, name?: string): IBaseStyle 
       // if this is a factory function call the function to resolve the style
       styles[name] = styleVal();
     }
-    return styles[name] as IBaseStyle;
+    return styles[name] as IStyle;
   }
-  // failing a name lookup (or if we just want the default) return the base theme
+  // failing a name lookup (or if we just want the default) return the base theme, which extends IStyle by definition
   return theme;
 }

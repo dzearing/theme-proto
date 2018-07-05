@@ -6,7 +6,7 @@ import { registerShadedThemes } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
 import { themeFromChangeStringCore, createThemeCore } from "./core/ThemeCreation";
 import { themeStyleCore } from "./core/themeStyleCore";
-import { IBaseTheme, IBaseThemeDefinition, IStyleRequestProps } from "./core/ICoreTypes";
+import { IStyleRequestProps } from "./core/ICoreTypes";
 import { IRawStyle } from "@uifabric/styling";
 import { registerStatesModule } from "./modules/states";
 export { IThemeDefinition, ITheme } from "./ITheme";
@@ -19,7 +19,7 @@ export { IThemeDefinition, ITheme } from "./ITheme";
  * @param definition Definition used to create the theme
  */
 export function registerTheme(name: string, definition: IThemeDefinition) {
-  registerThemeCore(name, definition as IBaseThemeDefinition);
+  registerThemeCore(name, definition);
 }
 
 /**
@@ -29,7 +29,7 @@ export function registerTheme(name: string, definition: IThemeDefinition) {
  */
 export function getTheme(name: string): ITheme {
   initializeTheming();
-  return getThemeCore(name) as ITheme;
+  return getThemeCore<ITheme>(name);
 }
 
 /**
@@ -37,7 +37,7 @@ export function getTheme(name: string): ITheme {
  */
 export function getDefaultTheme(): ITheme {
   initializeTheming();
-  return getDefaultThemeCore() as ITheme;
+  return getDefaultThemeCore<ITheme>();
 }
 
 /**
@@ -58,16 +58,16 @@ export function getDefaultTheme(): ITheme {
  */
 export function themeFromChangeString(update: string, baseline: ITheme): ITheme {
   initializeTheming();
-  return themeFromChangeStringCore(update, baseline as IBaseTheme) as ITheme;
+  return themeFromChangeStringCore(update, baseline);
 }
 
 export function createTheme(definition: Partial<IThemeDefinition>, parentTheme?: ITheme): ITheme {
   initializeTheming();
-  return createThemeCore(definition as IBaseThemeDefinition, parentTheme as IBaseTheme) as ITheme;
+  return createThemeCore(definition, parentTheme);
 }
 
 export function themeStyle(theme: ITheme, props?: string | IStyleRequestProps): IRawStyle {
-  return themeStyleCore(theme as IBaseTheme, props);
+  return themeStyleCore(theme, props);
 }
 
 let themingInitialized: boolean = false;

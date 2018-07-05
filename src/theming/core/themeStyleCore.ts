@@ -1,9 +1,8 @@
 import { adjustStyleProps } from "../core/ThemeModule";
 import { getThemeStyleCore } from "./ThemeCreation";
-import { IBaseTheme, IStyleRequestProps } from "./ICoreTypes";
-import { IRawStyle } from "@uifabric/styling";
+import { IBaseTheme, IStyleRequestProps, IBaseStyle } from "./ICoreTypes";
 
-export function themeStyleCore(theme: IBaseTheme, props?: string | IStyleRequestProps): IRawStyle {
+export function themeStyleCore<ITheme extends IBaseTheme>(theme: ITheme, props?: string | IStyleRequestProps): object {
   let styleName: string | undefined;
   let modules;
   if (props) {
@@ -14,8 +13,8 @@ export function themeStyleCore(theme: IBaseTheme, props?: string | IStyleRequest
       modules = props.modules;
     }
   }
-  const style = getThemeStyleCore(theme, styleName);
-  let rawStyle: IRawStyle = style.props || {};
+  const style = getThemeStyleCore<ITheme, IBaseStyle>(theme, styleName);
+  let rawStyle = style.props || {};
   if (modules) {
     rawStyle = adjustStyleProps(style, rawStyle, modules, modules);
   }

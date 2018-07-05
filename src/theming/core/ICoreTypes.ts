@@ -1,7 +1,7 @@
 import { IRawStyle } from "@uifabric/styling";
 
-export interface IBaseState {
-  props?: IRawStyle;
+export interface IBaseStateDef {
+  props?: object;
   /*
   other theme modules will be in here as well
     seedColors:
@@ -14,22 +14,32 @@ export interface IBaseState {
   */
 }
 
+export interface IBaseStyleDef extends IBaseStateDef {
+  parent?: string;
+  states?: { [key: string]: Partial<IBaseStateDef>; }
+}
+
+export interface IBaseThemeDef extends IBaseStyleDef {
+  styles?: {
+    [key: string]: IBaseStyleDef;
+  }
+}
+
+export type IBaseState = IBaseStateDef;
+
 export interface IBaseStyle extends IBaseState {
   parent?: string;
+  states?: { [key: string]: Partial<IBaseState> };
 }
 
 export type ThemeResolver = () => IBaseStyle;
 
 export interface IBaseTheme extends IBaseStyle {
-  definition?: any;
+  definition?: IBaseThemeDef;
   styles?: {
     [key: string]: IBaseStyle | ThemeResolver;
   }
 }
-
-export type IBaseStateDefinition = IBaseState;
-export type IBaseStyleDefinition = IBaseStyle;
-export type IBaseThemeDefinition = IBaseTheme;
 
 export interface IStyleRequestProps {
   name?: string;
@@ -86,7 +96,7 @@ export type StyleUpdater = (
  */
 export type ThemeStringHandler = (
   theme: IBaseTheme,
-  definition: IBaseThemeDefinition,
+  definition: IBaseThemeDef,
   term: string,
   param?: string
 ) => number;

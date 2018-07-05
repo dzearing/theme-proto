@@ -2,6 +2,7 @@ import { ISeedColorDefinitions, ISeedColors } from "./modules/seedColors";
 import { IColorSetDefinitions, IColorSet } from "./modules/colorSet";
 import { ITypography } from "./modules/typography/ITypography";
 import { IRawStyle } from "@uifabric/styling";
+import { ThemeResolver } from "./core/ICoreTypes";
 
 export interface IThemeModuleDefinitions {
   props?: IRawStyle;
@@ -24,22 +25,25 @@ export interface IThemeDefinition extends IThemeStyleDefinition {
 }
 
 export interface IThemeStyle {
+  parent?: string,
   props: IRawStyle,
   seedColors: ISeedColors,
   colors: IColorSet,
   typography: ITypography,
   states: {
-    props: IRawStyle,
-    seedColors?: Partial<ISeedColors>,
-    colors?: Partial<IColorSet>,
-    typography?: Partial<ITypography>,
+    [key: string]: {
+      props?: IRawStyle,
+      seedColors?: Partial<ISeedColors>,
+      colors?: Partial<IColorSet>,
+      typography?: Partial<ITypography>,
+    }
   }
 }
 
 export interface ITheme extends IThemeStyle {
   definition: IThemeDefinition,
   styles: {
-    [key: string]: IThemeStyle
+    [key: string]: ThemeResolver | IThemeStyle;
   }
 }
 

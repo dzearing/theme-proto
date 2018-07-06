@@ -1,7 +1,8 @@
-import { IRawStyle } from "@uifabric/styling";
+export type IStyleProps = object;
 
 export interface IBaseStateDef {
-  props?: object;
+  /** bucket of properties to define for the theming system */
+  props?: IStyleProps;
   /*
   other theme modules will be in here as well
     seedColors:
@@ -78,11 +79,11 @@ export type ThemeDefinitionResolver = (
  * @param module resolved module at this level
  * @param params optional, module specific parameters which can adjust behavior
  */
-export type StyleUpdater = (
-  style: IRawStyle,
+export type PropsUpdater = (
+  props: IStyleProps,
   module: IModuleResolved,
   params?: object
-) => IRawStyle;
+) => IStyleProps;
 
 /**
  * When building up a one off theme this gives a chance for the module to create a definition
@@ -128,6 +129,6 @@ export interface IThemeModuleProps {
   default: IModuleDefinition;
   dependsOn?: string[];
   resolveDef: ThemeDefinitionResolver;
-  updateStyle?: StyleUpdater;
+  updateProps?: PropsUpdater;
   stringConfig?: ThemeStringHandler;
 }

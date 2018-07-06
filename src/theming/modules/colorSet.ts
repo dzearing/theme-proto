@@ -70,7 +70,7 @@ export function registerColorSetModule(dependencyName: string, thisModuleName?: 
     },
     dependsOn: [seedColorsPluginName],
     resolveDef: resolveColorSetDefinition,
-    updateStyle: addColorsToStyle,
+    updateProps: addColorsToStyle,
     stringConfig: parseColorsString
   });
 }

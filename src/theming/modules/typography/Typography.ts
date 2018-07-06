@@ -7,7 +7,7 @@ export function registerTypographyModule() {
   registerThemeModule({
     name: 'typography',
     default: DefaultTypography,
-    updateStyle: addTypographyToStyle
+    updateProps: addTypographyToStyle
   })
 }
 

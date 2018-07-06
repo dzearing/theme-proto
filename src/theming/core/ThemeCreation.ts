@@ -11,7 +11,7 @@ const defaultName = 'default';
  * Core theme creation function
  * @param definition settings for the new theme to create
  * @param parentTheme optional parent theme to use as a baseline.  Primarily used for creating
- * runtime theme overrides
+ * runtime theme overrides where the theme definition is only partially specified
  */
 export function createThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends IBaseTheme>(
   definition: IThemeDef,

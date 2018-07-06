@@ -1,12 +1,11 @@
-import { IBaseState, IBaseStyle } from "../core/ICoreTypes";
+import { IBaseState, IBaseStyle, IStyleProps } from "../core/ICoreTypes";
 import { createStyleOrState, adjustStyleProps, registerThemeModule } from "../core/ThemeModule";
-import { IRawStyle } from "@uifabric/styling";
 
 export function registerStatesModule() {
   registerThemeModule({
     name: 'states',
     resolveDef: resolveStates,
-    updateStyle: addStatesToStyle
+    updateProps: addStatesToStyle
   })
 }
 
@@ -30,7 +29,7 @@ function resolveStates(
 
 const selectorsKey = 'selectors';
 
-function addStatesToStyle(style: IRawStyle, states: object, params?: object): IRawStyle {
+function addStatesToStyle(style: IStyleProps, states: object, params?: object): IStyleProps {
   if (!style[selectorsKey]) {
     style[selectorsKey] = {};
   }
@@ -41,7 +40,7 @@ function addStatesToStyle(style: IRawStyle, states: object, params?: object): IR
         selectors![key] = {};
       }
       const styleForState = states[key];
-      selectors![key] = adjustStyleProps(styleForState, selectors![key] as IRawStyle, styleForState, params as { [key: string]: object });
+      selectors![key] = adjustStyleProps(styleForState, selectors![key], styleForState, params as { [key: string]: object });
     }
   }
   return style;

@@ -1,6 +1,5 @@
 import { IThemeModuleProps, ThemeStringHandler } from "./ICoreTypes";
 import { mergeObjects } from "./mergeObjects";
-import { IRawStyle } from "@uifabric/styling";
 import { IBaseStyle } from "./ICoreTypes";
 
 const rawStyleKey = 'props';
@@ -15,7 +14,7 @@ function resolveModuleProps(props: Partial<IThemeModuleProps>): IThemeModuleProp
     dependsOn: props.dependsOn,
     resolveDef: props.resolveDef || resolveThemeDefinition,
     stringConfig: props.stringConfig,
-    updateStyle: props.updateStyle
+    updateProps: props.updateProps
   }
 }
 
@@ -66,14 +65,16 @@ export function registerThemeModule(props: Partial<IThemeModuleProps>) {
  *  state:
  *    allowPartial: true, parent: base style, return only properties mapped to definition
  * 
- * @param _obj base style or object that is being constructed.  If this is a style it will
- * be the style that is being built up.  If it is a state it will be the parent style
+ * @param name name of the module.  This corresponds to its key value in the theme style
+ * @param _obj style or state that is being constructed.  If the module has a dependency that
+ * is guaranteed to be resolved first.  Note that states are partial so in that case the
+ * parent should be referenced.
  * @param defaultDef default definition to use for default styles
  * @param allowPartial if true this is a state which is a partial or empty set of properties.
- * If false this should be a full object with all required props accounted for
+ * If false this should be a full object with all required props accounted for. 
  * @param definition Partial definition object that defines the changes to this style or the overrides
  * for the state
- * @param parent default style for a style variant or base style for a state
+ * @param parent null for default style, default style for one-off styles, parent style for states
  */
 export function resolveThemeDefinition(
   name: string,
@@ -111,26 +112,36 @@ export function createStyleOrState(
     if (!allowPartial || def) {
       results[name] = module.resolveDef(name, results, module.default, allowPartial, def, parent);
     }
-    if (results[name] && module.updateStyle) {
-      results.props = module.updateStyle(results[rawStyleKey], results[name]);
+    if (results[name] && module.updateProps) {
+      results.props = module.updateProps(results[rawStyleKey], results[name]);
     }
   }
 
   return results;
 }
 
-export function adjustStyleProps(style: IBaseStyle, rawStyle: IRawStyle, keysToTraverse: object, modules?: { [key: string]: object }): IRawStyle {
+/**
+ * For a given style and a base props object, allows the modules to apply overrides to the properties.  This will
+ * be called once with a null parameter at style creation time.  When style is requested if the optional parameter is specified it
+ * will be called at that time but only for the modules that have parameters
+ * @param style current style being adjusted
+ * @param props props object for the style
+ * @param keysToTraverse key array to use for traversal.  Typically called with the modules but called by state creation
+ * to build the initial decorated styles with the definition set.
+ * @param modules optional parameters to modify the returned props at runtime
+ */
+export function adjustStyleProps(style: IBaseStyle, props: object, keysToTraverse: object, modules?: { [key: string]: object }): object {
   for (const key in keysToTraverse) {
     if (keysToTraverse.hasOwnProperty(key) && style[key] && themeModules.hasOwnProperty(key)) {
       const styleDef = style[key];
-      const updateStyle = themeModules[key].updateStyle;
+      const updateStyle = themeModules[key].updateProps;
       const thisModule = modules ? modules[key] : undefined;
       if (updateStyle) {
-        rawStyle = updateStyle(rawStyle, styleDef, thisModule);
+        props = updateStyle(props, styleDef, thisModule);
       }
     }
   }
-  return rawStyle;
+  return props;
 }
 
 /**

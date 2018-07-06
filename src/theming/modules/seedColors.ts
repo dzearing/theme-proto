@@ -175,7 +175,7 @@ function parseSeedColorString(
     newSeedColors[term.slice(0, -1)] = param;
     const newDef = {};
     newDef[seedColorsPluginName] = newSeedColors;
-    mergeObjects(definition, newDef);
+    Object.assign(definition, mergeObjects(definition, newDef));
     return 2;
   }
   return 0;

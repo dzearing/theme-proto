@@ -1,4 +1,4 @@
-import { createStyleOrState, handleStringChange } from "../core/ThemeModule";
+import { createStyleOrState, handleStringChange } from "./ThemeModule";
 import { mergeObjects } from "./mergeObjects";
 import { hasTheme, getThemeCore } from "./ThemeRegistry";
 import { IBaseTheme, IBaseStyle, IBaseStyleDef, IBaseThemeDef } from "./ICoreTypes";

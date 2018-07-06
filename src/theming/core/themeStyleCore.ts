@@ -1,4 +1,4 @@
-import { adjustStyleProps } from "../core/ThemeModule";
+import { adjustStyleProps } from "./ThemeModule";
 import { getThemeStyleCore } from "./ThemeCreation";
 import { IBaseTheme, IStyleRequestProps, IBaseStyle } from "./ICoreTypes";
 

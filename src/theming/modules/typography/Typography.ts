@@ -14,16 +14,24 @@ export function registerTypographyModule() {
 const defaultKey = 'default';
 
 function addTypographyToStyle(style: IRawStyle, typography: ITypography, props?: ITypographyProps): IRawStyle {
-  const defaultProps: ITypographyProps = { family: defaultKey, weight: defaultKey, size: 'medium' };
-  props = Object.assign({}, defaultProps, props);
-  if (props.type) {
-    const fontType = typography.types[props.type];
-    props.family = fontType.fontFamily || props.family as any;
-    props.size = fontType.fontSize || props.size as any;
-    props.weight = fontType.fontWeight || props.weight as any;
+  const typeProps = props && props.type && typography.types.hasOwnProperty(props.type) ? typography.types[props.type] : undefined;
+  // resolve type properties first
+  let {
+    fontFamily = defaultKey,
+    fontSize = 'medium',
+    fontWeight = defaultKey
+  } = typeProps || {};
+
+  // override with specific props that were set
+  if (props) {
+    fontFamily = props.family || fontFamily;
+    fontSize = props.size || fontSize;
+    fontWeight = props.weight || fontWeight;
   }
-  style.fontFamily = typography.families[props.family!];
-  style.fontWeight = typography.weights[props.weight!] as any;
-  style.fontSize = typography.sizes[props.size!];
+
+  // now set the values
+  style.fontFamily = typography.families[fontFamily];
+  style.fontWeight = typography.weights[fontWeight] as any;
+  style.fontSize = typography.sizes[fontSize];
   return style;
 }

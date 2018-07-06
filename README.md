@@ -1,26 +1,28 @@
 # Some thoughts from Jason's version
 
-Color generation library seems wrong.
-* Use of bg/fg as seeds doesn't allow tonal components in colors in the gray space.  Designers like funky shades of gray.
-* Should switch from HSV -> HSL internally, view the bg color as a seed color for tone
-* Map the neutral color from white to black using HSL
-* Map the theme color from white + 1 to black -1 using HSL
-* Default fg color to the inverted tone mapping used for bg-neutral
-* Allow for specification of fg seed value which would allow for tonal control
+#### theming
+* Probably want some documentation of the overall ITheme structure though we should agree on names first
 
-For the overall project:
-* Consolidate code, it's too messy
-* Reorganize files by functional purpose
-* Finish the color generation functions
-* Figuring out ways of using the structure as a transport for constants.  Likes the values in theme.offsets become more than just indexes.
-* Alternate state requests in getThemeColors.  Either single or separate batches.  Likely separate to start.
-* Clean up theme settings vs. ITheme as well as generation logic there
-* Add overlay and high contrast themes and demonstrations
+#### theming/core
+* Added two documentation files here.
+* Likely a few places left for consolidation and making the code more compact but it is getting fairly tight.
+* Can look at adding generics support to the module code
+* Only one remaining reference out of the directory for grabbing the default theme.  Need to look at how to get rid of that.
 
-Long term:
-* Allow for theme creation in the configurator
-* Override swatch colors
-* Change offsets 
+#### theming/modules
+* Lots of interesting things we can do with colorSets
+* More calculated functions such as colorizedText with contrast fallbacks and things like that
+
+#### theming/themes
+* Can probably do a pass through these to make them better
+* States should have autofg specified so the fg gets reculculated on change
+
+#### coloring
+* Switched swatch generation to be tonal and use HSL which is probably better.
+* Need to curve the result set and offset the curve based on relative luminance.
+* Did find one bug in HSL code had a divide by zero error causing a NaN value.  Should look at fixing in fabric.
+* Should probably pare this down or use the fabric version except new shade generation.
+* Lots of nice helpers that we could add for half-tone, disabled, saturate, desat
 
 # Issues to resolve
 

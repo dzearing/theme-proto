@@ -17,7 +17,6 @@ export interface ICardProps {
   className?: string;
   disabled?: boolean;
   id?: string;
-  for?: string;
   role?: string;
   href?: string;
   onClick?: (ev: React.MouseEvent<HTMLElement>) => void;
@@ -30,7 +29,18 @@ export interface ICardProps {
 }
 
 const view = (props: IViewProps<ICardProps, ICardStyles>) => {
-  const { renderAs: RootType = "div", classNames, ...rest } = props;
+  const {
+    renderAs: RootType = "div",
+    classNames,
+    width,
+    height,
+    disabled,
+    id,
+    role,
+    href,
+    onClick,
+    ...rest
+  } = props;
 
   return (
     <RootType {...rest} className={classNames.root}>
@@ -40,7 +50,7 @@ const view = (props: IViewProps<ICardProps, ICardStyles>) => {
 };
 
 const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
-  const { width, height, padding } = props;
+  const { width, height, padding, className } = props;
 
   return {
     root: [
@@ -62,17 +72,17 @@ const styles = (props: IStyleProps<ICardProps, ICardStyles>): ICardStyles => {
         border: "1px solid #ccc",
         borderRadius: 3,
         boxShadow: "0 0 10px -4px #000",
-        display: "inline-flex",
         width,
         height,
         padding
       },
-      props.className
+      className
     ],
     content: {
       overflow: "hidden",
       position: "relative",
-      width: "100%"
+      width: "100%",
+      height: "100%"
     }
   };
 };

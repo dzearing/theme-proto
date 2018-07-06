@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { IStyle } from '@uifabric/styling';
-import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import Text from './Text';
+import * as React from "react";
+import { IStyle } from "@uifabric/styling";
+import { createComponent, IStyleProps, IViewProps } from "./createComponent";
+import Text from "./Text";
 
 // Styles for the component
 export interface ICrumbStyles {
@@ -10,7 +10,7 @@ export interface ICrumbStyles {
 
 // Inputs to the component
 export interface ICrumbProps {
-  renderAs?: string | React.ReactType<ICrumbProps>,
+  renderAs?: string | React.ReactType<ICrumbProps>;
   children?: React.ReactNode;
   className?: string;
 
@@ -21,11 +21,7 @@ export interface ICrumbProps {
 }
 
 const view = (props: IViewProps<ICrumbProps, ICrumbStyles>) => {
-  const {
-    renderAs: RootType = Text,
-    classNames,
-    ...rest
-  } = props;
+  const { renderAs: RootType = Text, classNames, ...rest } = props;
 
   return (
     <RootType {...rest} className={classNames.root}>
@@ -34,10 +30,13 @@ const view = (props: IViewProps<ICrumbProps, ICrumbStyles>) => {
   );
 };
 
-const styles = (props: IStyleProps<ICrumbProps, ICrumbStyles>): ICrumbStyles => {
+const styles = (
+  props: IStyleProps<ICrumbProps, ICrumbStyles>
+): ICrumbStyles => {
+  const { className } = props;
+
   return {
-    root: [
-    ]
+    root: [className]
   };
 };
 
@@ -49,15 +48,17 @@ export class StateComponent extends React.Component<any, any> {
 
 // tslint:disable-next-line:max-classes-per-file
 export class CrumbState extends StateComponent {
-   constructor(props: ICrumbProps & { children: (props: ICrumbProps) => React.ReactType } ) {
+  constructor(
+    props: ICrumbProps & { children: (props: ICrumbProps) => React.ReactType }
+  ) {
     super(props);
-    
+
     this.state = {
       ...props,
 
       on: false,
       text: props.text
-    }
+    };
   }
 
   public componentDidMount() {
@@ -65,15 +66,15 @@ export class CrumbState extends StateComponent {
       const on = !this.state.on;
       this.setState({
         on,
-        text: on ? 'Awesome: ' + this.props.text : this.props.text
+        text: on ? "Awesome: " + this.props.text : this.props.text
       });
     }, 1000);
   }
 }
 
 export const Crumb = createComponent<ICrumbProps, ICrumbStyles>({
- // state: CrumbState,
-  displayName: 'Crumb',
+  // state: CrumbState,
+  displayName: "Crumb",
   styles,
   view
 });

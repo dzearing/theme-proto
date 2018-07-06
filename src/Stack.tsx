@@ -1,7 +1,7 @@
 import * as React from "react";
 import { IStyle } from "@uifabric/styling";
 import { createComponent, IStyleProps, IViewProps } from "./createComponent";
-import StackItem from "./StackItem";
+import StackItem, { IStackItemProps } from "./StackItem";
 
 // Styles for the component
 export interface IStackStyles {
@@ -21,21 +21,23 @@ export interface IStackProps {
   className?: string;
 
   fill?: boolean;
+  collapseItems?: boolean;
 
   inline?: boolean;
   vertical?: boolean;
+
   grow?: boolean;
-  wrap?: boolean;
+  shrink?: boolean;
 
   gap?: number;
   align?: "auto" | "center" | "start" | "baseline" | "stretch" | "end";
   justify?:
-    | "start"
-    | "end"
-    | "center"
-    | "space-between"
-    | "space-around"
-    | "space-evenly";
+  | "start"
+  | "end"
+  | "center"
+  | "space-between"
+  | "space-around"
+  | "space-evenly";
 
   maxWidth?: number | string;
   padding?: number | string;
@@ -43,19 +45,45 @@ export interface IStackProps {
 }
 
 const view = (props: IViewProps<IStackProps, IStackStyles>) => {
-  const { renderAs: RootType = "div", classNames, gap, vertical } = props;
+  const {
+    renderAs: RootType = "div",
+    classNames,
+    gap,
+    vertical,
+    collapseItems
+  } = props;
 
-  const children: React.ReactChild[] = [];
-  const spacerStyle = {
-    [vertical ? "height" : "width"]: gap
-  };
+  const children: React.ReactChild[] = React.Children.map(
+    props.children,
+    (child: React.ReactElement<IStackItemProps>, index: number) => {
+      const defaultItemProps: IStackItemProps = {
+        gap: index > 0 ? gap : 0,
+        vertical,
+        collapse: collapseItems
+      };
 
-  React.Children.forEach(props.children, (child, index: number) => {
-    if (index > 0 && gap) {
-      children.push(<span className={classNames.spacer} style={spacerStyle} />);
+      if ((child as any).type === StackItemType) {
+        return React.cloneElement(child as any, {
+          ...defaultItemProps,
+          ...child.props
+        });
+      } else {
+        // tslint:disable-next-line:no-console
+        return <StackItem {...defaultItemProps}>{child}</StackItem>;
+      }
     }
-    children.push(child);
-  });
+  );
+
+  // const spacerStyle = {
+  //   [vertical ? "height" : "width"]: gap
+  // };
+
+  // React.Children.forEach(props.children, (child, index: number) => {
+  //   // if (index > 0 && gap) {
+  //   //   children.push(<span className={classNames.spacer} style={spacerStyle} />);
+  //   // }
+  //   children.push(child);
+  // });
 
   return <RootType className={classNames.root}>{children}</RootType>;
 };
@@ -69,6 +97,7 @@ const styles = (
     justify,
     maxWidth,
     vertical,
+    gap,
     grow,
     margin,
     padding
@@ -94,11 +123,15 @@ const styles = (
       },
       props.className
     ],
-    spacer: {
-      // background: "red",
-      flexShrink: 0,
-      alignSelf: "stretch"
-    }
+    spacer: [
+      {
+        flexShrink: 0,
+        alignSelf: "stretch"
+      },
+      !!gap && {
+        [vertical ? "marginBottom" : "marginRight"]: gap
+      }
+    ]
   };
 };
 
@@ -111,5 +144,8 @@ export const Stack = createComponent({
     defaultProps: {}
   }
 });
+
+// tslint:disable-next-line:one-variable-per-declaration
+const StackItemType = (<StackItem /> as any).type;
 
 export default Stack;

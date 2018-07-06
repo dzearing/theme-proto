@@ -77,7 +77,7 @@ const styles = (
   props: IStyleProps<ITaskCardProps, ITaskCardStyles>
 ): ITaskCardStyles => {
   return {
-    root: []
+    root: [props.className]
   };
 };
 

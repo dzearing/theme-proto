@@ -1,8 +1,16 @@
 import * as React from "react";
-import { ITheme } from "./ITheme";
+import { ITheme, IScheme } from "./ITheme";
+
 import createTheme from "./createTheme";
 
-export const ThemeContext = React.createContext<ITheme>(createTheme());
+export interface IThemeContextProps {
+  theme: ITheme;
+  scheme: IScheme;
+}
+
+const defaultTheme = createTheme();
+
+export const ThemeContext = React.createContext<ITheme>(defaultTheme);
 
 export const ThemeConsumer = (props: {
   children: (theme: ITheme) => JSX.Element;

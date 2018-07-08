@@ -1,6 +1,8 @@
 import { DefaultFontStyles, IStyle } from "office-ui-fabric-react";
 import * as React from "react";
 import { createComponent, IStyleProps, IViewProps } from "./createComponent";
+import { Box } from "./Box";
+import { Text } from "./Text";
 
 // Styles for the component
 export interface IButtonStyles {
@@ -9,7 +11,7 @@ export interface IButtonStyles {
 
 // Inputs to the component
 export interface IButtonProps {
-  renderAs?: string | React.ReactType<IButtonProps>;
+  as?: string | React.ReactType<IButtonProps>;
   children?: React.ReactNode;
 
   scheme?: string;
@@ -50,16 +52,18 @@ export interface IButtonProps {
 }
 
 const view = (props: IViewProps<IButtonProps, IButtonStyles>) => {
-  const {
-    renderAs: RootType = _getDefaultRootType(props),
-    classNames,
-    ...rest
-  } = props;
+  const { as: RootType = Box, classNames, primary, ...rest } = props;
 
   return (
-    <RootType {...rest} className={classNames.root}>
-      {props.text}
-      {props.children}
+    <RootType
+      scheme={primary ? "primary" : "neutral"}
+      {...rest}
+      className={classNames.root}
+    >
+      <Text>
+        {props.text}
+        {props.children}
+      </Text>
     </RootType>
   );
 };
@@ -79,15 +83,13 @@ const styles = (
 
   return {
     root: [
-      DefaultFontStyles.medium,
       {
         alignItems: "center",
         textAlign: "center",
-        backgroundColor: set.background,
-        color: set.text,
         borderRadius: 2,
         borderWidth: 0,
         cursor: "default",
+        justifyContent: "center",
         display: props.fullWidth ? "flex" : "inline-flex",
         width: props.fullWidth ? "100%" : "auto",
         margin: 0,

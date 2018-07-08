@@ -1,14 +1,20 @@
 import * as React from "react";
 import Stack from "./Stack";
 import Text from "./Text";
-import Card from "./Card";
+import Card, { ICardProps } from "./Card";
 import { Icon, PersonaCoin } from "office-ui-fabric-react";
+import { createComponent } from "./createComponent";
 
-export const AnotherCard = () => {
-  const RootType = Card;
-
-  return (
-    <RootType width={300} height={180} padding={16} data-is-focusable="true">
+export const AnotherCard = createComponent<ICardProps>({
+  displayName: "AnotherCard",
+  view: (props: ICardProps) => (
+    <Card
+      {...props}
+      width={300}
+      height={180}
+      padding={16}
+      data-is-focusable="true"
+    >
       <Stack vertical fill gap={4}>
         <Stack align="center" gap={4}>
           <Icon iconName="upload" />
@@ -33,8 +39,8 @@ export const AnotherCard = () => {
           </Stack>
         </Stack>
       </Stack>
-    </RootType>
-  );
-};
+    </Card>
+  )
+});
 
 export default AnotherCard;

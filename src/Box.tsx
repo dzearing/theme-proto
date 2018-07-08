@@ -6,6 +6,9 @@ import { createComponent, IStyleProps, IViewProps } from "./createComponent";
 export interface IBoxStyles {
   root: IStyle;
   content: IStyle;
+
+  selected?: boolean;
+  hoverable?: boolean;
 }
 
 // Inputs to the component
@@ -51,28 +54,29 @@ const styles = (props: IStyleProps<IBoxProps, IBoxStyles>): IBoxStyles => {
   return {
     root: [
       {
+        background: set.background,
+        color: set.text,
+        boxSizing: "border-box",
+        overflow: "hidden",
+        // border: "1px solid #ccc",
+        // borderRadius: 3,
+        // boxShadow: `0 0 ${elevationPx}px -4px #000`,
+        // display: "inline-flex",
+        width,
+        height,
+        padding,
         outline: "none",
         selectors: {
           ":focus": {
             border: "1px solid rgba(0,0,0,.5)",
             boxShadow: `0 0 2px 0 rgba(255,255,255,.5) inset`,
             boxSizing: "border-box"
+          },
+          ":hover": {
+            background: set.hoverBackground,
+            color: set.hoverText
           }
         }
-      },
-      {
-        background: set.background,
-        color: set.text,
-        outline: "none",
-        boxSizing: "border-box",
-        overflow: "hidden",
-        border: "1px solid #ccc",
-        borderRadius: 3,
-        boxShadow: `0 0 ${elevationPx}px -4px #000`,
-        display: "inline-flex",
-        width,
-        height,
-        padding
       },
       className
     ],

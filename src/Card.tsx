@@ -10,7 +10,7 @@ export interface ICardStyles {
 
 // Inputs to the component
 export interface ICardProps {
-  renderAs?: string | React.ReactType<ICardProps>;
+  as?: string | React.ReactType<ICardProps>;
   children?: React.ReactNode;
 
   className?: string;
@@ -29,7 +29,7 @@ export interface ICardProps {
 
 const view = (props: IViewProps<ICardProps, ICardStyles>) => {
   const {
-    renderAs: RootType = "div",
+    as: RootType = "div",
     classNames,
     width,
     height,

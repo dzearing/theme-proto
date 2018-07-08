@@ -18,7 +18,7 @@ import TaskCard from "./TaskCard";
 import Grid from "./Grid";
 import AnotherCard from "./AnotherCard";
 import PhotoCard from "./PhotoCard";
-
+import TeamsCard from "./TeamsCard";
 initializeIcons();
 
 mergeStyles({
@@ -34,6 +34,12 @@ mergeStyles({
       transition: "margin .2s ease-out"
     }
   }
+});
+
+const ButtonClass = mergeStyles({
+  background: "red",
+  height: 40,
+  minWidth: 100
 });
 
 const Box = (props: { className?: string; background?: string }) => (
@@ -61,7 +67,7 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
 
     return (
       <div>
-        <Grid gap={8} templateColumns="1fr 1fr">
+        {/* <Grid gap={8} templateColumns="1fr 1fr">
           <Grid.Cell debug>
             <Box background="blue" />
           </Grid.Cell>
@@ -73,10 +79,14 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
           <Grid.Cell>
             <Box background="yellow" />
           </Grid.Cell>
-        </Grid>
+        </Grid> */}
         <Stack vertical gap={20} padding={40}>
-          {/* tslint:disable-next-line:jsx-no-lambda */}
-          <Toggle onChanged={checked => this.setState({ checked })} />
+          <Toggle
+            // tslint:disable-next-line:jsx-no-lambda
+            onChanged={(checked: boolean) =>
+              this.setState({ checked: !checked })
+            }
+          />
           <Slider
             label="Gap size"
             onChange={this._onGapSizeChange}
@@ -85,6 +95,12 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
             max={40}
             step={4}
           />
+          <Stack width={300} vertical shrinkItems align="stretch">
+            <TeamsCard selected />
+            <TeamsCard />
+            <TeamsCard />
+            <TeamsCard />
+          </Stack>
           <Stack gap={gapSize} align="center">
             <Text>I am text</Text>
 
@@ -111,9 +127,9 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
           <Button scheme="primary">hello</Button>
           <FocusZone direction={FocusZoneDirection.bidirectional}>
             <Stack vertical gap={gapSize * 2}>
-              <Stack gap={gapSize * 2} fill collapseItems justify="center">
+              <Stack gap={gapSize * 2} fill shrinkItems justify="center">
                 <TaskCard />
-                <TaskCard scheme="neutral" />
+                <TaskCard />
                 <TaskCard scheme="primary" />
               </Stack>
               <Stack gap={gapSize * 2} justify="center">

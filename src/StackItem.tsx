@@ -24,7 +24,7 @@ export interface IStackItemProps {
   index?: number;
 
   grow?: boolean;
-  collapse?: boolean;
+  shrink?: boolean;
 
   align?: "auto" | "center" | "start" | "baseline" | "stretch" | "end";
   justify?:
@@ -48,25 +48,28 @@ const view = (props: IViewProps<IStackItemProps, IStackItemStyles>) => {
 
   return React.cloneElement(
     first as React.ReactElement<{ className: string }>,
-    { ...first.props, className: props.classNames.root }
+    {
+      ...first.props,
+      className: (first.props as any).className + " " + props.classNames.root
+    }
   );
 };
 
 const styles = (
   props: IStyleProps<IStackItemProps, IStackItemStyles>
 ): IStackItemStyles => {
-  const { grow, collapse, align, justify, gap, vertical } = props;
+  const { grow, shrink, align, justify, gap, vertical } = props;
 
   return {
     root: [
-      grow && { flexGrow: 1 },
-      !grow && !collapse && { flexShrink: 0 },
+      grow && { flexGrow: 1, overflow: "hidden" },
+      !grow && !shrink && { flexShrink: 0 },
       align && {
         alignSelf: alignMap[align] || align,
         justifyContent: justifyMap[justify!] || justify
       },
       {
-        overflow: "hidden",
+        // overflow: "hidden",
         whiteSpace: "nowrap",
         textOverflow: "ellipsis"
         // position: "relative",

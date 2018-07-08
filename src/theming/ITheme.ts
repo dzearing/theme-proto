@@ -56,14 +56,48 @@ export interface ISwatches {
 export type ISwatchRef = keyof ISwatches;
 
 export interface IScheme {
+  /** Primative color values */
   background: ISwatchRef;
+  hoverBackground: ISwatchRef;
+  activeBackground: ISwatchRef;
+  disabledBackground: ISwatchRef;
+
   text: ISwatchRef;
+  hoverText: ISwatchRef;
+  activeText: ISwatchRef;
+  disabledText: ISwatchRef;
+
+  icon: ISwatchRef;
+
   link: ISwatchRef;
   linkVisited: ISwatchRef;
+
+  // defaultStyle: IStyle;
+  // hoveredStyle: IStyle;
+  // pressedStyle: IStyle;
+  // selectedStyle: IStyle;
+}
+
+export interface IPartialScheme extends Partial<IScheme> {
+  extends?: string;
+}
+
+export interface ISchemes {
+  [key: string]: IScheme;
+}
+
+export interface IPartialSchemes {
+  [key: string]: IPartialScheme;
+}
+
+export interface IPartialTheme {
+  swatches: Partial<ISwatches>;
+  schemes: IPartialSchemes;
+  typography: Partial<ITypography>;
 }
 
 export interface ITheme {
   swatches: ISwatches;
-  schemes: { [key: string]: IScheme };
+  schemes: ISchemes;
   typography: ITypography;
 }

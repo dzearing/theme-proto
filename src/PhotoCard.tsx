@@ -21,13 +21,15 @@ export const PhotoCard = (props: React.AllHTMLAttributes<HTMLDivElement>) => {
             <PersonaCoin text="John Jacob Jingleheimershmidt" size={3} />
             <Stack vertical grow gap={4}>
               <Text>John Jacob Jingleheimershmidt</Text>
-              <Text type="caption" weight="bold" shrink>
-                <Stack gap={8} align="center">
-                  <Icon iconName="upload" />
-                  05/12/2017, 1:33pm
-                  <Icon iconName="share" />
-                </Stack>
-              </Text>
+              <Stack.Item shrink>
+                <Text type="caption" weight="bold">
+                  <Stack gap={8} align="center">
+                    <Icon iconName="upload" />
+                    05/12/2017, 1:33pm
+                    <Icon iconName="share" />
+                  </Stack>
+                </Text>
+              </Stack.Item>
             </Stack>
           </Stack>
         </Stack>

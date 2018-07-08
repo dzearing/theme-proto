@@ -5,7 +5,7 @@ import Text from "./Text";
 import Card from "./Card";
 import Stack from "./Stack";
 import { PersonaCoin, IconButton } from "office-ui-fabric-react";
-// import Button from './Button';
+import Button from "./Button";
 import Breadcrumb from "./Breadcrumb";
 
 // Styles for the component
@@ -15,7 +15,7 @@ export interface ITaskCardStyles {
 
 // Inputs to the component
 export interface ITaskCardProps {
-  renderAs?: string | React.ReactType<ITaskCardProps>;
+  as?: string | React.ReactType<ITaskCardProps>;
   children?: React.ReactNode;
   className?: string;
 
@@ -28,10 +28,10 @@ export interface ITaskCardProps {
 
 const view = (props: IViewProps<ITaskCardProps, ITaskCardStyles>) => {
   const {
-    renderAs: RootType = Card,
+    as: RootType = Card,
     classNames,
     width = 300,
-    height = 180,
+    height = 220,
     padding = 16,
     ...rest
   } = props;
@@ -52,6 +52,9 @@ const view = (props: IViewProps<ITaskCardProps, ITaskCardStyles>) => {
         <Text weight="light">Design Studio</Text>
 
         <Breadcrumb items={[{ text: "Engineering" }, { text: "Bootcamps" }]} />
+
+        <Button primary text="Primary" />
+        <Button text="Default" />
 
         <Stack vertical grow justify="end">
           <Stack fill gap={8} align="center">

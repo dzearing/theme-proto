@@ -6,7 +6,6 @@ import StackItem, { IStackItemProps } from "./StackItem";
 // Styles for the component
 export interface IStackStyles {
   root: IStyle;
-  spacer: IStyle;
 }
 
 const nameMap = {
@@ -21,13 +20,15 @@ export interface IStackProps {
   className?: string;
 
   fill?: boolean;
-  collapseItems?: boolean;
 
   inline?: boolean;
   vertical?: boolean;
 
   grow?: boolean;
   shrink?: boolean;
+
+  growItems?: boolean;
+  shrinkItems?: boolean;
 
   gap?: number;
   align?: "auto" | "center" | "start" | "baseline" | "stretch" | "end";
@@ -40,6 +41,8 @@ export interface IStackProps {
     | "space-evenly";
 
   maxWidth?: number | string;
+  width?: number | string;
+  height?: number | string;
   padding?: number | string;
   margin?: number | string;
 }
@@ -50,7 +53,8 @@ const view = (props: IViewProps<IStackProps, IStackStyles>) => {
     classNames,
     gap,
     vertical,
-    collapseItems
+    shrinkItems,
+    growItems
   } = props;
 
   const children: React.ReactChild[] = React.Children.map(
@@ -59,7 +63,8 @@ const view = (props: IViewProps<IStackProps, IStackStyles>) => {
       const defaultItemProps: IStackItemProps = {
         gap: index > 0 ? gap : 0,
         vertical,
-        collapse: collapseItems
+        shrink: shrinkItems,
+        grow: growItems
       };
 
       if ((child as any).type === StackItemType) {
@@ -103,17 +108,26 @@ const styles = (
     margin,
     padding
   } = props;
+  let { width, height } = props;
+
+  if (width === undefined && fill && !vertical) {
+    width = "100%";
+  }
+  if (height === undefined && fill && vertical) {
+    height = "100%";
+  }
 
   return {
     root: [
       {
         display: "flex",
+        boxSizing: "border-box",
         flexDirection: vertical ? "column" : "row",
         alignItems: nameMap[align!] || align,
         justifyContent: nameMap[justify!] || justify,
         flexWrap: "nowrap",
-        width: fill && !vertical ? "100%" : "auto",
-        height: fill && vertical ? "100%" : "auto",
+        width,
+        height,
         maxWidth,
         margin,
         padding
@@ -123,15 +137,6 @@ const styles = (
         overflow: "hidden"
       },
       props.className
-    ],
-    spacer: [
-      {
-        flexShrink: 0,
-        alignSelf: "stretch"
-      },
-      !!gap && {
-        [vertical ? "marginBottom" : "marginRight"]: gap
-      }
     ]
   };
 };

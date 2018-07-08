@@ -1,7 +1,15 @@
-import { ITheme } from "./ITheme";
+import {
+  ITheme,
+  IScheme,
+  ISchemes,
+  ISwatches,
+  IPartialSchemes,
+  IPartialScheme
+} from "./ITheme";
 import { LightTheme } from "./themes/LightTheme";
 import { IFontType } from "./ITypography";
 import * as deepAssign from "deep-assign";
+import { resolve } from "url";
 
 export function createTheme(
   theme?: Partial<ITheme>,
@@ -37,41 +45,57 @@ export function createTheme(
   }
 
   // Expand schemes
-  // tslint:disable-next-line:forin
-  for (const setName in processedTheme.schemes) {
-    const set = processedTheme.schemes[setName];
-
-    // tslint:disable-next-line:forin
-    for (const setPropName in set) {
-      const propValue = set[setPropName];
-
-      set[setPropName] = processedTheme.swatches[propValue] || propValue;
-    }
-  }
+  _expandAllExtends(processedTheme.schemes);
+  expandAliases(processedTheme.schemes, processedTheme.swatches);
 
   return processedTheme;
 }
 
+function _expandAllExtends(
+  parent: { [key: string]: any },
+  visited: { [key: string]: boolean } = {}
+): void {
+  for (const name in parent) {
+    if (parent.hasOwnProperty(name)) {
+      _expandChild(parent, name, visited);
+    }
+  }
+}
+
+function _expandChild(
+  parent: { extends?: string },
+  childName: string,
+  visited: { [key: string]: boolean }
+) {
+  let child: { extends?: string } = parent[childName];
+  const extendsName = child.extends;
+
+  if (extendsName) {
+    delete child.extends;
+
+    if (!visited[extendsName]) {
+      _expandChild(parent, extendsName, visited);
+    }
+
+    child = {
+      ...parent[extendsName],
+      ...child
+    };
+  }
+}
+
+function expandAliases(target: any, source: any): void {
+  for (const name in target) {
+    if (target.hasOwnProperty(name)) {
+      const value = target[name];
+
+      if (typeof value === "string") {
+        target[name] = source[value] || value;
+      } else if (typeof value === "object") {
+        expandAliases(value, source);
+      }
+    }
+  }
+}
+
 export default createTheme;
-
-// const processedTheme = {
-//     paletteSets: {} as { [key: string]: IPaletteSet },
-//     typeography: theme.typography,
-//     fontWeights: theme.fontWeights || {}
-//   };
-
-//   for (const setName in theme.paletteSets) {
-//     if (theme.paletteSets.hasOwnProperty(setName)) {
-//       const set = theme.paletteSets[setName];
-//       const targetSet = processedTheme.paletteSets[setName] = {} as any;
-
-//       for (const setPropName in set) {
-//         if (set.hasOwnProperty(setPropName)) {
-//           targetSet[setPropName] = theme.swatches[set[setPropName]] || set[setPropName];
-//         }
-//       }
-//     }
-//   }
-
-//   return processedTheme as ITheme;
-// }

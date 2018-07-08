@@ -55,7 +55,7 @@ function evaluateStyle<TProps, TStyles>(
 }
 
 // Helper function to tie them together.
-export function createComponent<TProps, TStyles, TStatics = {}>(
+export function createComponent<TProps, TStyles = {}, TStatics = {}>(
   options: IComponentOptions<TProps, TStyles, TStatics>
 ): React.ComponentClass<IComponentProps<TProps, TStyles>> & TStatics {
   const augmented = augmentations[options.displayName] || {};

@@ -35,9 +35,14 @@ export function registerDefaultThemeCore<ITheme extends IBaseTheme>(defaultTheme
   }
 }
 
-export function addThemeCore<ITheme extends IBaseTheme>(name: string, theme: ITheme, replaceExisting: boolean = true): boolean {
+export function addThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends IBaseTheme>(
+  name: string,
+  definition: Partial<IThemeDef>,
+  theme: ITheme,
+  replaceExisting: boolean = true
+): boolean {
   if (replaceExisting || !hasTheme(name)) {
-    themeRegistry[name] = theme;
+    themeRegistry[name] = createThemeCore(definition, theme);
     return true;
   }
   return false;

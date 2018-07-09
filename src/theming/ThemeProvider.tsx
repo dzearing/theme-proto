@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ITheme } from './ITheme';
-import { getDefaultTheme, themeFromChangeString } from '.';
+import { getDefaultTheme, themeFromChangeString, getTheme } from '.';
+import { hasTheme } from './core/ThemeRegistry';
 
 /*
   value stored in the context that is available at each level to consumers.
@@ -35,8 +36,7 @@ export interface IThemeLayerState {
   inputs to the provider component for updating the state
 */
 export interface IThemeLayerProps {
-  theming?: string;
-  parent?: ITheme;
+  themeName?: string;
   children: (theme: ITheme) => JSX.Element;
 }
 
@@ -48,20 +48,20 @@ export class ThemeLayer extends React.Component<IThemeLayerProps, IThemeLayerSta
   }
 
   public render() {
-    const theming = this.props.theming;
-    const inheritedParent = this.props.parent;
-    const needsProvider: boolean = (theming !== undefined || inheritedParent === undefined);
-    const parent = inheritedParent ? inheritedParent : getDefaultTheme();
-    const theme = theming ? themeFromChangeString(theming, parent) : parent;
+    return (<ThemeConsumer>{(inheritedTheme: ITheme) => {
+      const themeName = this.props.themeName;
+      const needsProvider = themeName && hasTheme(themeName);
+      const theme = needsProvider && themeName ? getTheme(themeName) : inheritedTheme;
 
-    if (needsProvider) {
-      return (
-        <ThemeContext.Provider value={{ theme, updateTheme: this._updateTheme }}>
-          {this.props.children(theme)}
-        </ThemeContext.Provider>
-      )
-    }
-    return (this.props.children(theme));
+      if (needsProvider) {
+        return (
+          <ThemeContext.Provider value={{ theme, updateTheme: this._updateTheme }}>
+            {this.props.children(theme)}
+          </ThemeContext.Provider>
+        )
+      }
+      return (this.props.children(theme));
+    }}</ThemeConsumer>);
   }
 
   private _updateTheme(newTheme: ITheme) {

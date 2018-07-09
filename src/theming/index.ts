@@ -29,8 +29,8 @@ export function registerTheme(name: string, definition: IThemeDefinition) {
  * @param replaceExisting set it to this name no matter what.  If false then the theme will only be set to that
  * name if there was no previous theme of that name
  */
-export function addNamedTheme(name: string, theme: ITheme, replaceExisting: boolean = true): boolean {
-  return addThemeCore(name, theme, replaceExisting);
+export function addNamedTheme(name: string, definition: Partial<IThemeDefinition>, theme: ITheme, replaceExisting: boolean = true): boolean {
+  return addThemeCore(name, definition, theme, replaceExisting);
 }
 
 /**

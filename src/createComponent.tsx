@@ -20,7 +20,7 @@ export type IComponentProps<TProps, TStyles> = TProps & {
   styles?:
   | IStyleFunction<IPropsWithStyles<TProps, TStyles>, TStyles>
   | Partial<TStyles>;
-  theming?: string;
+  themeName?: string;
 };
 
 export type IStyleProps<TProps, TStyles> = TProps & {
@@ -71,19 +71,17 @@ export function createComponent<TProps, TStyles, TStatics = {}>(
       const { styles } = this.props;
 
       return (
-        <ThemeConsumer>{(inheritedTheme: ITheme) => (
-          <ThemeLayer theming={this.props.theming} parent={inheritedTheme}>{(theme: ITheme) => {
-            const styleProps = { theme, ...(this.props as {}) };
+        <ThemeLayer themeName={this.props.themeName}>{(theme: ITheme) => {
+          const styleProps = { theme, ...(this.props as {}) };
 
-            return ComponentView({
-              ...(this.props as {}),
-              classNames: mergeStyleSets(
-                evaluateStyle(styleProps, componentStyles),
-                evaluateStyle(styleProps, styles as any)
-              )
-            });
-          }}</ThemeLayer>
-        )}</ThemeConsumer>
+          return ComponentView({
+            ...(this.props as {}),
+            classNames: mergeStyleSets(
+              evaluateStyle(styleProps, componentStyles),
+              evaluateStyle(styleProps, styles as any)
+            )
+          });
+        }}</ThemeLayer>
       );
     }
   }

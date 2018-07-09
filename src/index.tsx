@@ -18,21 +18,19 @@ import PhotoCard from "./PhotoCard";
 import { ThemeLayer } from "./theming/ThemeProvider";
 import { Configurator } from "./Configurator";
 import { Card } from "./Card";
-import { initializeTheming, getDefaultTheme, IThemeDefinition, createTheme, addNamedTheme } from "./theming";
+import { initializeTheming, getDefaultTheme, addNamedTheme } from "./theming";
 
 function setupTheming() {
   initializeTheming();
 
   const theme = getDefaultTheme();
-  const shaded: Partial<IThemeDefinition> = {
+  addNamedTheme('shaded', {
     colorSet: { backgroundColor: { type: 'bg', shade: 1 } }
-  }
-  addNamedTheme('shaded', createTheme(shaded, theme));
+  }, theme);
 
-  const accented: Partial<IThemeDefinition> = {
+  addNamedTheme('accented', {
     colorSet: { backgroundColor: { type: 'accent', shade: 0 } }
-  }
-  addNamedTheme('accented', createTheme(accented, theme));
+  }, theme);
 }
 
 initializeIcons();
@@ -128,11 +126,11 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
               <Stack vertical gap={gapSize * 2}>
                 <Stack gap={gapSize * 2} fill collapseItems justify="center">
                   <TaskCard />
-                  <TaskCard theming='theme: shaded' />
+                  <TaskCard themeName='shaded' />
                 </Stack>
                 <Stack gap={gapSize * 2} fill collapseItems justify="center">
-                  <TaskCard theming='theme: accented' />
-                  <TaskCard theming='theme: HighContrast' />
+                  <TaskCard themeName='accented' />
+                  <TaskCard themeName='HighContrast' />
                 </Stack>
                 <Stack gap={gapSize * 2} justify="center">
                   <AnotherCard />
@@ -144,7 +142,7 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
                       padding: 20
                     }
                   }>
-                    <Stack gap={4} theming='theme: Overlay'>
+                    <Stack gap={4} themeName='Overlay'>
                       <Card padding={10}>
                         <Button text='the' />
                         <Button text='overlay' />

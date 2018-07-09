@@ -19,7 +19,7 @@ export const DefaultShadedTheme: IThemeDefinition = {
       colorSet: {
         backgroundColor: { type: 'rel', shade: 2 }
       },
-      props: {
+      settings: {
         borderWidth: 0,
         borderRadius: 2
       },

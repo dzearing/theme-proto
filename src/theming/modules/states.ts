@@ -1,11 +1,11 @@
-import { IBaseState, IBaseStyle, IStyleProps } from "../core/ICoreTypes";
+import { IBaseState, IBaseStyle, IBaseSettings } from "../core/ICoreTypes";
 import { createStyleOrState, adjustStyleProps, registerThemeModule } from "../core/ThemeModule";
 
 export function registerStatesModule() {
   registerThemeModule({
     name: 'states',
     resolveDef: resolveStates,
-    updateProps: addStatesToStyle
+    updateSettings: addStatesToStyle
   })
 }
 
@@ -29,7 +29,7 @@ function resolveStates(
 
 const selectorsKey = 'selectors';
 
-function addStatesToStyle(style: IStyleProps, states: object, params?: object): IStyleProps {
+function addStatesToStyle(style: IBaseSettings, states: object, params?: object): IBaseSettings {
   if (!style[selectorsKey]) {
     style[selectorsKey] = {};
   }

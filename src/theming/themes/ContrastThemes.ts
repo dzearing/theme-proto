@@ -12,12 +12,12 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
     color: { type: 'fn', shade: 0, name: 'autofg' },
     borderColor: { type: 'fn', shade: 0, name: 'autofg' }
   },
-  props: {
+  settings: {
 
   },
   styles: {
     container: {
-      props: {
+      settings: {
         borderWidth: 1,
         borderStyle: 'solid'
       }
@@ -26,7 +26,7 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
       colorSet: {
         backgroundColor: { type: 'bg', shade: 0 }
       },
-      props: {
+      settings: {
         borderWidth: 1,
         borderRadius: 0,
         borderStyle: 'solid'

@@ -14,7 +14,7 @@ export function themeStyleCore<ITheme extends IBaseTheme>(theme: ITheme, props?:
     }
   }
   const style = getThemeStyleCore<ITheme, IBaseStyle>(theme, styleName);
-  let rawStyle = style.props || {};
+  let rawStyle = style.settings || {};
   if (modules) {
     rawStyle = adjustStyleProps(style, rawStyle, modules, modules);
   }

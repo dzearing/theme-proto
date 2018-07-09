@@ -5,7 +5,7 @@ import { IRawStyle } from "@uifabric/styling";
 import { ThemeResolver } from "./core/ICoreTypes";
 
 export interface IThemeModuleDefinitions {
-  props?: IRawStyle;
+  settings?: IRawStyle;
   seedColors?: Partial<ISeedColorDefinitions>;
   colorSet?: Partial<IColorSetDefinitions>;
   typography?: Partial<ITypography>;
@@ -26,13 +26,13 @@ export interface IThemeDefinition extends IThemeStyleDefinition {
 
 export interface IThemeStyle {
   parent?: string,
-  props: IRawStyle,
+  settings: IRawStyle,
   seedColors: ISeedColors,
   colors: IColorSet,
   typography: ITypography,
   states: {
     [key: string]: {
-      props?: IRawStyle,
+      settings?: IRawStyle,
       seedColors?: Partial<ISeedColors>,
       colors?: Partial<IColorSet>,
       typography?: Partial<ITypography>,

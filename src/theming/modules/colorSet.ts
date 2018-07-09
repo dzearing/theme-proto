@@ -69,7 +69,7 @@ export function registerColorSetModule(dependencyName: string, thisModuleName?: 
     },
     dependsOn: [seedColorsPluginName],
     resolveDef: resolveColorSetDefinition,
-    updateProps: addColorsToStyle
+    updateSettings: addColorsToSettings
   });
 }
 
@@ -138,13 +138,13 @@ function resolveColorSetDefinition(
   return result;
 }
 
-function addColorsToStyle(style: IRawStyle, colorSet: IColorSet, _params?: object): IRawStyle {
+function addColorsToSettings(settings: IRawStyle, colorSet: IColorSet, _params?: object): IRawStyle {
   for (const colorName in colorSet) {
     if (colorSet.hasOwnProperty(colorName)) {
-      style[colorName] = colorSet[colorName].val.str;
+      settings[colorName] = colorSet[colorName].val.str;
     }
   }
-  return style;
+  return settings;
 }
 
 function resolveColor(layers: ISeedColors, key: IColorLayerKey, base?: IColorLayerKey): IResolvedColor {

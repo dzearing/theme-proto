@@ -7,13 +7,13 @@ export function registerTypographyModule() {
   registerThemeModule({
     name: 'typography',
     default: DefaultTypography,
-    updateProps: addTypographyToStyle
+    updateSettings: addTypographyToSettings
   })
 }
 
 const defaultKey = 'default';
 
-function addTypographyToStyle(style: IRawStyle, typography: ITypography, props?: ITypographyProps): IRawStyle {
+function addTypographyToSettings(settings: IRawStyle, typography: ITypography, props?: ITypographyProps): IRawStyle {
   const typeProps = props && props.type && typography.types.hasOwnProperty(props.type) ? typography.types[props.type] : undefined;
   // resolve type properties first
   let {
@@ -30,8 +30,8 @@ function addTypographyToStyle(style: IRawStyle, typography: ITypography, props?:
   }
 
   // now set the values
-  style.fontFamily = typography.families[fontFamily];
-  style.fontWeight = typography.weights[fontWeight] as any;
-  style.fontSize = typography.sizes[fontSize];
-  return style;
+  settings.fontFamily = typography.families[fontFamily];
+  settings.fontWeight = typography.weights[fontWeight] as any;
+  settings.fontSize = typography.sizes[fontSize];
+  return settings;
 }

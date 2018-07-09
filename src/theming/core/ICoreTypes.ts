@@ -1,8 +1,8 @@
-export type IStyleProps = object;
+export type IBaseSettings = object;
 
 export interface IBaseStateDef {
   /** bucket of properties to define for the theming system */
-  props?: IStyleProps;
+  settings?: IBaseSettings;
   /*
   other theme modules will be in here as well
     seedColors:
@@ -75,15 +75,15 @@ export type ThemeDefinitionResolver = (
 
 /**
  * This takes information from the resolved module and applies it to the style.
- * @param style style to modify in place.  Similar to object.assign, this both modifies and returns
+ * @param settings settings to modify in place.  Similar to object.assign, this both modifies and returns
  * @param module resolved module at this level
  * @param params optional, module specific parameters which can adjust behavior
  */
-export type PropsUpdater = (
-  props: IStyleProps,
+export type SettingsUpdater = (
+  settings: IBaseSettings,
   module: IModuleResolved,
   params?: object
-) => IStyleProps;
+) => IBaseSettings;
 
 /**
  * Interface used to register a theme module.  Name is the key value for the module.  A complex module
@@ -112,5 +112,5 @@ export interface IThemeModuleProps {
   default: IModuleDefinition;
   dependsOn?: string[];
   resolveDef: ThemeDefinitionResolver;
-  updateProps?: PropsUpdater;
+  updateSettings?: SettingsUpdater;
 }

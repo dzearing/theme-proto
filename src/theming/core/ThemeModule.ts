@@ -1,8 +1,8 @@
-import { IThemeModuleProps } from "./ICoreTypes";
+import { IThemeModuleProps, IBaseState } from "./ICoreTypes";
 import { mergeObjects } from "./mergeObjects";
 import { IBaseStyle } from "./ICoreTypes";
 
-const rawStyleKey = 'props';
+const rawStyleKey = 'settings';
 const themeModules: { [key: string]: IThemeModuleProps } = {};
 const moduleArray: IThemeModuleProps[] = [];
 
@@ -12,7 +12,7 @@ function resolveModuleProps(props: Partial<IThemeModuleProps>): IThemeModuleProp
     default: props.default || {},
     dependsOn: props.dependsOn,
     resolveDef: props.resolveDef || resolveThemeDefinition,
-    updateProps: props.updateProps
+    updateSettings: props.updateSettings
   }
 }
 
@@ -98,7 +98,7 @@ export function createStyleOrState(
   allowPartial: boolean,
   parent?: object
 ): any {
-  const results = { [rawStyleKey]: {} };
+  const results: IBaseState = { settings: {} };
 
   // go through the modules of note in the order they appear in the array
   for (const module of moduleArray) {
@@ -107,8 +107,8 @@ export function createStyleOrState(
     if (!allowPartial || def) {
       results[name] = module.resolveDef(name, results, module.default, allowPartial, def, parent);
     }
-    if (results[name] && module.updateProps) {
-      results.props = module.updateProps(results[rawStyleKey], results[name]);
+    if (results[name] && module.updateSettings) {
+      results.settings = module.updateSettings(results.settings!, results[name]);
     }
   }
 
@@ -129,7 +129,7 @@ export function adjustStyleProps(style: IBaseStyle, props: object, keysToTravers
   for (const key in keysToTraverse) {
     if (keysToTraverse.hasOwnProperty(key) && style[key] && themeModules.hasOwnProperty(key)) {
       const styleDef = style[key];
-      const updateStyle = themeModules[key].updateProps;
+      const updateStyle = themeModules[key].updateSettings;
       const thisModule = modules ? modules[key] : undefined;
       if (updateStyle) {
         props = updateStyle(props, styleDef, thisModule);

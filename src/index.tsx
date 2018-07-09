@@ -18,7 +18,7 @@ import PhotoCard from "./PhotoCard";
 import { ThemeLayer } from "./theming/ThemeProvider";
 import { Configurator } from "./Configurator";
 import { Card } from "./Card";
-import { initializeTheming, getDefaultTheme, addNamedTheme } from "./theming";
+import { initializeTheming, getDefaultTheme, addNamedTheme, ITheme } from "./theming";
 
 function setupTheming() {
   initializeTheming();
@@ -62,12 +62,13 @@ const Box = (props: { className?: string; background?: string }) => (
   />
 );
 
-class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
+class App extends React.Component<{}, { gapSize: number; checked: boolean; theme?: ITheme }> {
   constructor(props: {}) {
     super(props);
     this.state = {
       gapSize: 4,
-      checked: false
+      checked: false,
+      theme: undefined
     };
   }
 
@@ -77,7 +78,7 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
     return (
       <ThemeLayer>{() => (
         <div>
-          <Configurator updateGapSize={this._onGapSizeChange} />
+          <Configurator updateGapSize={this._onGapSizeChange} updateTheme={this._onThemeUpdated} />
           <Grid gap={8} templateColumns="1fr 1fr">
             <Grid.Cell debug>
               <Box background="blue" />
@@ -173,6 +174,10 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
   private _onGapSizeChange = (gapSize: number) => {
     this.setState({ gapSize });
   };
+
+  private _onThemeUpdated = (theme: ITheme) => {
+    this.setState({ theme });
+  }
 }
 
 ReactDOM.render(<App />, document.getElementById("root") as HTMLElement);

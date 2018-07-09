@@ -2,10 +2,11 @@ import { DefaultFontStyles, IStyle, Slider } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
 import { ColorChoice } from './ColorChoice';
-import { ThemeContext } from './theming/ThemeProvider';
+import { ThemeConsumer } from './theming/ThemeProvider';
 import { Card } from './Card';
 import { Text } from './Text';
 import { Stack } from './Stack';
+import { ITheme } from './theming';
 
 // Styles for the component
 export interface IConfiguratorStyles {
@@ -17,6 +18,7 @@ export interface IConfiguratorProps {
   renderAs?: string | React.ReactType<IConfiguratorProps>,
   className?: string;
   updateGapSize?: (newGap: number) => void;
+  updateTheme?: (theme: ITheme) => void;
 }
 
 const view = (props: IViewProps<IConfiguratorProps, IConfiguratorStyles>) => {
@@ -25,22 +27,21 @@ const view = (props: IViewProps<IConfiguratorProps, IConfiguratorStyles>) => {
     classNames } = props;
 
   return (
-    <ThemeContext.Consumer>{
-      ({theme, updateTheme}) => {
+    <ThemeConsumer>{
+      (theme) => {
         return (
           <RootType className={classNames.root}>
             <Text>Configuration Options</Text>
             <Stack vertical gap={4}>
-              <ColorChoice colorSlot='bg' title='Bg' updater={updateTheme} theme={theme} />
-              <ColorChoice colorSlot='fg' title='Fg' updater={updateTheme} theme={theme} />
-              <ColorChoice colorSlot='accent' title='Accent' updater={updateTheme} theme={theme} />
+              <ColorChoice colorSlot='bg' title='Bg' updater={props.updateTheme} theme={theme} />
+              <ColorChoice colorSlot='fg' title='Fg' updater={props.updateTheme} theme={theme} />
+              <ColorChoice colorSlot='accent' title='Accent' updater={props.updateTheme} theme={theme} />
             </Stack>
             <Slider label='Gap size' onChange={props.updateGapSize} min={0} max={40} step={4} />
-          </RootType> 
+          </RootType>
         )
       }
-    }</ThemeContext.Consumer>
-    
+    }</ThemeConsumer>
   );
 };
 

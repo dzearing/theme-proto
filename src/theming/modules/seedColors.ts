@@ -1,6 +1,5 @@
 import { getColorFromString, IColor } from "../../coloring/color";
 import { getShadeArray } from "../../coloring/shading";
-import { mergeObjects } from "../core/mergeObjects";
 import { registerThemeModule } from "../core/ThemeModule";
 import { IBaseStyle } from "../core/ICoreTypes";
 
@@ -95,8 +94,7 @@ export function registerSeedColorsModule(keyName?: string) {
       bg: { color: '#f3f2f1' },
       accent: { color: '#0078d4', anchorColor: true }
     },
-    resolveDef: resolveSeedColorDefinition,
-    stringConfig: parseSeedColorString
+    resolveDef: resolveSeedColorDefinition
   });
 }
 
@@ -162,21 +160,4 @@ function resolveSeedColorDefinition(
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {
   return colors.map((val) => (getColorFromString(val) || fallback));
-}
-
-function parseSeedColorString(
-  _theme: object,
-  definition: object,
-  term: string,
-  param?: string
-): number {
-  if (param && (term === 'fg:' || term === 'bg:' || term === 'accent:')) {
-    const newSeedColors = {};
-    newSeedColors[term.slice(0, -1)] = param;
-    const newDef = {};
-    newDef[seedColorsPluginName] = newSeedColors;
-    Object.assign(definition, mergeObjects(definition, newDef));
-    return 2;
-  }
-  return 0;
 }

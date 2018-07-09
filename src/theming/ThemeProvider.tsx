@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ITheme } from './ITheme';
-import { getDefaultTheme, themeFromChangeString, getTheme } from '.';
+import { getDefaultTheme, getTheme } from '.';
 import { hasTheme } from './core/ThemeRegistry';
 
 /*

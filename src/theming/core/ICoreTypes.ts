@@ -86,23 +86,6 @@ export type PropsUpdater = (
 ) => IStyleProps;
 
 /**
- * When building up a one off theme this gives a chance for the module to create a definition
- * based on the input string
- * @param theme previous theme to base things on
- * @param definition definition that is being built up.  This will be added to by this call.
- * @param term the current term to parse
- * @param param the next parsed string value (if it exists)
- * returns the number of terms that were handled.  If param is ignored then 1, if param is used
- * then 2
- */
-export type ThemeStringHandler = (
-  theme: IBaseTheme,
-  definition: IBaseThemeDef,
-  term: string,
-  param?: string
-) => number;
-
-/**
  * Interface used to register a theme module.  Name is the key value for the module.  A complex module
  * will have a structure like:
  *  ThemeDefinition {
@@ -130,5 +113,4 @@ export interface IThemeModuleProps {
   dependsOn?: string[];
   resolveDef: ThemeDefinitionResolver;
   updateProps?: PropsUpdater;
-  stringConfig?: ThemeStringHandler;
 }

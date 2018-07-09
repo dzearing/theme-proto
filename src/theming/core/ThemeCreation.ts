@@ -1,6 +1,5 @@
-import { createStyleOrState, handleStringChange } from "./ThemeModule";
+import { createStyleOrState } from "./ThemeModule";
 import { mergeObjects } from "./mergeObjects";
-import { hasTheme, getThemeCore } from "./ThemeRegistry";
 import { IBaseTheme, IBaseStyle, IBaseStyleDef, IBaseThemeDef } from "./ICoreTypes";
 
 const stylesKey = 'styles';
@@ -51,39 +50,6 @@ function aggregateStyleDefinition<IThemeStyleDefinition extends IBaseStyleDef>(
     return styleDef;
   }
   return {};
-}
-
-/*
-  generate a theme settings interface from an update string.  Possible options:
-    theme: <name>                       - set the theme with the specified name as active
-    type: [themed|bg|switch]             - adjust the type of the default layer as specified
-    deepen: number                      - adjust the current shade by the specified number of levels
-    shade: number                       - set the current shade to the specified value
-    fg|bg|accent: color                 - override the seed colors for the theme
-*/
-export function themeFromChangeStringCore<ITheme extends IBaseTheme>(update: string, baseline: ITheme): ITheme {
-  const terms = update.split(' ');
-  const definition = {};
-  let updated = false;
-
-  for (let i: number = 0; i < terms.length; i++) {
-    const cmd = terms[i];
-    const param = (i + 1) < terms.length ? terms[i + 1] : undefined;
-
-    if (cmd === 'theme:' && param) {
-      if (hasTheme(param)) {
-        return getThemeCore(param);
-      }
-    } else {
-      const handledTerms = handleStringChange(baseline, definition, cmd, param);
-      if (handledTerms > 0) {
-        updated = true;
-        i += (handledTerms - 1);
-      }
-    }
-  }
-
-  return updated ? createThemeCore(definition, baseline) : baseline;
 }
 
 /**

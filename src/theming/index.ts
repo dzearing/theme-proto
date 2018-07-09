@@ -4,7 +4,7 @@ import { registerColorSetModule } from "./modules/colorSet";
 import { registerTypographyModule } from "./modules/typography/Typography";
 import { registerShadedThemes } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
-import { themeFromChangeStringCore, createThemeCore } from "./core/ThemeCreation";
+import { createThemeCore } from "./core/ThemeCreation";
 import { themeStyleCore } from "./core/themeStyleCore";
 import { IStyleRequestProps } from "./core/ICoreTypes";
 import { IRawStyle } from "@uifabric/styling";
@@ -49,27 +49,6 @@ export function getTheme(name: string): ITheme {
 export function getDefaultTheme(): ITheme {
   initializeTheming();
   return getDefaultThemeCore<ITheme>();
-}
-
-/**
- * This takes a change string and returns a new theme with those changes applied.  Options are:
- *  theme: <themeNameNoSpaces>  - like calling getTheme(<name>), will shortcircuit creation of
- *                                a new theme
- *  --- from seedColors module
- *  fg|bg|accent: <color>       - override the specified seed color, this will regenerate the
- *                                color arrays referred to by the sets
- *  --- from colorSets module
- *  type: 'switch'              - toggle between bg and accent
- *  type: <anythingElse>        - type will be set directly to this, allows for custom arrays
- *  deepen: <number>            - adjust the current shade value by the number specified
- *  shade: <number>             - set the current shade value to the number specified
- * @param update this is a shorthand string containing the modifications to make to the baseline
- * theme
- * @param baseline the theme to apply the modifications on top of
- */
-export function themeFromChangeString(update: string, baseline: ITheme): ITheme {
-  initializeTheming();
-  return themeFromChangeStringCore(update, baseline);
 }
 
 export function createTheme(definition: Partial<IThemeDefinition>, parentTheme?: ITheme): ITheme {

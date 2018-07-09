@@ -5,7 +5,6 @@ import { registerThemeModule } from "../core/ThemeModule";
 import { IBaseStyle } from "../core/ICoreTypes";
 import { ISeedColors } from "./seedColors";
 import { getContrastRatio } from "../../coloring/shading";
-import { mergeObjects } from "../core/mergeObjects";
 
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
@@ -70,8 +69,7 @@ export function registerColorSetModule(dependencyName: string, thisModuleName?: 
     },
     dependsOn: [seedColorsPluginName],
     resolveDef: resolveColorSetDefinition,
-    updateProps: addColorsToStyle,
-    stringConfig: parseColorsString
+    updateProps: addColorsToStyle
   });
 }
 
@@ -205,43 +203,4 @@ function getAutoFg(layers: ISeedColors, bgColor: IColor): IColor {
 
 function isFnKey(key: IColorLayerKey): boolean {
   return key.type === 'fn' && key.name !== undefined;
-}
-
-function parseColorsString(
-  theme: object,
-  definition: object,
-  term: string,
-  param?: string
-): number {
-  if (param
-    && theme.hasOwnProperty(colorsPluginName)
-    && (term === 'type:' || term === 'deepen:' || term === 'shade:')
-  ) {
-    const baseColors = theme[colorsPluginName] as IColorSet;
-    const colorsDefinition: IColorSetDefinitions = definition[colorsPluginName];
-
-    let bgKey: IColorLayerKey = { type: 'bg', shade: 0 };
-    if (colorsDefinition && colorsDefinition.backgroundColor && typeof colorsDefinition.backgroundColor !== 'string') {
-      bgKey = colorsDefinition.backgroundColor;
-    } else if (baseColors.backgroundColor.key) {
-      bgKey = { ...baseColors.backgroundColor.key };
-    }
-
-    if (term === 'type:') {
-      if (param === 'switch') {
-        bgKey.type = flipType(bgKey.type);
-      } else {
-        bgKey.type = param;
-      }
-    } else {
-      const shade: number = parseInt(param, 10);
-      if (isNaN(shade)) {
-        return 0;
-      }
-      bgKey.shade = (term === 'deepen:') ? bgKey.shade + shade : shade;
-    }
-    definition[colorsPluginName] = mergeObjects(colorsDefinition, { backgroundColor: bgKey });
-    return 2;
-  }
-  return 0;
 }

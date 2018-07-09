@@ -1,11 +1,10 @@
-import { IThemeModuleProps, ThemeStringHandler } from "./ICoreTypes";
+import { IThemeModuleProps } from "./ICoreTypes";
 import { mergeObjects } from "./mergeObjects";
 import { IBaseStyle } from "./ICoreTypes";
 
 const rawStyleKey = 'props';
 const themeModules: { [key: string]: IThemeModuleProps } = {};
 const moduleArray: IThemeModuleProps[] = [];
-const stringChangeHandlers: ThemeStringHandler[] = [];
 
 function resolveModuleProps(props: Partial<IThemeModuleProps>): IThemeModuleProps {
   return {
@@ -13,7 +12,6 @@ function resolveModuleProps(props: Partial<IThemeModuleProps>): IThemeModuleProp
     default: props.default || {},
     dependsOn: props.dependsOn,
     resolveDef: props.resolveDef || resolveThemeDefinition,
-    stringConfig: props.stringConfig,
     updateProps: props.updateProps
   }
 }
@@ -33,9 +31,6 @@ export function registerThemeModule(props: Partial<IThemeModuleProps>) {
   if (!themeModules.hasOwnProperty(name)) {
     const newProps = resolveModuleProps(props);
     themeModules[name] = newProps;
-    if (props.stringConfig) {
-      stringChangeHandlers.push(props.stringConfig);
-    }
 
     const length = moduleArray.length;
     let newPos = length;
@@ -142,28 +137,4 @@ export function adjustStyleProps(style: IBaseStyle, props: object, keysToTravers
     }
   }
   return props;
-}
-
-/**
- * This iterates through plugins that have string change handlers to build up an override
- * definition based on an input string.  This will return the number of handled terms and modify
- * the definition in place.
- * @param theme Current theme to modify for reference
- * @param definition New definition that is being built up, this should be modified in place
- * @param term Parse term being evaluated
- * @param param Optional parameter (basically the next parse term if available)
- */
-export function handleStringChange(
-  theme: object,
-  definition: object,
-  term: string,
-  param?: string
-): number {
-  for (const handler of stringChangeHandlers) {
-    const result = handler(theme, definition, term, param);
-    if (result !== 0) {
-      return result;
-    }
-  }
-  return 0;
 }

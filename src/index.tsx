@@ -18,10 +18,25 @@ import PhotoCard from "./PhotoCard";
 import { ThemeLayer } from "./theming/ThemeProvider";
 import { Configurator } from "./Configurator";
 import { Card } from "./Card";
-import { initializeTheming } from "./theming";
+import { initializeTheming, getDefaultTheme, IThemeDefinition, createTheme, addNamedTheme } from "./theming";
+
+function setupTheming() {
+  initializeTheming();
+
+  const theme = getDefaultTheme();
+  const shaded: Partial<IThemeDefinition> = {
+    colorSet: { backgroundColor: { type: 'bg', shade: 1 } }
+  }
+  addNamedTheme('shaded', createTheme(shaded, theme));
+
+  const accented: Partial<IThemeDefinition> = {
+    colorSet: { backgroundColor: { type: 'accent', shade: 0 } }
+  }
+  addNamedTheme('accented', createTheme(accented, theme));
+}
 
 initializeIcons();
-initializeTheming();
+setupTheming();
 
 mergeStyles({
   selectors: {
@@ -113,10 +128,10 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean }> {
               <Stack vertical gap={gapSize * 2}>
                 <Stack gap={gapSize * 2} fill collapseItems justify="center">
                   <TaskCard />
-                  <TaskCard theming='shade: 1' />
+                  <TaskCard theming='theme: shaded' />
                 </Stack>
                 <Stack gap={gapSize * 2} fill collapseItems justify="center">
-                  <TaskCard theming='type: accent' />
+                  <TaskCard theming='theme: accented' />
                   <TaskCard theming='theme: HighContrast' />
                 </Stack>
                 <Stack gap={gapSize * 2} justify="center">

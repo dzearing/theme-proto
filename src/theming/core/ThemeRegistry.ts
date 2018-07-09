@@ -35,6 +35,14 @@ export function registerDefaultThemeCore<ITheme extends IBaseTheme>(defaultTheme
   }
 }
 
+export function addThemeCore<ITheme extends IBaseTheme>(name: string, theme: ITheme, replaceExisting: boolean = true): boolean {
+  if (replaceExisting || !hasTheme(name)) {
+    themeRegistry[name] = theme;
+    return true;
+  }
+  return false;
+}
+
 function getResolvedDefinition(name: string): IBaseThemeDef | undefined {
   if (themeDefinitions.hasOwnProperty(name)) {
     const thisDef = themeDefinitions[name];
@@ -66,7 +74,7 @@ export function getThemeCore<ITheme extends IBaseTheme>(name: string): ITheme {
 }
 
 export function hasTheme(name: string): boolean {
-  return themeDefinitions.hasOwnProperty(name);
+  return themeDefinitions.hasOwnProperty(name) || themeRegistry.hasOwnProperty(name);
 }
 
 export function getDefaultThemeCore<ITheme extends IBaseTheme>(): ITheme {

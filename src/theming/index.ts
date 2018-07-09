@@ -1,5 +1,5 @@
 import { IThemeDefinition, ITheme } from "./ITheme";
-import { registerThemeCore, getThemeCore, getDefaultThemeCore } from "./core/ThemeRegistry";
+import { registerThemeCore, getThemeCore, getDefaultThemeCore, addThemeCore } from "./core/ThemeRegistry";
 import { registerColorSetModule } from "./modules/colorSet";
 import { registerTypographyModule } from "./modules/typography/Typography";
 import { registerShadedThemes } from "./themes/ShadedThemes";
@@ -20,6 +20,17 @@ export { IThemeDefinition, ITheme } from "./ITheme";
  */
 export function registerTheme(name: string, definition: IThemeDefinition) {
   registerThemeCore(name, definition);
+}
+
+/**
+ * Add a theme created at runtime to the theme registry so it can be referenced by name
+ * @param name name for the theme to add
+ * @param theme theme to add
+ * @param replaceExisting set it to this name no matter what.  If false then the theme will only be set to that
+ * name if there was no previous theme of that name
+ */
+export function addNamedTheme(name: string, theme: ITheme, replaceExisting: boolean = true): boolean {
+  return addThemeCore(name, theme, replaceExisting);
 }
 
 /**

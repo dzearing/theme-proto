@@ -18,19 +18,20 @@ import PhotoCard from "./PhotoCard";
 import { ThemeLayer } from "./theming/ThemeProvider";
 import { Configurator } from "./Configurator";
 import { Card } from "./Card";
-import { initializeTheming, getDefaultTheme, addNamedTheme, ITheme } from "./theming";
+import { initializeTheming, getDefaultTheme, addNamedTheme, ITheme, registerTheme } from "./theming";
 
 function setupTheming() {
   initializeTheming();
 
-  const theme = getDefaultTheme();
-  addNamedTheme('shaded', {
+  registerTheme('shaded', {
+    parent: 'default',
     colorSet: { backgroundColor: { type: 'bg', shade: 1 } }
-  }, theme);
+  });
 
-  addNamedTheme('accented', {
+  registerTheme('accented', {
+    parent: 'default',
     colorSet: { backgroundColor: { type: 'accent', shade: 0 } }
-  }, theme);
+  });
 }
 
 initializeIcons();

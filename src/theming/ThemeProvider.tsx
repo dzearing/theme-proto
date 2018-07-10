@@ -20,41 +20,21 @@ export const ThemeConsumer = (props: {
     </ThemeContext.Consumer>
   );
 
-/*
-  inputs to the provider component for updating the state
-*/
-export interface IThemeLayerProps {
+export const ThemeLayer = (props: {
   themeName?: string;
   children: (theme: ITheme) => JSX.Element;
-}
-
-export const ThemeLayer = ()
-
-export class ThemeLayer extends React.Component<IThemeLayerProps, IThemeLayerState> {
-  constructor(props: IThemeLayerProps) {
-    super(props);
-    this.state = {};
-    this._updateTheme = this._updateTheme.bind(this);
-  }
-
-  public render() {
-    return (<ThemeConsumer>{(inheritedTheme: ITheme) => {
-      const themeName = this.props.themeName;
-      const needsProvider = themeName && hasTheme(themeName);
-      const theme = needsProvider && themeName ? getTheme(themeName) : inheritedTheme;
-
-      if (needsProvider) {
-        return (
-          <ThemeContext.Provider value={{ theme, updateTheme: this._updateTheme }}>
-            {this.props.children(theme)}
-          </ThemeContext.Provider>
-        )
+}) => (
+    <ThemeContext.Consumer>{
+      (oldName) => {
+        const newName = props.themeName;
+        if (newName && newName !== oldName && hasTheme(newName)) {
+          return (
+            <ThemeContext.Provider value={newName}>
+              {props.children(getTheme(newName))}
+            </ThemeContext.Provider>
+          );
+        }
+        return props.children(getTheme(oldName));
       }
-      return (this.props.children(theme));
-    }}</ThemeConsumer>);
-  }
-
-  private _updateTheme(newTheme: ITheme) {
-    this.setState({ ...this.state, theme: newTheme });
-  }
-}
+    }</ThemeContext.Consumer>
+  );

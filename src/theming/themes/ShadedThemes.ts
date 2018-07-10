@@ -1,8 +1,9 @@
-import { IThemeDefinition } from '../ITheme';
 import { DefaultTypography } from '../modules/typography/DefaultTypography';
 import { registerTheme } from '..';
 
-export const DefaultShadedTheme: IThemeDefinition = {
+export const DefaultThemeName = 'LightTheme';
+
+const registerLightTheme = () => registerTheme(DefaultThemeName, {
   seedColors: {
     fg: { color: 'black' },
     bg: { color: '#f3f2f1' },
@@ -39,9 +40,7 @@ export const DefaultShadedTheme: IThemeDefinition = {
       }
     }
   }
-}
-
-const registerLightTheme = () => registerTheme('LightTheme', DefaultShadedTheme);
+});
 
 const registerDarkTheme = () => registerTheme('DarkTheme', {
   parent: 'LightTheme',
@@ -59,6 +58,4 @@ export function registerShadedThemes() {
   registerLightTheme();
   registerDarkTheme();
 }
-
-export const DefaultTheme = DefaultShadedTheme;
 

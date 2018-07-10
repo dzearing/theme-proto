@@ -7,16 +7,17 @@ import { hasTheme } from './core/ThemeRegistry';
   value stored in the context that is available at each level to consumers.
 */
 export interface IThemeContextValue {
-  theme: ITheme;
+  theme?: ITheme;
+  themeName: string;
 }
 
-export const ThemeContext = React.createContext<string>('default');
+export const ThemeContext = React.createContext<IThemeContextValue>({ themeName: 'default' });
 
 export const ThemeConsumer = (props: {
   children: (theme: ITheme) => JSX.Element;
 }) => (
     <ThemeContext.Consumer>
-      {(themeName) => props.children(getTheme(themeName))}
+      {({ themeName, theme }) => props.children(getTheme(themeName))}
     </ThemeContext.Consumer>
   );
 
@@ -25,16 +26,18 @@ export const ThemeLayer = (props: {
   children: (theme: ITheme) => JSX.Element;
 }) => (
     <ThemeContext.Consumer>{
-      (oldName) => {
-        const newName = props.themeName;
-        if (newName && newName !== oldName && hasTheme(newName)) {
+      ({ themeName: oldName, theme: oldTheme }) => {
+        const propsName = props.themeName;
+        const name = propsName && hasTheme(propsName) ? propsName : oldName;
+        const newTheme = getTheme(name);
+        if (name !== oldName || newTheme !== oldTheme) {
           return (
-            <ThemeContext.Provider value={newName}>
-              {props.children(getTheme(newName))}
+            <ThemeContext.Provider value={{ themeName: name, theme: newTheme }}>
+              {props.children(newTheme)}
             </ThemeContext.Provider>
           );
         }
-        return props.children(getTheme(oldName));
+        return props.children(newTheme);
       }
     }</ThemeContext.Consumer>
   );

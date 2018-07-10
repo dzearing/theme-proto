@@ -5,7 +5,7 @@ import {
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { ITheme } from './theming/ITheme';
-import { ThemeLayer, ThemeConsumer } from './theming/ThemeProvider';
+import { ThemeLayer } from './theming/ThemeProvider';
 
 export type IStyleFunction<TProps, TStyles> = (
   props: TProps

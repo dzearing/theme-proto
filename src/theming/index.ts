@@ -1,8 +1,8 @@
 import { IThemeDefinition, ITheme } from "./ITheme";
-import { registerThemeCore, getThemeCore, getDefaultThemeCore, addThemeCore } from "./core/ThemeRegistry";
+import { registerThemeCore, getThemeCore, getDefaultThemeCore, addThemeCore, setDefaultTheme } from "./core/ThemeRegistry";
 import { registerColorSetModule } from "./modules/colorSet";
 import { registerTypographyModule } from "./modules/typography/Typography";
-import { registerShadedThemes } from "./themes/ShadedThemes";
+import { registerShadedThemes, DefaultThemeName } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
 import { createThemeCore } from "./core/ThemeCreation";
 import { themeStyleCore } from "./core/themeStyleCore";
@@ -74,5 +74,7 @@ export function initializeTheming() {
     // load up some default theme defintions
     registerShadedThemes();
     registerContrastThemes();
+
+    setDefaultTheme(DefaultThemeName);
   }
 }

@@ -1,8 +1,7 @@
-import { createStyleOrState } from "./ThemeModule";
+import { createLayerOrState } from "./ThemeModule";
 import { mergeObjects } from "./mergeObjects";
-import { IBaseTheme, IBaseStyle, IBaseStyleDef, IBaseThemeDef } from "./ICoreTypes";
+import { IBaseTheme, IBaseLayer, IBaseLayerDef, IBaseThemeDef } from "./ICoreTypes";
 
-const stylesKey = 'styles';
 const defKey = 'definition';
 const defaultName = 'default';
 
@@ -17,37 +16,37 @@ export function createThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends 
   parentTheme?: ITheme
 ): ITheme {
   // start with the base style definition
-  const baseStyle = createStyleOrState(definition, false, parentTheme);
+  const baseLayer = createLayerOrState(definition, false, parentTheme);
   const newDef = parentTheme && parentTheme.hasOwnProperty(defKey)
     ? mergeObjects(parentTheme[defKey], definition)
     : definition;
-  const styleDefinitions = newDef.hasOwnProperty(stylesKey) ? newDef[stylesKey] : {};
+  const layerDefinitions = newDef.layers || {};
   const baseStateDef = newDef.states || {};
 
   return {
-    ...baseStyle,
+    ...baseLayer,
     definition: newDef,
-    styles: Object.keys(styleDefinitions).reduce((styles, styleName) => {
-      styles[styleName] = () => {
+    layers: Object.keys(layerDefinitions).reduce((layers, layerName) => {
+      layers[layerName] = () => {
         const base = { states: baseStateDef };
-        const styleDef = mergeObjects(base, aggregateStyleDefinition(styleDefinitions, styleName));
-        return createStyleOrState(styleDef, false, baseStyle);
+        const layerDef = mergeObjects(base, aggregateLayerDefinition(layerDefinitions, layerName));
+        return createLayerOrState(layerDef, false, baseLayer);
       }
-      return styles;
+      return layers;
     }, {}),
   };
 }
 
-function aggregateStyleDefinition<IThemeStyleDefinition extends IBaseStyleDef>(
-  styleDefinitions: { [key: string]: Partial<IThemeStyleDefinition> },
-  styleName: string
-): Partial<IThemeStyleDefinition> {
-  if (styleDefinitions.hasOwnProperty(styleName)) {
-    const styleDef = styleDefinitions[styleName];
-    if (styleDef.parent) {
-      return mergeObjects(aggregateStyleDefinition(styleDefinitions, styleDef.parent!), styleDef);
+function aggregateLayerDefinition<IThemeLayerDefinition extends IBaseLayerDef>(
+  layerDefinitions: { [key: string]: Partial<IThemeLayerDefinition> },
+  layerName: string
+): Partial<IThemeLayerDefinition> {
+  if (layerDefinitions.hasOwnProperty(layerName)) {
+    const layerDef = layerDefinitions[layerName];
+    if (layerDef.parent) {
+      return mergeObjects(aggregateLayerDefinition(layerDefinitions, layerDef.parent!), layerDef);
     }
-    return styleDef;
+    return layerDef;
   }
   return {};
 }
@@ -58,18 +57,18 @@ function aggregateStyleDefinition<IThemeStyleDefinition extends IBaseStyleDef>(
  * @param theme Theme from which to obtain the style
  * @param name Name of the style to obtain.  If undefined it is the equivalent of default
  */
-export function getThemeStyleCore<ITheme extends IBaseTheme & IStyle, IStyle extends IBaseStyle>(
+export function getThemeLayerCore<ITheme extends IBaseTheme & ILayer, ILayer extends IBaseLayer>(
   theme: ITheme,
   name?: string
-): IStyle {
-  const styles = theme.styles;
-  if (styles && name && name !== defaultName && styles.hasOwnProperty(name)) {
-    const styleVal = styles[name];
-    if (typeof styleVal === 'function') {
+): ILayer {
+  const layers = theme.layers;
+  if (layers && name && name !== defaultName && layers.hasOwnProperty(name)) {
+    const layerVal = layers[name];
+    if (typeof layerVal === 'function') {
       // if this is a factory function call the function to resolve the style
-      styles[name] = styleVal();
+      layers[name] = layerVal();
     }
-    return styles[name] as IStyle;
+    return layers[name] as ILayer;
   }
   // failing a name lookup (or if we just want the default) return the base theme, which extends IStyle by definition
   return theme;

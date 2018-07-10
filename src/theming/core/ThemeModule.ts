@@ -1,6 +1,6 @@
 import { IThemeModuleProps, IBaseState } from "./ICoreTypes";
 import { mergeObjects } from "./mergeObjects";
-import { IBaseStyle } from "./ICoreTypes";
+import { IBaseLayer } from "./ICoreTypes";
 
 const rawStyleKey = 'settings';
 const themeModules: { [key: string]: IThemeModuleProps } = {};
@@ -53,23 +53,23 @@ export function registerThemeModule(props: Partial<IThemeModuleProps>) {
  * override is present this will simply merge properties together.  This is called in the
  * following scenarios:
  * 
- *  default style:
- *    allowPartial: false, parent: undefined, return a fully resolved style
- *  named style:
- *    allowPartial: false, parent: defaultStyle, return fully resolved style
+ *  default layer:
+ *    allowPartial: false, parent: undefined, return a fully resolved layer
+ *  named layer:
+ *    allowPartial: false, parent: defaultStyle, return fully resolved layer
  *  state:
- *    allowPartial: true, parent: base style, return only properties mapped to definition
+ *    allowPartial: true, parent: base layer, return only properties mapped to definition
  * 
- * @param name name of the module.  This corresponds to its key value in the theme style
- * @param _obj style or state that is being constructed.  If the module has a dependency that
+ * @param name name of the module.  This corresponds to its key value in the theme layer
+ * @param _obj layer or state that is being constructed.  If the module has a dependency that
  * is guaranteed to be resolved first.  Note that states are partial so in that case the
  * parent should be referenced.
- * @param defaultDef default definition to use for default styles
+ * @param defaultDef default definition to use for default layers
  * @param allowPartial if true this is a state which is a partial or empty set of properties.
  * If false this should be a full object with all required props accounted for. 
- * @param definition Partial definition object that defines the changes to this style or the overrides
+ * @param definition Partial definition object that defines the changes to this layer or the overrides
  * for the state
- * @param parent null for default style, default style for one-off styles, parent style for states
+ * @param parent null for default layer, default layer for one-off layers, parent layer for states
  */
 export function resolveThemeDefinition(
   name: string,
@@ -87,13 +87,13 @@ export function resolveThemeDefinition(
 }
 
 /**
- * Take the definitions for the style or state and build up the resolved style or state
- * @param definitions agreggated set of definitions to apply to this style or state
- * @param allowPartial whether we need a full definition (style) or a partial one (state)
- * @param parent for a style either null if default or the default style if not.  For state
+ * Take the definitions for the layer or state and build up the resolved layer or state
+ * @param definitions agreggated set of definitions to apply to this layer or state
+ * @param allowPartial whether we need a full definition (layer) or a partial one (state)
+ * @param parent for a layer either null if default or the default layer if not.  For state
  * the parent state.
  */
-export function createStyleOrState(
+export function createLayerOrState(
   definitions: object,
   allowPartial: boolean,
   parent?: object
@@ -116,25 +116,25 @@ export function createStyleOrState(
 }
 
 /**
- * For a given style and a base props object, allows the modules to apply overrides to the properties.  This will
- * be called once with a null parameter at style creation time.  When style is requested if the optional parameter is specified it
+ * For a given layer and a base settings object, allows the modules to apply overrides to the settings.  This will
+ * be called once with a null parameter at layer creation time.  When layer is requested if the optional parameter is specified it
  * will be called at that time but only for the modules that have parameters
- * @param style current style being adjusted
- * @param props props object for the style
+ * @param layer current layer being adjusted
+ * @param settings props object for the layer
  * @param keysToTraverse key array to use for traversal.  Typically called with the modules but called by state creation
- * to build the initial decorated styles with the definition set.
+ * to build the initial decorated layers with the definition set.
  * @param modules optional parameters to modify the returned props at runtime
  */
-export function adjustStyleProps(style: IBaseStyle, props: object, keysToTraverse: object, modules?: { [key: string]: object }): object {
+export function adjustSettings(layer: IBaseLayer, settings: object, keysToTraverse: object, modules?: { [key: string]: object }): object {
   for (const key in keysToTraverse) {
-    if (keysToTraverse.hasOwnProperty(key) && style[key] && themeModules.hasOwnProperty(key)) {
-      const styleDef = style[key];
-      const updateStyle = themeModules[key].updateSettings;
+    if (keysToTraverse.hasOwnProperty(key) && layer[key] && themeModules.hasOwnProperty(key)) {
+      const layerDef = layer[key];
+      const updateSettings = themeModules[key].updateSettings;
       const thisModule = modules ? modules[key] : undefined;
-      if (updateStyle) {
-        props = updateStyle(props, styleDef, thisModule);
+      if (updateSettings) {
+        settings = updateSettings(settings, layerDef, thisModule);
       }
     }
   }
-  return props;
+  return settings;
 }

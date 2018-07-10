@@ -15,7 +15,7 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
   settings: {
 
   },
-  styles: {
+  layers: {
     container: {
       settings: {
         borderWidth: 1,

@@ -1,22 +1,22 @@
-import { adjustStyleProps } from "./ThemeModule";
-import { getThemeStyleCore } from "./ThemeCreation";
-import { IBaseTheme, IStyleRequestProps, IBaseStyle } from "./ICoreTypes";
+import { adjustSettings } from "./ThemeModule";
+import { getThemeLayerCore } from "./ThemeCreation";
+import { IBaseTheme, ISettingsRequestProps, IBaseLayer } from "./ICoreTypes";
 
-export function themeStyleCore<ITheme extends IBaseTheme>(theme: ITheme, props?: string | IStyleRequestProps): object {
+export function themeSettingsCore<ITheme extends IBaseTheme>(theme: ITheme, parameters?: string | ISettingsRequestProps): object {
   let styleName: string | undefined;
   let modules;
-  if (props) {
-    if (typeof props === 'string') {
-      styleName = props;
+  if (parameters) {
+    if (typeof parameters === 'string') {
+      styleName = parameters;
     } else {
-      styleName = props.name;
-      modules = props.modules;
+      styleName = parameters.name;
+      modules = parameters.modules;
     }
   }
-  const style = getThemeStyleCore<ITheme, IBaseStyle>(theme, styleName);
+  const style = getThemeLayerCore<ITheme, IBaseLayer>(theme, styleName);
   let rawStyle = style.settings || {};
   if (modules) {
-    rawStyle = adjustStyleProps(style, rawStyle, modules, modules);
+    rawStyle = adjustSettings(style, rawStyle, modules, modules);
   }
   return rawStyle;
 }

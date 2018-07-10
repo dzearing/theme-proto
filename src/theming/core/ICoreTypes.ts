@@ -15,34 +15,34 @@ export interface IBaseStateDef {
   */
 }
 
-export interface IBaseStyleDef extends IBaseStateDef {
+export interface IBaseLayerDef extends IBaseStateDef {
   parent?: string;
   states?: { [key: string]: Partial<IBaseStateDef>; }
 }
 
-export interface IBaseThemeDef extends IBaseStyleDef {
-  styles?: {
-    [key: string]: IBaseStyleDef;
+export interface IBaseThemeDef extends IBaseLayerDef {
+  layers?: {
+    [key: string]: IBaseLayerDef;
   }
 }
 
 export type IBaseState = IBaseStateDef;
 
-export interface IBaseStyle extends IBaseState {
+export interface IBaseLayer extends IBaseState {
   parent?: string;
   states?: { [key: string]: Partial<IBaseState> };
 }
 
-export type ThemeResolver = () => IBaseStyle;
+export type ThemeResolver = () => IBaseLayer;
 
-export interface IBaseTheme extends IBaseStyle {
+export interface IBaseTheme extends IBaseLayer {
   definition?: IBaseThemeDef;
-  styles?: {
-    [key: string]: IBaseStyle | ThemeResolver;
+  layers?: {
+    [key: string]: IBaseLayer | ThemeResolver;
   }
 }
 
-export interface IStyleRequestProps {
+export interface ISettingsRequestProps {
   name?: string;
   modules?: { [key: string]: object };
 }
@@ -66,11 +66,11 @@ export type IModuleResolved = object;
  */
 export type ThemeDefinitionResolver = (
   name: string,
-  obj: IBaseStyle,
+  obj: IBaseLayer,
   defaultDef: IModuleDefinition | undefined,
   allowPartial: boolean,
   definition?: IModuleDefinition,
-  parent?: IBaseStyle,
+  parent?: IBaseLayer,
 ) => any;
 
 /**

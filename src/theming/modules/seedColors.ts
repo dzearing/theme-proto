@@ -1,7 +1,7 @@
 import { getColorFromString, IColor } from "../../coloring/color";
 import { getShadeArray } from "../../coloring/shading";
 import { registerThemeModule } from "../core/ThemeModule";
-import { IBaseStyle } from "../core/ICoreTypes";
+import { IBaseLayer } from "../core/ICoreTypes";
 
 /**
  * interface defining how an array of colors should be generated.  This either happens
@@ -112,7 +112,7 @@ function resolveSeedColorDefinition(
   defaultDef: ISeedColorDefinitions,
   allowPartial: boolean,
   def?: Partial<ISeedColorDefinitions>,
-  parent?: IBaseStyle
+  parent?: IBaseLayer
 ): any {
   // state with nothing specified, just return nothing
   if (allowPartial && !def) {

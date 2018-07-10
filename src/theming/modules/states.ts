@@ -1,5 +1,5 @@
-import { IBaseState, IBaseStyle, IBaseSettings } from "../core/ICoreTypes";
-import { createStyleOrState, adjustStyleProps, registerThemeModule } from "../core/ThemeModule";
+import { IBaseState, IBaseLayer, IBaseSettings } from "../core/ICoreTypes";
+import { createLayerOrState, adjustSettings, registerThemeModule } from "../core/ThemeModule";
 
 export function registerStatesModule() {
   registerThemeModule({
@@ -15,12 +15,12 @@ function resolveStates(
   _defaultDef: object,
   _allowPartial: boolean,
   def?: { [key: string]: IBaseState },
-  _parent?: IBaseStyle
+  _parent?: IBaseLayer
 ): any {
   if (def) {
     return Object.keys(def).reduce((obj, key) => {
       const stateDef = def![key];
-      obj[key] = createStyleOrState(stateDef, true, newStyle);
+      obj[key] = createLayerOrState(stateDef, true, newStyle);
       return obj;
     }, {});
   }
@@ -40,7 +40,7 @@ function addStatesToStyle(style: IBaseSettings, states: object, params?: object)
         selectors![key] = {};
       }
       const styleForState = states[key];
-      selectors![key] = adjustStyleProps(styleForState, selectors![key], styleForState, params as { [key: string]: object });
+      selectors![key] = adjustSettings(styleForState, selectors![key], styleForState, params as { [key: string]: object });
     }
   }
   return style;

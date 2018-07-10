@@ -18,7 +18,7 @@ import PhotoCard from "./PhotoCard";
 import { ThemeLayer } from "./theming/ThemeProvider";
 import { Configurator } from "./Configurator";
 import { Card } from "./Card";
-import { initializeTheming, getDefaultTheme, addNamedTheme, ITheme, registerTheme } from "./theming";
+import { initializeTheming, ITheme, registerTheme } from "./theming";
 
 function setupTheming() {
   initializeTheming();

@@ -2,7 +2,7 @@ import { IRawStyle } from "@uifabric/styling";
 import { IColor, getColorFromString } from "../../coloring/color";
 import { registerSeedColorsModule } from "./seedColors";
 import { registerThemeModule } from "../core/ThemeModule";
-import { IBaseStyle } from "../core/ICoreTypes";
+import { IBaseLayer } from "../core/ICoreTypes";
 import { ISeedColors } from "./seedColors";
 import { getContrastRatio } from "../../coloring/shading";
 
@@ -87,7 +87,7 @@ function resolveColorSetDefinition(
   defaultDef: IColorSetDefinitions,
   allowPartial: boolean,
   def?: Partial<IColorSetDefinitions>,
-  parent?: IBaseStyle
+  parent?: IBaseLayer
 ): any {
   // a state with nothing overriden?  No values to report
   if (allowPartial && !def) {

@@ -11,20 +11,20 @@ export interface IThemeModuleDefinitions {
   typography?: Partial<ITypography>;
 }
 
-export interface IThemeStyleDefinition extends IThemeModuleDefinitions {
+export interface IThemeLayerDefinition extends IThemeModuleDefinitions {
   parent?: string;
   states?: {
     [key: string]: IThemeModuleDefinitions
   }
 }
 
-export interface IThemeDefinition extends IThemeStyleDefinition {
-  styles?: {
-    [key: string]: Partial<IThemeStyleDefinition>;
+export interface IThemeDefinition extends IThemeLayerDefinition {
+  layers?: {
+    [key: string]: Partial<IThemeLayerDefinition>;
   }
 }
 
-export interface IThemeStyle {
+export interface IThemeLayer {
   parent?: string,
   settings: IRawStyle,
   seedColors: ISeedColors,
@@ -40,10 +40,10 @@ export interface IThemeStyle {
   }
 }
 
-export interface ITheme extends IThemeStyle {
+export interface ITheme extends IThemeLayer {
   definition: IThemeDefinition,
-  styles: {
-    [key: string]: ThemeResolver | IThemeStyle;
+  layers: {
+    [key: string]: ThemeResolver | IThemeLayer;
   }
 }
 

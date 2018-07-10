@@ -1,12 +1,12 @@
 import { IThemeDefinition, ITheme } from "./ITheme";
-import { registerThemeCore, getThemeCore, getDefaultThemeCore, addThemeCore, setDefaultTheme } from "./core/ThemeRegistry";
+import { registerThemeCore, getThemeCore, getDefaultThemeCore, setDefaultTheme } from "./core/ThemeRegistry";
 import { registerColorSetModule } from "./modules/colorSet";
 import { registerTypographyModule } from "./modules/typography/Typography";
 import { registerShadedThemes, DefaultThemeName } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
 import { createThemeCore } from "./core/ThemeCreation";
-import { themeStyleCore } from "./core/themeStyleCore";
-import { IStyleRequestProps } from "./core/ICoreTypes";
+import { themeSettingsCore } from "./core/themeStyleCore";
+import { ISettingsRequestProps } from "./core/ICoreTypes";
 import { IRawStyle } from "@uifabric/styling";
 import { registerStatesModule } from "./modules/states";
 export { IThemeDefinition, ITheme } from "./ITheme";
@@ -20,17 +20,6 @@ export { IThemeDefinition, ITheme } from "./ITheme";
  */
 export function registerTheme(name: string, definition: IThemeDefinition) {
   registerThemeCore(name, definition);
-}
-
-/**
- * Add a theme created at runtime to the theme registry so it can be referenced by name
- * @param name name for the theme to add
- * @param theme theme to add
- * @param replaceExisting set it to this name no matter what.  If false then the theme will only be set to that
- * name if there was no previous theme of that name
- */
-export function addNamedTheme(name: string, definition: Partial<IThemeDefinition>, theme: ITheme, replaceExisting: boolean = true): boolean {
-  return addThemeCore(name, definition, theme, replaceExisting);
 }
 
 /**
@@ -56,8 +45,8 @@ export function createTheme(definition: Partial<IThemeDefinition>, parentTheme?:
   return createThemeCore(definition, parentTheme);
 }
 
-export function themeStyle(theme: ITheme, props?: string | IStyleRequestProps): IRawStyle {
-  return themeStyleCore(theme, props);
+export function themeStyle(theme: ITheme, props?: string | ISettingsRequestProps): IRawStyle {
+  return themeSettingsCore(theme, props);
 }
 
 let themingInitialized: boolean = false;

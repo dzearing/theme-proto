@@ -8,7 +8,6 @@ interface IThemeReference {
 }
 
 const defaultName: string = 'default';
-const parentKey: string = 'parent';
 
 const themeRegistry: { [key: string]: IBaseTheme } = {
 }
@@ -58,29 +57,6 @@ export function setDefaultTheme(name: string) {
   if (hasTheme(name) && name !== defaultName) {
     registerThemeCore(defaultName, themeDefinitions[name!].definition);
   }
-}
-
-export function registerDefaultThemeCore<ITheme extends IBaseTheme>(defaultTheme: ITheme) {
-  if (!themeRegistry[defaultName]) {
-    // new theme, just set it so it exists
-    themeRegistry[defaultName] = defaultTheme;
-  } else {
-    // existing default theme...overwrite the properties to update cached references
-    Object.assign(themeRegistry[defaultName], defaultTheme);
-  }
-}
-
-export function addThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends IBaseTheme>(
-  name: string,
-  definition: Partial<IThemeDef>,
-  theme: ITheme,
-  replaceExisting: boolean = true
-): boolean {
-  if (replaceExisting || !hasTheme(name)) {
-    themeRegistry[name] = createThemeCore(definition, theme);
-    return true;
-  }
-  return false;
 }
 
 function getResolvedDefinition(name: string): IBaseThemeDef | undefined {

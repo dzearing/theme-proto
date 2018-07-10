@@ -15,7 +15,7 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
     borderColor: { type: 'rel', shade: 2 }
   },
   typography: DefaultTypography,
-  styles: {
+  layers: {
     button: {
       colorSet: {
         backgroundColor: { type: 'rel', shade: 2 }
@@ -49,7 +49,7 @@ const registerDarkTheme = () => registerTheme('DarkTheme', {
     bg: { color: '#c3c3c3' },
     accent: { color: '#0078d4' }
   },
-  styles: {
+  layers: {
     default: {}
   }
 });

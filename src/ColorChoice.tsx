@@ -5,10 +5,8 @@ import { Button } from './Button';
 import { Stack } from './Stack';
 import { Text } from './Text';
 import { SwatchBar } from './SwatchBar';
-import { ITheme, getDefaultTheme, createTheme, registerTheme } from './theming';
-import { registerDefaultThemeCore } from './theming/core/ThemeRegistry';
+import { ITheme, getDefaultTheme, registerTheme } from './theming';
 import { ISeedColorDefinitions } from './theming/modules/seedColors';
-import { IBaseTheme } from './theming/core/ICoreTypes';
 import { mergeObjects } from './theming/core/mergeObjects';
 
 export interface IColorChoiceProps {
@@ -27,8 +25,6 @@ export function updateDefaultThemeColors(newColors: Partial<ISeedColorDefinition
   const defaultTheme = getDefaultTheme();
   const newDefinition = mergeObjects(defaultTheme.definition, { seedColors: newColors });
   registerTheme('default', newDefinition);
-  //  const newTheme = createTheme({ seedColors: newColors }, defaultTheme);
-  //  registerDefaultThemeCore(newTheme as IBaseTheme);
 }
 
 export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoiceState> {

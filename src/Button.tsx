@@ -1,6 +1,7 @@
-import { DefaultFontStyles, IStyle } from "office-ui-fabric-react";
-import * as React from "react";
-import { createComponent, IStyleProps, IViewProps } from "./createComponent";
+import { DefaultFontStyles, IStyle } from 'office-ui-fabric-react';
+import * as React from 'react';
+import { createComponent, IStyleProps, IViewProps } from './createComponent';
+import { themeStyle } from './theming';
 
 // Styles for the component
 export interface IButtonStyles {
@@ -75,18 +76,15 @@ const styles = (
   let { scheme } = props;
 
   scheme = scheme || (props.primary ? "primary" : "neutral");
-  const set = props.theme.schemes[scheme];
+  const layerName = props.primary ? 'themedButton' : 'button';
 
   return {
     root: [
       DefaultFontStyles.medium,
       {
+        ...themeStyle(props.theme, layerName),
         alignItems: "center",
         textAlign: "center",
-        backgroundColor: set.background,
-        color: set.text,
-        borderRadius: 2,
-        borderWidth: 0,
         cursor: "default",
         display: props.fullWidth ? "flex" : "inline-flex",
         width: props.fullWidth ? "100%" : "auto",

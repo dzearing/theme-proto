@@ -1,26 +1,43 @@
-import * as React from "react";
-import { ITheme } from "./ITheme";
-import createTheme from "./createTheme";
+import * as React from 'react';
+import { ITheme } from './ITheme';
+import { getDefaultTheme, getTheme } from '.';
+import { hasTheme } from './core/ThemeRegistry';
 
-export const ThemeContext = React.createContext<ITheme>(createTheme());
+/*
+  value stored in the context that is available at each level to consumers.
+*/
+export interface IThemeContextValue {
+  theme?: ITheme;
+  themeName: string;
+}
+
+export const ThemeContext = React.createContext<IThemeContextValue>({ themeName: 'default' });
 
 export const ThemeConsumer = (props: {
   children: (theme: ITheme) => JSX.Element;
 }) => (
-  <ThemeContext.Consumer>
-    {theme => props.children(theme)}
-  </ThemeContext.Consumer>
-);
+    <ThemeContext.Consumer>
+      {({ themeName, theme }) => props.children(getTheme(themeName))}
+    </ThemeContext.Consumer>
+  );
 
-export const ThemeProvider = (props: {
-  theme: Partial<ITheme>;
-  children?: React.ReactNode;
-}): JSX.Element => (
-  <ThemeContext.Consumer>
-    {contextualTheme => (
-      <ThemeContext.Provider value={createTheme(props.theme, contextualTheme)}>
-        {props.children}
-      </ThemeContext.Provider>
-    )}
-  </ThemeContext.Consumer>
-);
+export const ThemeLayer = (props: {
+  themeName?: string;
+  children: (theme: ITheme) => JSX.Element;
+}) => (
+    <ThemeContext.Consumer>{
+      ({ themeName: oldName, theme: oldTheme }) => {
+        const propsName = props.themeName;
+        const name = propsName && hasTheme(propsName) ? propsName : oldName;
+        const newTheme = getTheme(name);
+        if (name !== oldName || newTheme !== oldTheme) {
+          return (
+            <ThemeContext.Provider value={{ themeName: name, theme: newTheme }}>
+              {props.children(newTheme)}
+            </ThemeContext.Provider>
+          );
+        }
+        return props.children(newTheme);
+      }
+    }</ThemeContext.Consumer>
+  );

@@ -1,12 +1,12 @@
-import * as React from "react";
-import { IStyle } from "@uifabric/styling";
-import { createComponent, IStyleProps, IViewProps } from "./createComponent";
-import Text from "./Text";
-import Card from "./Card";
-import Stack from "./Stack";
-import { PersonaCoin, IconButton } from "office-ui-fabric-react";
-// import Button from './Button';
-import Breadcrumb from "./Breadcrumb";
+import * as React from 'react';
+import { IStyle } from '@uifabric/styling';
+import { createComponent, IStyleProps, IViewProps } from './createComponent';
+import Text from './Text';
+import Card from './Card';
+import Stack from './Stack';
+import { PersonaCoin, IconButton } from 'office-ui-fabric-react';
+import { Button } from './Button';
+import { Breadcrumb } from './Breadcrumb';
 
 // Styles for the component
 export interface ITaskCardStyles {
@@ -52,7 +52,10 @@ const view = (props: IViewProps<ITaskCardProps, ITaskCardStyles>) => {
         <Text weight="light">Design Studio</Text>
 
         <Breadcrumb items={[{ text: "Engineering" }, { text: "Bootcamps" }]} />
-
+        <Stack fill gap={8}>
+          <Button text='normal' />
+          <Button text='themed' primary={true} />
+        </Stack>
         <Stack vertical grow justify="end">
           <Stack fill gap={8} align="center">
             <PersonaCoin text="David Zearing" size={2} />

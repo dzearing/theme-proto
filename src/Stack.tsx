@@ -32,12 +32,12 @@ export interface IStackProps {
   gap?: number;
   align?: "auto" | "center" | "start" | "baseline" | "stretch" | "end";
   justify?:
-    | "start"
-    | "end"
-    | "center"
-    | "space-between"
-    | "space-around"
-    | "space-evenly";
+  | "start"
+  | "end"
+  | "center"
+  | "space-between"
+  | "space-around"
+  | "space-evenly";
 
   maxWidth?: number | string;
   padding?: number | string;
@@ -99,7 +99,6 @@ const styles = (
     vertical,
     gap,
     grow,
-    shrink,
     margin,
     padding
   } = props;

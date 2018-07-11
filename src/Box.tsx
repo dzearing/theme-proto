@@ -1,6 +1,7 @@
 import * as React from "react";
 import { IStyle } from "@uifabric/styling";
 import { createComponent, IStyleProps, IViewProps } from "./createComponent";
+import { themeStyle } from "./theming";
 
 // Styles for the component
 export interface IBoxStyles {
@@ -44,7 +45,6 @@ const styles = (props: IStyleProps<IBoxProps, IBoxStyles>): IBoxStyles => {
     padding,
     elevation = 5
   } = props;
-  const set = props.theme.schemes[scheme];
 
   const elevationPx = elevation * 2;
 
@@ -61,8 +61,7 @@ const styles = (props: IStyleProps<IBoxProps, IBoxStyles>): IBoxStyles => {
         }
       },
       {
-        background: set.background,
-        color: set.text,
+        ...themeStyle(props.theme, scheme),
         outline: "none",
         boxSizing: "border-box",
         overflow: "hidden",

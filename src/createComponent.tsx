@@ -4,8 +4,8 @@ import {
   mergeStyleSets
 } from "office-ui-fabric-react";
 import * as React from "react";
-import { ITheme } from "./theming/ITheme";
-import { ThemeContext } from "./theming/ThemeProvider";
+import { ITheme } from './theming/ITheme';
+import { ThemeLayer } from './theming/ThemeProvider';
 
 export type IStyleFunction<TProps, TStyles> = (
   props: TProps
@@ -18,8 +18,9 @@ export interface IPropsWithStyles<TProps, TStyles> {
 // Components should accept styling.
 export type IComponentProps<TProps, TStyles> = TProps & {
   styles?:
-    | IStyleFunction<IPropsWithStyles<TProps, TStyles>, TStyles>
-    | Partial<TStyles>;
+  | IStyleFunction<IPropsWithStyles<TProps, TStyles>, TStyles>
+  | Partial<TStyles>;
+  themeName?: string;
 };
 
 export type IStyleProps<TProps, TStyles> = TProps & {
@@ -37,8 +38,8 @@ export interface IComponentOptions<TProps, TStyles, TStatics> {
   displayName: string;
   state?: React.ComponentType<IComponentProps<TProps, TStyles>>;
   styles?:
-    | IStyleFunction<IStyleProps<TProps, TStyles>, TStyles>
-    | Partial<TStyles>;
+  | IStyleFunction<IStyleProps<TProps, TStyles>, TStyles>
+  | Partial<TStyles>;
   view?: React.ReactType<IViewProps<TProps, TStyles>>;
   statics?: TStatics;
 }
@@ -59,7 +60,6 @@ export function createComponent<TProps, TStyles, TStatics = {}>(
   options: IComponentOptions<TProps, TStyles, TStatics>
 ): React.ComponentClass<IComponentProps<TProps, TStyles>> & TStatics {
   const augmented = augmentations[options.displayName] || {};
-  const ComponentState = augmented.state || options.state;
   const ComponentView = augmented.view || options.view;
   const componentStyles = augmented.styles || options.styles;
 
@@ -71,19 +71,17 @@ export function createComponent<TProps, TStyles, TStatics = {}>(
       const { styles } = this.props;
 
       return (
-        <ThemeContext.Consumer>
-          {(theme: ITheme) => {
-            const styleProps = { theme, ...(this.props as {}) };
+        <ThemeLayer themeName={this.props.themeName}>{(theme: ITheme) => {
+          const styleProps = { theme, ...(this.props as {}) };
 
-            return ComponentView({
-              ...(this.props as {}),
-              classNames: mergeStyleSets(
-                evaluateStyle(styleProps, componentStyles),
-                evaluateStyle(styleProps, styles as any)
-              )
-            });
-          }}
-        </ThemeContext.Consumer>
+          return ComponentView({
+            ...(this.props as {}),
+            classNames: mergeStyleSets(
+              evaluateStyle(styleProps, componentStyles),
+              evaluateStyle(styleProps, styles as any)
+            )
+          });
+        }}</ThemeLayer>
       );
     }
   }

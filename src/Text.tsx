@@ -1,13 +1,13 @@
-import * as React from "react";
-import { IStyle } from "@uifabric/styling";
-import { createComponent, IStyleProps, IViewProps } from "./createComponent";
+import * as React from 'react';
+import { IStyle } from '@uifabric/styling';
+import { createComponent, IStyleProps, IViewProps } from './createComponent';
 import {
   IFontTypes,
   IFontFamilies,
   IFontSizes,
-  IFontWeights,
-  IFontColors
-} from "./theming/ITypography";
+  IFontWeights
+} from "./theming/modules/typography/ITypography";
+import { themeStyle } from './theming';
 
 // Styles for the component
 export interface ITextStyles {
@@ -24,7 +24,6 @@ export interface ITextProps {
   family?: keyof IFontFamilies;
   size?: keyof IFontSizes;
   weight?: keyof IFontWeights;
-  color?: keyof IFontColors;
 
   paletteSet?: string;
 
@@ -39,7 +38,6 @@ const view = (props: IViewProps<ITextProps, ITextStyles>) => {
   const {
     block,
     classNames,
-    color,
     family,
     grow,
     renderAs: RootType = "span",
@@ -66,17 +64,14 @@ const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
     weight,
     size
   } = props;
-  const { typography } = theme;
-  const themeType = typography.types[type!] || {
-    fontFamily: typography.families[family!] || typography.families.default,
-    fontWeight: typography.weights[weight!] || typography.weights.default,
-    fontSize: typography.sizes[size!] || typography.sizes.medium
-  };
+
+  const textParams: any = (type || family || size || weight) ?
+    { modules: { typography: { type, family, size, weight } } } : undefined;
 
   return {
     root: [
-      themeType,
       {
+        ...themeStyle(theme, textParams),
         display: block ? "block" : "inline"
       },
       !wrap && {

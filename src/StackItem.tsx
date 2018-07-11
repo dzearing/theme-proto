@@ -28,18 +28,18 @@ export interface IStackItemProps {
 
   align?: "auto" | "center" | "start" | "baseline" | "stretch" | "end";
   justify?:
-    | "start"
-    | "end"
-    | "center"
-    | "space-between"
-    | "space-around"
-    | "space-evenly";
+  | "start"
+  | "end"
+  | "center"
+  | "space-between"
+  | "space-around"
+  | "space-evenly";
 }
 
 const view = (props: IViewProps<IStackItemProps, IStackItemStyles>) => {
-  const childNodes: React.ReactElement<{}>[] = React.Children.toArray(
+  const childNodes: Array<React.ReactElement<{}>> = React.Children.toArray(
     props.children
-  ) as React.ReactElement<{}>[];
+  ) as Array<React.ReactElement<{}>>;
   const first = childNodes[0];
 
   if (typeof first === "string") {

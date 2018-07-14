@@ -1,5 +1,5 @@
 import { createLayerOrState } from "./ThemeModule";
-import { mergeDefinitions } from "./mergeObjects";
+import { mergeDefinitions } from "./mergeDefinitions";
 import { IBaseTheme, IBaseLayer, IBaseLayerDef, IBaseThemeDef } from "./ICoreTypes";
 
 const defKey = 'definition';

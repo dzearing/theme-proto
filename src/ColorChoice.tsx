@@ -7,7 +7,7 @@ import { Text } from './Text';
 import { SwatchBar } from './SwatchBar';
 import { ITheme, getDefaultTheme, registerTheme, IThemeDefinition } from './theming';
 import { ISeedColorDefinitions } from './theming/modules/seedColors';
-import { mergeDefinitions } from './theming/core/mergeObjects';
+import { mergeDefinitions } from './theming/core/mergeDefinitions';
 
 export interface IColorChoiceProps {
   title: string;

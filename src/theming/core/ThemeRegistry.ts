@@ -1,4 +1,4 @@
-import { mergeDefinitions } from "./mergeObjects";
+import { mergeDefinitions } from "./mergeDefinitions";
 import { createThemeCore } from "./ThemeCreation";
 import { IBaseTheme, IBaseThemeDef } from "./ICoreTypes";
 

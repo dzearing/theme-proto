@@ -1,27 +1,4 @@
-import { IBaseThemeDef, IBaseLayerDef } from "./ICoreTypes";
-
-/**
- * This will take two objects returning a new recursively merged object as a result.
- * @param a object to apply first
- * @param b object to apply on top of object a
- */
-export function mergeObjects(a: any, b: any): any {
-  const result = { ...a };
-  for (const key in b) {
-    if (b.hasOwnProperty(key)) {
-      const bval = b[key];
-      if (typeof bval === 'object'
-        && result.hasOwnProperty(key)
-        && typeof result[key] === 'object'
-      ) {
-        result[key] = mergeObjects(result[key], bval);
-      } else {
-        result[key] = bval;
-      }
-    }
-  }
-  return result;
-}
+import { IBaseLayerDef } from "./ICoreTypes";
 
 function mergeLayers(
   a: Partial<IBaseLayerDef> | undefined,
@@ -48,6 +25,12 @@ function mergeLayers(
   return result;
 }
 
+/**
+ * Take two definitions and merge them recursively.  Properties within modules or within settings will be
+ * assigned, the overall structure will be merged though.
+ * @param a definition to use as the baseline
+ * @param b definition to merge/assign on top of a
+ */
 export function mergeDefinitions<IDefinition extends IBaseLayerDef>(
   a: Partial<IDefinition> | undefined,
   b: Partial<IDefinition> | undefined

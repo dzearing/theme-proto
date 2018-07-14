@@ -5,9 +5,9 @@ import { Button } from './Button';
 import { Stack } from './Stack';
 import { Text } from './Text';
 import { SwatchBar } from './SwatchBar';
-import { ITheme, getDefaultTheme, registerTheme } from './theming';
+import { ITheme, getDefaultTheme, registerTheme, IThemeDefinition } from './theming';
 import { ISeedColorDefinitions } from './theming/modules/seedColors';
-import { mergeObjects } from './theming/core/mergeObjects';
+import { mergeDefinitions } from './theming/core/mergeObjects';
 
 export interface IColorChoiceProps {
   title: string;
@@ -23,7 +23,7 @@ export interface IColorChoiceState {
 
 export function updateDefaultThemeColors(newColors: Partial<ISeedColorDefinitions>) {
   const defaultTheme = getDefaultTheme();
-  const newDefinition = mergeObjects(defaultTheme.definition, { seedColors: newColors });
+  const newDefinition = mergeDefinitions<IThemeDefinition>(defaultTheme.definition, { seedColors: newColors });
   registerTheme('default', newDefinition);
 }
 

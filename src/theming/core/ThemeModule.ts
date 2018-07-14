@@ -1,5 +1,4 @@
 import { IThemeModuleProps, IBaseState } from "./ICoreTypes";
-import { mergeObjects } from "./mergeObjects";
 import { IBaseLayer } from "./ICoreTypes";
 
 const rawStyleKey = 'settings';
@@ -83,7 +82,7 @@ export function resolveThemeDefinition(
     return definition;
   }
   const base = (parent && parent[name]) ? parent[name] : defaultDef;
-  return mergeObjects(base, definition);
+  return Object.assign({}, base, definition);
 }
 
 /**

@@ -1,5 +1,5 @@
 import { createLayerOrState } from "./ThemeModule";
-import { mergeObjects } from "./mergeObjects";
+import { mergeDefinitions } from "./mergeObjects";
 import { IBaseTheme, IBaseLayer, IBaseLayerDef, IBaseThemeDef } from "./ICoreTypes";
 
 const defKey = 'definition';
@@ -18,7 +18,7 @@ export function createThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends 
   // start with the base style definition
   const baseLayer = createLayerOrState(definition, false, parentTheme);
   const newDef = parentTheme && parentTheme.hasOwnProperty(defKey)
-    ? mergeObjects(parentTheme[defKey], definition)
+    ? mergeDefinitions(parentTheme[defKey], definition)
     : definition;
   const layerDefinitions = newDef.layers || {};
   const baseStateDef = newDef.states || {};
@@ -29,7 +29,7 @@ export function createThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends 
     layers: Object.keys(layerDefinitions).reduce((layers, layerName) => {
       layers[layerName] = () => {
         const base = { states: baseStateDef };
-        const layerDef = mergeObjects(base, aggregateLayerDefinition(layerDefinitions, layerName));
+        const layerDef = mergeDefinitions(base, aggregateLayerDefinition(layerDefinitions, layerName));
         return createLayerOrState(layerDef, false, baseLayer);
       }
       return layers;
@@ -44,7 +44,7 @@ function aggregateLayerDefinition<IThemeLayerDefinition extends IBaseLayerDef>(
   if (layerDefinitions.hasOwnProperty(layerName)) {
     const layerDef = layerDefinitions[layerName];
     if (layerDef.parent) {
-      return mergeObjects(aggregateLayerDefinition(layerDefinitions, layerDef.parent!), layerDef);
+      return mergeDefinitions(aggregateLayerDefinition(layerDefinitions, layerDef.parent!), layerDef);
     }
     return layerDef;
   }

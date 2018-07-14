@@ -1,4 +1,4 @@
-import { mergeObjects } from "./mergeObjects";
+import { mergeDefinitions } from "./mergeObjects";
 import { createThemeCore } from "./ThemeCreation";
 import { IBaseTheme, IBaseThemeDef } from "./ICoreTypes";
 
@@ -64,7 +64,7 @@ function getResolvedDefinition(name: string): IBaseThemeDef | undefined {
     const thisDef = themeDefinitions[name];
     const parent = thisDef.parent;
     if (parent && parent !== name && themeDefinitions.hasOwnProperty(parent)) {
-      return mergeObjects(getResolvedDefinition(parent), thisDef.definition);
+      return mergeDefinitions(getResolvedDefinition(parent), thisDef.definition);
     }
     return thisDef.definition;
   }

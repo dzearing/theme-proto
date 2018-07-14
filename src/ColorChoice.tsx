@@ -6,7 +6,7 @@ import { Stack } from './Stack';
 import { Text } from './Text';
 import { SwatchBar } from './SwatchBar';
 import { ITheme, getDefaultTheme, registerTheme, IThemeDefinition } from './theming';
-import { ISeedColorDefinitions } from './theming/modules/seedColors';
+import { IPaletteDefinitions } from './theming/modules/palettes';
 import { mergeDefinitions } from './theming/core/mergeDefinitions';
 
 export interface IColorChoiceProps {
@@ -21,9 +21,9 @@ export interface IColorChoiceState {
   currentColor: string;
 }
 
-export function updateDefaultThemeColors(newColors: Partial<ISeedColorDefinitions>) {
+export function updateDefaultThemeColors(newColors: Partial<IPaletteDefinitions>) {
   const defaultTheme = getDefaultTheme();
-  const newDefinition = mergeDefinitions<IThemeDefinition>(defaultTheme.definition, { seedColors: newColors });
+  const newDefinition = mergeDefinitions<IThemeDefinition>(defaultTheme.definition, { palettes: newColors });
   registerTheme('default', newDefinition);
 }
 
@@ -32,7 +32,7 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
 
   public constructor(props: IColorChoiceProps) {
     super(props);
-    const themeColors = getDefaultTheme().definition.seedColors;
+    const themeColors = getDefaultTheme().definition.palettes;
     const colorRef = (themeColors && themeColors.hasOwnProperty(props.colorSlot))
       ? themeColors[props.colorSlot] : undefined;
     const currentColor = (colorRef && typeof colorRef.color === 'string')
@@ -54,7 +54,7 @@ export class ColorChoice extends React.Component<IColorChoiceProps, IColorChoice
           />
           <Stack vertical align='stretch' fill>
             <Text>{this.state.currentColor}</Text>
-            <SwatchBar colors={this.props.theme.seedColors[this.props.colorSlot]} />
+            <SwatchBar colors={this.props.theme.palettes[this.props.colorSlot]} />
           </Stack>
         </Stack>
         {this.state.calloutVisible ? (

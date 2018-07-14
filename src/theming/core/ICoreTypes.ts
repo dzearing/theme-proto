@@ -5,7 +5,7 @@ export interface IBaseStateDef {
   settings?: IBaseSettings;
   /*
   other theme modules will be in here as well
-    seedColors:
+    palettes:
     colorSet:
     typography:
     states: {

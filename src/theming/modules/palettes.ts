@@ -5,9 +5,9 @@ import { IBaseLayer } from "../core/ICoreTypes";
 
 /**
  * interface defining how an array of colors should be generated.  This either happens
- * via shading a single seed color or by specifying a full array of colors to use
+ * via shading a single color or by specifying a full array of colors to use
  */
-export interface ISeedColorParams {
+export interface IPaletteParams {
   /**
    * Either a single color, or an array of color strings.  If it is a single
    * color that color is used to generate a swatch array using the specified color
@@ -32,32 +32,32 @@ export interface ISeedColorParams {
 /** 
  * Theme colors, used to seed the theming system
  */
-export interface ISeedColorDefinitions {
+export interface IPaletteDefinitions {
   /**
    * Foreground is typically the text color
    */
-  fg: ISeedColorParams;
+  fg: IPaletteParams;
   /**
    * Default background color, typically a neutral color, this will be used to calculate the set
    * of layered background colors
    */
-  bg: ISeedColorParams;
+  bg: IPaletteParams;
   /**
    * Accent color for the theme.  Typically a brighter color, this is used to calculate the
    * themed or accented layers.
    */
-  accent: ISeedColorParams;
+  accent: IPaletteParams;
   /**
    * Additional color parameters can be appended to the set of definitions.  This will be
    * propogated through the system.
    */
-  [key: string]: ISeedColorParams;
+  [key: string]: IPaletteParams;
 }
 
 /**
  * Resolved color arrays
  */
-export interface ISeedColors {
+export interface IPalettes {
   /**
    * Background color layers.  Generated from the seed colors unless specified
    */
@@ -81,20 +81,20 @@ export interface ISeedColors {
 
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 
-let seedColorsPluginName: string = 'seedColors';
+let palettesModuleName: string = 'palettes';
 
-export function registerSeedColorsModule(keyName?: string) {
+export function registerPalettesModule(keyName?: string) {
   if (keyName) {
-    seedColorsPluginName = keyName;
+    palettesModuleName = keyName;
   }
   registerThemeModule({
-    name: seedColorsPluginName,
+    name: palettesModuleName,
     default: {
       fg: { color: 'black' },
       bg: { color: '#f3f2f1' },
       accent: { color: '#0078d4', anchorColor: true }
     },
-    resolveDef: resolveSeedColorDefinition
+    resolveDef: resolvePalettesDefinition
   });
 }
 
@@ -106,12 +106,12 @@ export function registerSeedColorsModule(keyName?: string) {
  * @param def partial definition to use
  * @param parent parent object
  */
-function resolveSeedColorDefinition(
+function resolvePalettesDefinition(
   name: string,
   _obj: any,
-  defaultDef: ISeedColorDefinitions,
+  defaultDef: IPaletteDefinitions,
   allowPartial: boolean,
-  def?: Partial<ISeedColorDefinitions>,
+  def?: Partial<IPaletteDefinitions>,
   parent?: IBaseLayer
 ): any {
   // state with nothing specified, just return nothing
@@ -119,17 +119,17 @@ function resolveSeedColorDefinition(
     return undefined;
   }
 
-  const parentSeeds = parent ? parent[name] : undefined;
+  const parentPalettes = parent ? parent[name] : undefined;
 
   // default style with no definition, use the default
-  if (!def && !parentSeeds) {
+  if (!def && !parentPalettes) {
     def = defaultDef;
   }
 
   // if we have something to do then do conversions
   if (def) {
     // start with the baseline from the bare minimum, then the parent if specified
-    const result = Object.assign({}, parentSeeds);
+    const result = Object.assign({}, parentPalettes);
 
     // convert colors in the color definitions
     for (const key in def) {
@@ -151,11 +151,11 @@ function resolveSeedColorDefinition(
       }
     }
 
-    // return the built up seed colors
+    // return the built up palette
     return result;
   }
 
-  return parentSeeds;
+  return parentPalettes;
 }
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {

@@ -2,7 +2,7 @@ import { registerTheme } from "..";
 
 const registerHighContrastTheme = () => registerTheme('HighContrast', {
   parent: 'DarkTheme',
-  seedColors: {
+  palettes: {
     fg: { color: 'white' },
     bg: { color: 'black' },
     accent: { color: '#0078d4' }
@@ -37,7 +37,7 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
 
 const registerOverlayTheme = () => registerTheme('Overlay', {
   parent: 'HighContrast',
-  seedColors: {
+  palettes: {
     fg: { color: 'rgba(255, 255, 255, 0.8)' },
     bg: { color: 'rgba(0, 0, 0, 0.4)' },
     accent: { color: 'rgba(0, 120, 212, 0.4)' }

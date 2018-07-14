@@ -1,9 +1,8 @@
 import { IRawStyle } from "@uifabric/styling";
 import { IColor, getColorFromString } from "../../coloring/color";
-import { registerSeedColorsModule } from "./seedColors";
+import { registerPalettesModule, IPalettes } from "./palettes";
 import { registerThemeModule } from "../core/ThemeModule";
 import { IBaseLayer } from "../core/ICoreTypes";
-import { ISeedColors } from "./seedColors";
 import { getContrastRatio } from "../../coloring/shading";
 
 const fallbackFg: IColor = { h: 0, s: 0, v: 0, a: 100, str: '#000000' };
@@ -60,7 +59,7 @@ export function registerColorSetModule(dependencyName: string, thisModuleName?: 
   if (thisModuleName) {
     colorsPluginName = thisModuleName;
   }
-  registerSeedColorsModule();
+  registerPalettesModule();
   registerThemeModule({
     name: colorsPluginName,
     default: {
@@ -98,9 +97,9 @@ function resolveColorSetDefinition(
 
   // try to get the seed colors
   const seedKey = seedColorsPluginName;
-  const seedColors = (obj.hasOwnProperty(seedKey) && obj[seedKey]) ? obj[seedKey] as ISeedColors
+  const seedColors = (obj.hasOwnProperty(seedKey) && obj[seedKey]) ? obj[seedKey] as IPalettes
     : (parent && parent.hasOwnProperty(seedKey)) ?
-      parent[seedKey] as ISeedColors : undefined;
+      parent[seedKey] as IPalettes : undefined;
 
   // use the default definitions if totally empty
   if (!def && !parentSet) {
@@ -147,7 +146,7 @@ function addColorsToSettings(settings: IRawStyle, colorSet: IColorSet, _params?:
   return settings;
 }
 
-function resolveColor(layers: ISeedColors, key: IColorLayerKey, base?: IColorLayerKey): IResolvedColor {
+function resolveColor(layers: IPalettes, key: IColorLayerKey, base?: IColorLayerKey): IResolvedColor {
   // make sure the key is converted to a non-relative key
   key = resolveKey(key, base);
 
@@ -187,7 +186,7 @@ function resolveKey(key: IColorLayerKey, base?: IColorLayerKey): IColorLayerKey 
   return key;
 }
 
-function getAutoFg(layers: ISeedColors, bgColor: IColor): IColor {
+function getAutoFg(layers: IPalettes, bgColor: IColor): IColor {
   const fgs = layers.fg;
   let bestIndex = 0;
   let bestRatio: number = getContrastRatio(bgColor, fgs[bestIndex]);

@@ -55,8 +55,8 @@ export function initializeTheming() {
   if (!themingInitialized) {
     themingInitialized = true;
 
-    // register the modules, the color set module will register the seed colors
-    registerColorSetModule('seedColors', 'colorSet');
+    // register the modules, the color set module will register the palettes module
+    registerColorSetModule('palettes', 'colorSet');
     registerTypographyModule();
     registerStatesModule();
 

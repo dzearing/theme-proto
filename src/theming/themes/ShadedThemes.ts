@@ -4,7 +4,7 @@ import { registerTheme } from '..';
 export const DefaultThemeName = 'LightTheme';
 
 const registerLightTheme = () => registerTheme(DefaultThemeName, {
-  seedColors: {
+  palettes: {
     fg: { color: 'black' },
     bg: { color: '#f3f2f1' },
     accent: { color: '#0078d4', anchorColor: true }
@@ -44,7 +44,7 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
 
 const registerDarkTheme = () => registerTheme('DarkTheme', {
   parent: 'LightTheme',
-  seedColors: {
+  palettes: {
     fg: { color: 'white' },
     bg: { color: '#c3c3c3' },
     accent: { color: '#0078d4' }

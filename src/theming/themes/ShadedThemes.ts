@@ -10,15 +10,15 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
     accent: { color: '#0078d4', anchorColor: true }
   },
   colorSet: {
-    backgroundColor: { type: 'bg', shade: 0 },
-    color: { type: 'fn', shade: 0, name: 'autofg' },
-    borderColor: { type: 'rel', shade: 2 }
+    backgroundColor: { palette: 'bg', shade: 0 },
+    color: { fn: 'autofg' },
+    borderColor: { fn: 'deepen', p1: 2 }
   },
   typography: DefaultTypography,
   layers: {
     button: {
       colorSet: {
-        backgroundColor: { type: 'rel', shade: 2 }
+        backgroundColor: { fn: 'deepen', p1: 2 },
       },
       settings: {
         borderWidth: 0,
@@ -26,17 +26,17 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
       },
       states: {
         ':active': {
-          colorSet: { backgroundColor: { type: 'rel', shade: 2 } }
+          colorSet: { backgroundColor: { fn: 'deepen', p1: 2 } }
         },
         ':hover': {
-          colorSet: { backgroundColor: { type: 'rel', shade: 3 } }
+          colorSet: { backgroundColor: { fn: 'deepen', p1: 3 } }
         }
       },
     },
     themedButton: {
       parent: 'button',
       colorSet: {
-        backgroundColor: { type: 'switch', shade: 0 }
+        backgroundColor: { fn: 'swap', p1: 'accent', p2: 'bg' }
       }
     }
   }

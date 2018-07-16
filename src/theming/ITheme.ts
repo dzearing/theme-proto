@@ -1,8 +1,8 @@
 import { IPaletteDefinitions, IPalettes } from "./modules/palettes";
-import { IColorSetDefinitions, IColorSet } from "./modules/colorSet";
 import { ITypography } from "./modules/typography/ITypography";
 import { IRawStyle } from "@uifabric/styling";
 import { ThemeResolver } from "./core/ICoreTypes";
+import { IColorSetDefinitions, IColorSet } from "./modules/colorSet";
 
 export interface IThemeModuleDefinitions {
   settings?: IRawStyle;

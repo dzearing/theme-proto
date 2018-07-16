@@ -8,9 +8,9 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
     accent: { color: '#0078d4' }
   },
   colorSet: {
-    backgroundColor: { type: 'bg', shade: 0 },
-    color: { type: 'fn', shade: 0, name: 'autofg' },
-    borderColor: { type: 'fn', shade: 0, name: 'autofg' }
+    backgroundColor: { palette: 'bg', shade: 0 },
+    color: { fn: 'autofg' },
+    borderColor: { fn: 'autofg' }
   },
   settings: {
 
@@ -24,7 +24,7 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
     },
     button: {
       colorSet: {
-        backgroundColor: { type: 'bg', shade: 0 }
+        backgroundColor: { palette: 'bg', shade: 0 }
       },
       settings: {
         borderWidth: 1,

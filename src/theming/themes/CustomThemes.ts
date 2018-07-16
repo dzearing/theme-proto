@@ -8,8 +8,8 @@ const registerRainbowTheme = () => registerTheme('TasteTheRainbow', {
     accent: { color: '#0078d4' }
   },
   colorSet: {
-    backgroundColor: { type: 'bg', shade: 0 },
-    color: { type: 'fn', shade: 0, name: 'autofg' },
+    backgroundColor: { palette: 'bg', shade: 0 },
+    color: { fn: 'autofg' },
   }
 });
 
@@ -21,8 +21,8 @@ const registerOfficeStyleTheme = () => registerTheme('OfficeStyle', {
     accent: { color: '#0078d4' }
   },
   colorSet: {
-    backgroundColor: { type: 'bg', shade: 0 },
-    color: { type: 'fn', shade: 0, name: 'autofg' },
+    backgroundColor: { palette: 'bg', shade: 0 },
+    color: { fn: 'autofg' },
   }
 });
 

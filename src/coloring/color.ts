@@ -187,7 +187,7 @@ export function getRelativeLuminance(rgb: IRGB): number {
   const r: number = _getIntermediate(rgb.r / MAX_COLOR_RGBA);
   const g: number = _getIntermediate(rgb.g / MAX_COLOR_RGBA);
   const b: number = _getIntermediate(rgb.b / MAX_COLOR_RGBA);
-  
+
   return (.2126 * r) + (.7152 * g) + (.0722 * b);
 }
 
@@ -230,7 +230,7 @@ export function getFullColorString(color: IColor): string {
 
 export function createColorFromHSVA(h: number, s: number, v: number, a: number = 100) {
   const { r, g, b } = hsv2rgb(h, s, v);
-  
+
   return {
     a,
     h,

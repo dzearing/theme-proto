@@ -1,6 +1,5 @@
 import { IThemeDefinition, ITheme } from "./ITheme";
 import { registerThemeCore, getThemeCore, getDefaultThemeCore, setDefaultTheme } from "./core/ThemeRegistry";
-import { registerColorSetModule } from "./modules/colorSet";
 import { registerTypographyModule } from "./modules/typography/Typography";
 import { registerShadedThemes, DefaultThemeName } from "./themes/ShadedThemes";
 import { registerContrastThemes } from "./themes/ContrastThemes";
@@ -9,6 +8,7 @@ import { themeSettingsCore } from "./core/themeStyleCore";
 import { ISettingsRequestProps } from "./core/ICoreTypes";
 import { IRawStyle } from "@uifabric/styling";
 import { registerStatesModule } from "./modules/states";
+import { registerColorSetModule } from "./modules/colorSet/colorSet";
 export { IThemeDefinition, ITheme } from "./ITheme";
 
 /**

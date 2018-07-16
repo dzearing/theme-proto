@@ -25,12 +25,12 @@ function setupTheming() {
 
   registerTheme('shaded', {
     parent: 'default',
-    colorSet: { backgroundColor: { type: 'bg', shade: 1 } }
+    colorSet: { backgroundColor: { palette: 'bg', shade: 1 } }
   });
 
   registerTheme('accented', {
     parent: 'default',
-    colorSet: { backgroundColor: { type: 'accent', shade: 0 } }
+    colorSet: { backgroundColor: { palette: 'accent', shade: 0 } }
   });
 }
 
@@ -95,15 +95,6 @@ class App extends React.Component<{}, { gapSize: number; checked: boolean; theme
           </Grid>
           <Stack vertical gap={20} padding={40}>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Toggle onChanged={checked => this.setState({ checked })} />
-            <Slider
-              label="Gap size"
-              onChange={this._onGapSizeChange}
-              value={gapSize}
-              min={0}
-              max={40}
-              step={4}
-            />
             <Stack gap={gapSize} align="center">
               <Text>I am text</Text>
 

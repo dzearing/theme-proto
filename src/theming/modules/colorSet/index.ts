@@ -1,6 +1,6 @@
-import { IPalettes } from "../palettes";
+import { IPalettes, IPaletteParams } from "../palettes";
 import { IColor } from "../../../coloring/color";
-import { IColorTransforms } from "./Transforms";
+export { registerColorSetModule } from "./ColorResolution";
 
 export type IColorReference = string | IPaletteReference | IColorFunction;
 
@@ -46,7 +46,29 @@ export interface IColorFunction {
   fn: keyof IColorTransforms;
   p1?: number | string;
   p2?: number | string;
+  textStyle?: keyof ITextColorStyles;
 }
 
-
 export type ColorFunction = (input: IColorFunction, palettes: IPalettes, bg: IResolvedColor) => IResolvedColor
+
+export interface IColorTransforms {
+  autoText: ColorFunction;
+  deepen: ColorFunction;
+  swap: ColorFunction;
+}
+
+export interface ITextColorStyles {
+  default: ITextColorStyleSettings;
+  soft: ITextColorStyleSettings;
+  light: ITextColorStyleSettings;
+  success: ITextColorStyleSettings;
+  error: ITextColorStyleSettings;
+}
+
+export interface ITextColorStyleSettings {
+  palette: string;
+  paletteConfig: IPaletteParams;
+  lightOffset?: number;
+  darkOffset?: number;
+  keepTone?: boolean;
+}

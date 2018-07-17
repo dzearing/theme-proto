@@ -5,7 +5,7 @@ import {
   IFontWeights,
   IFontTypes,
   ITypography
-} from "../typography/ITypography";
+} from "./ITypography";
 
 export const DefaultFontSizes: IFontSizes = {
   tiny: "1rem",

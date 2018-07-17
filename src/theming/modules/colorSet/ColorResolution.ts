@@ -12,22 +12,22 @@ const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 const bgType = 'bg';
 const accentType = 'accent';
 
-let colorsPluginName: string = 'colorSet';
-let seedColorsPluginName: string = 'seedColors';
+let colorSetModuleName: string = 'colorSet';
+let palettesModuleName: string = 'seedColors';
 
 export function registerColorSetModule(dependencyName: string, thisModuleName?: string) {
-  seedColorsPluginName = dependencyName;
+  palettesModuleName = dependencyName;
   if (thisModuleName) {
-    colorsPluginName = thisModuleName;
+    colorSetModuleName = thisModuleName;
   }
   registerPalettesModule();
   registerThemeModule({
-    name: colorsPluginName,
+    name: colorSetModuleName,
     default: {
       backgroundColor: { type: 'bg', shade: 0 },
-      color: { type: 'fn', shade: 0, name: 'autofg' },
+      color: { fn: 'autoText' }
     },
-    dependsOn: [seedColorsPluginName],
+    dependsOn: [palettesModuleName],
     resolveDef: resolveColorSetDefinition,
     updateSettings: addColorsToSettings
   });
@@ -91,9 +91,9 @@ function resolveColorSetDefinition(
   const parentSet: IColorSet | undefined = parent ? parent[name] : undefined;
 
   // try to get the seed colors
-  const seedKey = seedColorsPluginName;
-  const seedColors = (obj.hasOwnProperty(seedKey) && obj[seedKey]) ? obj[seedKey] as IPalettes
-    : parent![seedKey!];
+  const palettesKey = palettesModuleName;
+  const palettes = (obj.hasOwnProperty(palettesKey) && obj[palettesKey]) ? obj[palettesKey] as IPalettes
+    : parent![palettesKey!];
 
   // use the default definitions if totally empty
   if (!def && !parentSet) {
@@ -113,24 +113,24 @@ function resolveColorSetDefinition(
   // only something to do if def is defined, otherwise just push the parent set through
   if (def) {
     let bgColor = parentSet ? parentSet.backgroundColor
-      : { val: colorFromPaletteReference(seedColors, defaultBgKey), key: defaultBgKey };
+      : { val: colorFromPaletteReference(palettes, defaultBgKey), key: defaultBgKey };
     let rerunTransforms: boolean = false;
 
     if (def.backgroundColor) {
-      result.backgroundColor = resolveColor(def.backgroundColor, bgColor, seedColors);
+      result.backgroundColor = resolveColor(def.backgroundColor, bgColor, palettes);
       rerunTransforms = true;
     }
     bgColor = result.backgroundColor;
     for (const key in result) {
       if (result.hasOwnProperty(key) && key !== 'backgroundColor') {
         if (def[key]) {
-          result[key] = resolveColor(def[key]!, bgColor, seedColors);
+          result[key] = resolveColor(def[key]!, bgColor, palettes);
         } else {
           const thisColor: IResolvedColor = result[key];
           if (thisColor.fn && rerunTransforms) {
-            result[key] = resolveColor(thisColor.fn, bgColor, seedColors);
+            result[key] = resolveColor(thisColor.fn, bgColor, palettes);
           } else if (thisColor.key) {
-            result[key] = { ...result[key], val: colorFromPaletteReference(seedColors, thisColor.key) };
+            result[key] = { ...result[key], val: colorFromPaletteReference(palettes, thisColor.key) };
           }
         }
       }

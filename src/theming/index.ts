@@ -8,7 +8,7 @@ import { themeSettingsCore } from "./core/themeStyleCore";
 import { ISettingsRequestProps } from "./core/ICoreTypes";
 import { IRawStyle } from "@uifabric/styling";
 import { registerStatesModule } from "./modules/states";
-import { registerColorSetModule } from "./modules/colorSet/colorSet";
+import { registerColorSetModule } from "./modules/colorSet";
 export { IThemeDefinition, ITheme } from "./ITheme";
 
 /**

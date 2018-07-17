@@ -15,7 +15,7 @@ import {
   createColorFromHSLA
 } from './color';
 // import * as Colors from './colors';
-import { assign } from '@uifabric/utilities/lib/index';
+import { assign } from '@uifabric/utilities';
 
 // Soften: to get closer to the background color's luminance (softening with a white background would be lightening, with black it'd be darkening)
 // Strongen: opposite of soften
@@ -99,11 +99,11 @@ export function isDark(color: IColor): boolean {
  * @param high maximum luminance value in the array (0 to 100)
  */
 export function getShadeArray(
-  color: IColor, 
-  count: number, 
+  color: IColor,
+  count: number,
   reverse: boolean,
   rotate: boolean,
-  low: number = 0, 
+  low: number = 0,
   high: number = 100,
   autoinvert: number = 50,
 ): IColor[] {

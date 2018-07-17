@@ -1,39 +1,18 @@
-import { ColorFunction, IColorFunction, IResolvedColor } from '.';
+import { IColorFunction, IResolvedColor, IColorTransforms } from '.';
 import { IPalettes } from '../palettes';
-import { getContrastRatio } from '../../../coloring/shading';
-
-export interface IColorTransforms {
-  autofg: ColorFunction;
-  deepen: ColorFunction;
-  swap: ColorFunction;
-}
+import { AutoText } from './AutoText';
 
 export function ExecuteTransform(input: IColorFunction, palettes: IPalettes, bg: IResolvedColor): IResolvedColor {
   if (ColorTransforms.hasOwnProperty(input.fn)) {
     return ColorTransforms[input.fn](input, palettes, bg);
   }
-  return ColorTransforms.autofg(input, palettes, bg);
+  return ColorTransforms.autoText(input, palettes, bg);
 }
 
 const ColorTransforms: IColorTransforms = {
-  autofg: AutoForeground,
+  autoText: AutoText,
   deepen: DeepenColor,
   swap: SwapColors
-}
-
-function AutoForeground(input: IColorFunction, palettes: IPalettes, bg: IResolvedColor): IResolvedColor {
-  const fgs = palettes.fg;
-  const bgColor = bg.val;
-  let bestIndex = 0;
-  let bestRatio: number = getContrastRatio(bgColor, fgs[bestIndex]);
-  for (let i = 1; i < fgs.length; i++) {
-    const newRatio: number = getContrastRatio(bgColor, fgs[i]);
-    if (newRatio > bestRatio) {
-      bestRatio = newRatio;
-      bestIndex = i;
-    }
-  }
-  return { val: fgs[bestIndex], fn: input };
 }
 
 function DeepenColor(input: IColorFunction, palettes: IPalettes, bg: IResolvedColor): IResolvedColor {

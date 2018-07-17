@@ -11,7 +11,7 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
   },
   colorSet: {
     backgroundColor: { palette: 'bg', shade: 0 },
-    color: { fn: 'autofg' },
+    color: { fn: 'autoText' },
     borderColor: { fn: 'deepen', p1: 2 }
   },
   typography: DefaultTypography,

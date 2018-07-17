@@ -9,7 +9,7 @@ const registerRainbowTheme = () => registerTheme('TasteTheRainbow', {
   },
   colorSet: {
     backgroundColor: { palette: 'bg', shade: 0 },
-    color: { fn: 'autofg' },
+    color: { fn: 'autoText' },
   }
 });
 
@@ -22,7 +22,7 @@ const registerOfficeStyleTheme = () => registerTheme('OfficeStyle', {
   },
   colorSet: {
     backgroundColor: { palette: 'bg', shade: 0 },
-    color: { fn: 'autofg' },
+    color: { fn: 'autoText' },
   }
 });
 

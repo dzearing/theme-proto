@@ -77,7 +77,7 @@ export interface IPalettes {
   [key: string]: IColor[];
 }
 
-
+export const DefaultFgParams: IPaletteParams = { color: 'black' };
 
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
 
@@ -90,7 +90,7 @@ export function registerPalettesModule(keyName?: string) {
   registerThemeModule({
     name: palettesModuleName,
     default: {
-      fg: { color: 'black' },
+      fg: DefaultFgParams,
       bg: { color: '#f3f2f1' },
       accent: { color: '#0078d4', anchorColor: true }
     },
@@ -136,17 +136,7 @@ function resolvePalettesDefinition(
       if (def.hasOwnProperty(key)) {
         const params = def[key];
         if (params) {
-          if (typeof params.color === 'string') {
-            const invertAt = params.invertAt || 50;
-            const rotate: boolean = params.anchorColor || false;
-            const count = 9;
-            const low = 30;
-            const high = 100;
-            const seedColor = getColorFromString(params.color) || fallbackBg;
-            result[key] = getShadeArray(seedColor, count, false, rotate, low, high, invertAt);
-          } else {
-            result[key] = convertColorArray(params.color, fallbackBg);
-          }
+          addNamedPalette(result, key, params);
         }
       }
     }
@@ -156,6 +146,20 @@ function resolvePalettesDefinition(
   }
 
   return parentPalettes;
+}
+
+export function addNamedPalette(result: Partial<IPalettes>, key: string, params: IPaletteParams) {
+  if (typeof params.color === 'string') {
+    const invertAt = params.invertAt || 50;
+    const rotate: boolean = params.anchorColor || false;
+    const count = 9;
+    const low = 30;
+    const high = 100;
+    const seedColor = getColorFromString(params.color) || fallbackBg;
+    result[key] = getShadeArray(seedColor, count, false, rotate, low, high, invertAt);
+  } else {
+    result[key] = convertColorArray(params.color, fallbackBg);
+  }
 }
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {

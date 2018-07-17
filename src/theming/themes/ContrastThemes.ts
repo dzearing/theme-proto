@@ -9,8 +9,8 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
   },
   colorSet: {
     backgroundColor: { palette: 'bg', shade: 0 },
-    color: { fn: 'autofg' },
-    borderColor: { fn: 'autofg' }
+    color: { fn: 'autoText' },
+    borderColor: { fn: 'autoText' }
   },
   settings: {
 

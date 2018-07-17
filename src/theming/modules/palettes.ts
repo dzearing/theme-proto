@@ -1,4 +1,4 @@
-import { getColorFromString, IColor } from "../../coloring/color";
+import { colorFromString, IColor } from "../../coloring";
 import { getShadeArray } from "../../coloring/shading";
 import { registerThemeModule } from "../core/ThemeModule";
 import { IBaseLayer } from "../core/ICoreTypes";
@@ -79,7 +79,7 @@ export interface IPalettes {
 
 export const DefaultFgParams: IPaletteParams = { color: 'black' };
 
-const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
+const fallbackBg: IColor = { str: '#ffffff', rgb: { r: 255, g: 255, b: 255, a: 100 } };
 
 let palettesModuleName: string = 'palettes';
 
@@ -155,7 +155,7 @@ export function addNamedPalette(result: Partial<IPalettes>, key: string, params:
     const count = 9;
     const low = 30;
     const high = 100;
-    const seedColor = getColorFromString(params.color) || fallbackBg;
+    const seedColor = colorFromString(params.color) || fallbackBg;
     result[key] = getShadeArray(seedColor, count, false, rotate, low, high, invertAt);
   } else {
     result[key] = convertColorArray(params.color, fallbackBg);
@@ -163,5 +163,5 @@ export function addNamedPalette(result: Partial<IPalettes>, key: string, params:
 }
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {
-  return colors.map((val) => (getColorFromString(val) || fallback));
+  return colors.map((val) => (colorFromString(val) || fallback));
 }

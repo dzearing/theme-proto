@@ -5,17 +5,15 @@
 import {
   IHSV,
   IColor,
-  MAX_COLOR_VALUE,
-  hsv2hsl,
-  getColorFromRGBA,
-  hsv2rgb,
-  createColorFromHSVA,
-  getLuminanceForColor,
+  lumFromColor,
   IHSL,
-  createColorFromHSLA
-} from './color';
+  hslFromColor,
+  hsvFromColor,
+  createColor
+} from '.';
 // import * as Colors from './colors';
 import { assign } from '@uifabric/utilities';
+import { MAX_COLOR_VALUE } from './colorConversion';
 
 // Soften: to get closer to the background color's luminance (softening with a white background would be lightening, with black it'd be darkening)
 // Strongen: opposite of soften
@@ -56,11 +54,12 @@ export function isValidShade(shade?: Shade): boolean {
 }
 
 function _isBlack(color: IColor): boolean {
-  return color.v === 0;
+  return hsvFromColor(color).v === 0;
 }
 
 function _isWhite(color: IColor): boolean {
-  return color.v === MAX_COLOR_VALUE && color.s === 0;
+  const hsv = hsvFromColor(color);
+  return hsv.v === MAX_COLOR_VALUE && hsv.s === 0;
 }
 
 function _darken(hsv: IHSV, factor: number): IHSV {
@@ -84,7 +83,7 @@ function _clamp(n: number, min: number, max: number) {
 }
 
 export function isDark(color: IColor): boolean {
-  return hsv2hsl(color.h, color.s, color.v).l < 50;
+  return hslFromColor(color).l < 50;
 }
 
 /**
@@ -107,8 +106,8 @@ export function getShadeArray(
   high: number = 100,
   autoinvert: number = 50,
 ): IColor[] {
-  const a = color.a;
-  const hsl: IHSL = hsv2hsl(color.h, color.s, color.v);
+  const a = color.rgb.a;
+  const hsl: IHSL = hslFromColor(color);
   if (autoinvert) {
     reverse = hsl.l < autoinvert;
   }
@@ -122,23 +121,23 @@ export function getShadeArray(
   const slot = Math.min(Math.max(Math.round(offset * maxIndex), 0), maxIndex);
   let result = new Array<IColor>(count);
 
-  result[0] = createColorFromHSLA(hsl.h, hsl.s, startLum, a);
-  result[maxIndex] = createColorFromHSLA(hsl.h, hsl.s, endLum, a);
+  result[0] = createColor({ ...hsl, l: startLum }, a);
+  result[maxIndex] = createColor({ ...hsl, l: endLum }, a);
   if (slot > 0 && slot < maxIndex) {
-    result[slot] = createColorFromHSLA(hsl.h, hsl.s, hsl.l, a);
+    result[slot] = createColor(hsl, a);
   }
 
   if (slot > 1) {
     const step = (hsl.l - startLum) / slot;
     for (let i = 1; i < slot; i++) {
-      result[i] = createColorFromHSLA(hsl.h, hsl.s, startLum + (step * i), a);
+      result[i] = createColor({ ...hsl, l: startLum + (step * i) }, a);
     }
   }
 
   if ((slot + 1) < maxIndex) {
     const step = (endLum - hsl.l) / (maxIndex - slot);
     for (let i = 1; (i + slot) < maxIndex; i++) {
-      result[i + slot] = createColorFromHSLA(hsl.h, hsl.s, hsl.l + (step * i), a);
+      result[i + slot] = createColor({ ...hsl, l: hsl.l + (step * i) }, a);
     }
   }
 
@@ -149,82 +148,10 @@ export function getShadeArray(
   return result;
 }
 
-/**
- * Given a color and a shade specification, generates the requested shade of the color.
- * Logic:
- * if white
- *  darken via tables defined above
- * if black
- *  lighten
- * if light
- *  strongen
- * if dark
- *  soften
- * else default
- *  soften or strongen depending on shade#
- * @param {IColor} color The base color whose shade is to be computed
- * @param {Shade} shade The shade of the base color to compute
- * @param {Boolean} isInverted Default false. Whether the given theme is inverted (reverse strongen/soften logic)
- */
-export function getShade(color: IColor, shade: Shade, isInverted: boolean = false): IColor {
-  'use strict';
-
-  if (shade === Shade.Unshaded || !isValidShade(shade)) {
-    return color;
-  }
-
-  const hsl = hsv2hsl(color.h, color.s, color.v);
-  let hsv = { h: color.h, s: color.s, v: color.v };
-  const tableIndex = shade - 1;
-  let _soften = _lighten;
-  let _strongen = _darken;
-  if (isInverted) {
-    _soften = _darken;
-    _strongen = _lighten;
-  }
-  if (_isWhite(color)) { // white
-    hsv = _darken(hsv, WhiteShadeTable[tableIndex]);
-  } else if (_isBlack(color)) { // black
-    hsv = _lighten(hsv, BlackTintTable[tableIndex]);
-  } else if (hsl.l / 100 > HighLuminanceThreshold) { // light
-    hsv = _strongen(hsv, LumShadeTable[tableIndex]);
-  } else if (hsl.l / 100 < LowLuminanceThreshold) { // dark
-    hsv = _soften(hsv, LumTintTable[tableIndex]);
-  } else { // default
-    if (tableIndex < ColorTintTable.length) {
-      hsv = _soften(hsv, ColorTintTable[tableIndex]);
-    } else {
-      hsv = _strongen(hsv, ColorShadeTable[tableIndex - ColorTintTable.length]);
-    }
-  }
-
-  return createColorFromHSVA(hsv.h, hsv.s, hsv.v, color.a);
-}
-
-// Background shades/tints are generated differently. The provided color will be guaranteed
-//   to be the darkest or lightest one. If it is <50% luminance, it will always be the darkest,
-//   otherwise it will always be the lightest.
-export function getBackgroundShade(color: IColor, shade: Shade, isInverted: boolean = false): IColor {
-  'use strict';
-
-  if (shade === Shade.Unshaded || !isValidShade(shade)) {
-    return color;
-  }
-
-  let hsv = { h: color.h, s: color.s, v: color.v };
-  const tableIndex = shade - 1;
-  if (!isInverted) { // lightish
-    hsv = _darken(hsv, WhiteShadeTableBG[tableIndex]);
-  } else { // default: if (hsl.l / 100 < .5) { // darkish
-    hsv = _lighten(hsv, BlackTintTableBG[BlackTintTable.length - 1 - tableIndex]);
-  }
-
-  return getColorFromRGBA(assign(hsv2rgb(hsv.h, hsv.s, hsv.v), { a: color.a }));
-}
 
 export function getContrastRatio(color1: IColor, color2: IColor): number {
-  const L1 = getLuminanceForColor(color1) + .05;
-  const L2 = getLuminanceForColor(color2) + .05;
+  const L1 = lumFromColor(color1) + .05;
+  const L2 = lumFromColor(color2) + .05;
 
   // return the lighter color divided by darker
   return L1 / L2 > 1 ?

@@ -1,7 +1,7 @@
 import { ITextColorStyles, IColorFunction, IResolvedColor } from ".";
 import { DefaultFgParams, IPalettes, addNamedPalette } from "../palettes";
 import { getContrastRatio } from "../../../coloring/shading";
-import { IColor } from "../../../coloring/color";
+import { IColor } from "../../../coloring";
 
 const fgPaletteKey = 'fg';
 const requiredContrast: number = 4.5;

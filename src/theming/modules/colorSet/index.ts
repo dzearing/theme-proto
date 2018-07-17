@@ -1,5 +1,5 @@
 import { IPalettes, IPaletteParams } from "../palettes";
-import { IColor } from "../../../coloring/color";
+import { IColor } from "../../../coloring";
 export { registerColorSetModule } from "./ColorResolution";
 
 export type IColorReference = string | IPaletteReference | IColorFunction;

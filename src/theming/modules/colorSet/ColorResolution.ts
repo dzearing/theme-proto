@@ -1,14 +1,14 @@
 import { IRawStyle } from "@uifabric/styling";
 import { IColorReference, IResolvedColor, IPaletteReference, IColorFunction, IColorSetDefinitions, IColorSet, IColorSetParams } from ".";
 import { ExecuteTransform } from "./Transforms";
-import { IColor, getColorFromString } from "../../../coloring/color";
 import { registerPalettesModule, IPalettes } from "../palettes";
 import { registerThemeModule } from "../../core/ThemeModule";
 import { IBaseLayer } from "../../core/ICoreTypes";
 import { AutoText } from "./AutoText";
+import { IColor, colorFromString } from "../../../coloring";
 
 const defaultBgKey: IPaletteReference = { palette: 'bg', shade: 0 };
-const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
+const fallbackBg: IColor = { str: '#ffffff', rgb: { r: 255, g: 255, b: 255, a: 100 } };
 
 const bgType = 'bg';
 const accentType = 'accent';
@@ -48,7 +48,7 @@ function resolveColor(
   palettes: IPalettes
 ): IResolvedColor {
   if (typeof color === 'string') {
-    return { val: getColorFromString(color) || fallbackBg };
+    return { val: colorFromString(color) || fallbackBg };
   } else if (color.hasOwnProperty('palette')) {
     const palRef = color as IPaletteReference;
     return { val: colorFromPaletteReference(palettes, palRef), key: palRef };
@@ -148,10 +148,12 @@ function addColorsToSettings(settings: IRawStyle, colorSet: IColorSet, layer: IB
     }
   }
   if (params && params.textColor && layer[palettesModuleName]) {
+    const overrideSettings = { ...settings };
     const palettes = layer[palettesModuleName] as IPalettes;
     const textFn: IColorFunction = { fn: 'autoText', textStyle: params.textColor };
     const result = AutoText(textFn, palettes, colorSet.backgroundColor);
-    settings.color = result.val.str;
+    overrideSettings.color = result.val.str;
+    return overrideSettings;
   }
   return settings;
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IStyle } from '@uifabric/styling';
 import { createComponent, IStyleProps, IViewProps } from './createComponent';
-import { IColor } from './coloring/color';
+import { IColor } from './coloring';
 
 // Styles for the component
 export interface ISwatchBarStyles {
@@ -23,9 +23,9 @@ const view = (props: IViewProps<ISwatchBarProps, ISwatchBarStyles>) => {
   } = props;
 
   return (
-    <RootType {...rest} className={classNames.root} style={{width: '300px'}}>
-      { props.colors.map((value: IColor, index: number) => {
-        return (<div key={index} style={{height:5, width:'100%', background: value.str}} />);
+    <RootType {...rest} className={classNames.root} style={{ width: '300px' }}>
+      {props.colors.map((value: IColor, index: number) => {
+        return (<div key={index} style={{ height: 5, width: '100%', background: value.str }} />);
       })}
     </RootType>
   );

@@ -45,11 +45,12 @@ const view = (props: IViewProps<ITaskCardProps, ITaskCardStyles>) => {
       className={classNames.root}
       data-is-focusable="true"
     >
+
       <Stack vertical fill gap={4}>
         <Text weight="bold">
           Portfolio Review jkfldsf jdaskfldas jfkadlsf jdasklfads jfklads
         </Text>
-        <Text weight="light">Design Studio</Text>
+        <Text weight="light" colorStyle="success">Design Studio</Text>
 
         <Breadcrumb items={[{ text: "Engineering" }, { text: "Bootcamps" }]} />
         <Stack fill gap={8}>

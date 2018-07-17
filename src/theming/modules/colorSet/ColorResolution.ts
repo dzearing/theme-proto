@@ -1,10 +1,11 @@
 import { IRawStyle } from "@uifabric/styling";
-import { IColorReference, IResolvedColor, IPaletteReference, IColorFunction, IColorSetDefinitions, IColorSet } from ".";
+import { IColorReference, IResolvedColor, IPaletteReference, IColorFunction, IColorSetDefinitions, IColorSet, IColorSetParams } from ".";
 import { ExecuteTransform } from "./Transforms";
 import { IColor, getColorFromString } from "../../../coloring/color";
 import { registerPalettesModule, IPalettes } from "../palettes";
 import { registerThemeModule } from "../../core/ThemeModule";
 import { IBaseLayer } from "../../core/ICoreTypes";
+import { AutoText } from "./AutoText";
 
 const defaultBgKey: IPaletteReference = { palette: 'bg', shade: 0 };
 const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
@@ -140,11 +141,17 @@ function resolveColorSetDefinition(
   return result;
 }
 
-function addColorsToSettings(settings: IRawStyle, colorSet: IColorSet, _params?: object): IRawStyle {
+function addColorsToSettings(settings: IRawStyle, colorSet: IColorSet, layer: IBaseLayer, params?: IColorSetParams): IRawStyle {
   for (const colorName in colorSet) {
     if (colorSet.hasOwnProperty(colorName)) {
       settings[colorName] = colorSet[colorName].val.str;
     }
+  }
+  if (params && params.textColor && layer[palettesModuleName]) {
+    const palettes = layer[palettesModuleName] as IPalettes;
+    const textFn: IColorFunction = { fn: 'autoText', textStyle: params.textColor };
+    const result = AutoText(textFn, palettes, colorSet.backgroundColor);
+    settings.color = result.val.str;
   }
   return settings;
 }

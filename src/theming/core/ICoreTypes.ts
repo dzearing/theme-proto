@@ -82,6 +82,7 @@ export type ThemeDefinitionResolver = (
 export type SettingsUpdater = (
   settings: IBaseSettings,
   module: IModuleResolved,
+  layer: IBaseLayer,
   params?: object
 ) => IBaseSettings;
 

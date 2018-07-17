@@ -72,3 +72,7 @@ export interface ITextColorStyleSettings {
   darkOffset?: number;
   keepTone?: boolean;
 }
+
+export interface IColorSetParams {
+  textColor?: keyof ITextColorStyles;
+}

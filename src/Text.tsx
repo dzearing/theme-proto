@@ -8,6 +8,7 @@ import {
   IFontWeights
 } from "./theming/modules/typography/ITypography";
 import { themeStyle } from './theming';
+import { ITextColorStyles } from './theming/modules/colorSet';
 
 // Styles for the component
 export interface ITextStyles {
@@ -25,7 +26,7 @@ export interface ITextProps {
   size?: keyof IFontSizes;
   weight?: keyof IFontWeights;
 
-  paletteSet?: string;
+  colorStyle?: keyof ITextColorStyles;
 
   block?: boolean;
   wrap?: boolean;
@@ -62,11 +63,21 @@ const styles = (props: IStyleProps<ITextProps, ITextStyles>): ITextStyles => {
     type,
     family,
     weight,
-    size
+    size,
+    colorStyle
   } = props;
 
-  const textParams: any = (type || family || size || weight) ?
-    { modules: { typography: { type, family, size, weight } } } : undefined;
+  const textParams: any = (type || family || size || weight || colorStyle) ?
+    {
+      modules: {
+        typography: {
+          type, family, size, weight
+        },
+        colorSet: {
+          textColor: colorStyle
+        }
+      }
+    } : undefined;
 
   return {
     root: [

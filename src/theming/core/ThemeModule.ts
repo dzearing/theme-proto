@@ -107,7 +107,7 @@ export function createLayerOrState(
       results[name] = module.resolveDef(name, results, module.default, allowPartial, def, parent);
     }
     if (results[name] && module.updateSettings) {
-      results.settings = module.updateSettings(results.settings!, results[name]);
+      results.settings = module.updateSettings(results.settings!, results[name], results);
     }
   }
 
@@ -131,7 +131,7 @@ export function adjustSettings(layer: IBaseLayer, settings: object, keysToTraver
       const updateSettings = themeModules[key].updateSettings;
       const thisModule = modules ? modules[key] : undefined;
       if (updateSettings) {
-        settings = updateSettings(settings, layerDef, thisModule);
+        settings = updateSettings(settings, layerDef, layer, thisModule);
       }
     }
   }

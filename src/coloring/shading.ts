@@ -9,49 +9,13 @@ import {
   IHSL,
   hslFromColor,
   hsvFromColor,
-  createColor
+  createColor,
+  rgbFromColor
 } from '.';
 // import * as Colors from './colors';
-import { assign } from '@uifabric/utilities';
 import { MAX_COLOR_VALUE } from './colorConversion';
 
-// Soften: to get closer to the background color's luminance (softening with a white background would be lightening, with black it'd be darkening)
-// Strongen: opposite of soften
-// Luminance multiplier constants for generating shades of a given color
-const WhiteShadeTableBG = [.027, .043, .082, .145, .184, .216, .349, .537]; // white bg
-const BlackTintTableBG = [.537, .45, .349, .216, .184, .145, .082, .043]; // black bg
-const WhiteShadeTable = [.537, .349, .216, .184, .145, .082, .043, .027]; // white fg
-const BlackTintTable = [.537, .45, .349, .216, .184, .145, .082, .043]; // black fg
-const LumTintTable = [.88, .77, .66, .55, .44, .33, .22, .11]; // light (strongen all)
-const LumShadeTable = [.11, .22, .33, .44, .55, .66, .77, .88]; // dark (soften all)
-const ColorTintTable = [.960, .840, .700, .400, .120]; // default soften
-const ColorShadeTable = [.100, .240, .440]; // default strongen
-// If the given shade's luminance is below/above these values, we'll swap to using the White/Black tables above
-const LowLuminanceThreshold = 0.2;
-const HighLuminanceThreshold = 0.8;
-
-/** Shades of a given color, from softest to strongest. */
-export enum Shade {
-  Unshaded = 0,
-  Shade1 = 1,
-  Shade2 = 2,
-  Shade3 = 3,
-  Shade4 = 4,
-  Shade5 = 5,
-  Shade6 = 6,
-  Shade7 = 7,
-  Shade8 = 8,
-  // remember to update isValidShade()!
-}
-
-/**
- * Returns true if the argument is a valid Shade value
- * @param {Shade} shade The Shade value to validate.
- */
-export function isValidShade(shade?: Shade): boolean {
-  'use strict';
-  return (typeof shade === 'number') && (shade >= Shade.Unshaded) && (shade <= Shade.Shade8);
-}
+export const MIN_CONTRAST_RATIO: number = 4.5;
 
 function _isBlack(color: IColor): boolean {
   return hsvFromColor(color).v === 0;
@@ -84,6 +48,108 @@ function _clamp(n: number, min: number, max: number) {
 
 export function isDark(color: IColor): boolean {
   return hslFromColor(color).l < 50;
+}
+
+function _probeIndex(start: number, first: number, last: number, count: number): number {
+  const offset: number = (count % 2) === 0 ? -Math.floor(count / 2) : Math.floor((count + 1) / 2);
+  const size = last - first + 1;
+  let index = start + offset;
+  if (index > last) {
+    index -= size;
+  } else if (index < first) {
+    index += size;
+  }
+  return index;
+}
+
+export function findContrastingColor(colors: Array<IColor>, bg: IColor, start: number, first: number, last: number, closest: boolean): number {
+  let bestIndex: number = start;
+  let bestRatio: number = getContrastRatio(colors[bestIndex], bg);
+  if (closest && bestRatio >= MIN_CONTRAST_RATIO) {
+    return start;
+  }
+  const totalElements: number = last - first + 1;
+  for (let i = 1; i < totalElements; i++) {
+    const index = _probeIndex(start, first, last, i);
+    const ratio = getContrastRatio(colors[index], bg);
+    if (ratio > bestRatio) {
+      bestIndex = index;
+      bestRatio = ratio;
+    }
+    if (closest && ratio >= MIN_CONTRAST_RATIO) {
+      return index;
+    }
+  }
+  return bestIndex;
+}
+
+function insertSeededColor(colors: Array<IColor>, original: IColor): number {
+  const count = colors.length;
+  const lumOrig = hslFromColor(original).l;
+  let gap = 1000;
+  let found = 0;
+  for (let i = 0; i < count; i++) {
+    const hsl = hslFromColor(colors[i]);
+    const newGap = Math.abs(hsl.l - lumOrig);
+    if (newGap < gap) {
+      gap = newGap;
+      found = i;
+    }
+  }
+  colors[found] = original;
+  return found;
+}
+
+function interpolateToNext(colors: Array<IColor>, start: number, nextLum: number, a: number): number {
+  const hsl = hslFromColor(colors[start]);
+  const colorTarget = createColor({ ...hsl, l: nextLum }, a);
+  const lumRatio = lumFromColor(colorTarget);
+  const last = Math.max(start + 1, Math.round(lumRatio * (colors.length - 1)));
+  if (last > start && last < colors.length) {
+    colors[last] = colorTarget;
+    if ((start + 1) < last) {
+      const numToFill = last - (start + 1);
+      const step = (hslFromColor(colorTarget).l - hsl.l) / (numToFill + 1);
+      for (let i = 1; (start + i) < last; i++) {
+        colors[start + i] = createColor({ ...hsl, l: (hsl.l + (step * i)) }, a)
+      }
+    }
+  }
+  return last;
+}
+
+const interpolationValues: number[] = [0, 30, 50, 75, 100];
+
+export function getLumAdjustedShadeArray(
+  color: IColor,
+  count: number,
+  rotate: boolean,
+  tonalOnly: boolean,
+  autoInvert: number = 50
+): IColor[] {
+  const hslBase = hslFromColor(color);
+  const a = rgbFromColor(color).a;
+  const reverse = (hslBase.l <= autoInvert);
+  const lums = interpolationValues;
+  count = Math.max(Math.floor(count + (tonalOnly ? 2 : 0)), lums.length);
+  let colors = new Array<IColor>(count);
+  let colorIndex = 0;
+  let lumIndex = 0;
+  colors[colorIndex] = createColor({ ...hslBase, l: lums[lumIndex++] }, a);
+  while (lumIndex < lums.length && colorIndex < count) {
+    colorIndex = interpolateToNext(colors, colorIndex, lums[lumIndex++], a);
+  }
+  if (tonalOnly) {
+    colors = colors.slice(1, colors.length - 1);
+  }
+  if (!reverse) {
+    colors.reverse();
+  }
+  const originalIndex = insertSeededColor(colors, color);
+  if (rotate && originalIndex !== 0) {
+    colors = colors.slice(originalIndex, colors.length).concat(colors.slice(0, originalIndex));
+  }
+  return colors;
 }
 
 /**
@@ -147,7 +213,6 @@ export function getShadeArray(
 
   return result;
 }
-
 
 export function getContrastRatio(color1: IColor, color2: IColor): number {
   const L1 = lumFromColor(color1) + .05;

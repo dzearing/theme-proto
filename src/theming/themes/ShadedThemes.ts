@@ -7,7 +7,7 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
   palettes: {
     fg: { color: 'black' },
     bg: { color: '#f3f2f1' },
-    accent: { color: '#0078d4', anchorColor: true }
+    accent: { color: '#0078d4', anchorColor: true, tonalOnly: true }
   },
   colorSet: {
     backgroundColor: { palette: 'bg', shade: 0 },
@@ -47,7 +47,7 @@ const registerDarkTheme = () => registerTheme('DarkTheme', {
   palettes: {
     fg: { color: 'white' },
     bg: { color: '#c3c3c3' },
-    accent: { color: '#0078d4' }
+    accent: { color: '#0078d4', anchorColor: true, tonalOnly: true }
   },
   layers: {
     default: {}

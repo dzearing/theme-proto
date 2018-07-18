@@ -1,5 +1,5 @@
 import { colorFromString, IColor } from "../../coloring";
-import { getShadeArray } from "../../coloring/shading";
+import { getLumAdjustedShadeArray } from "../../coloring/shading";
 import { registerThemeModule } from "../core/ThemeModule";
 import { IBaseLayer } from "../core/ICoreTypes";
 
@@ -27,6 +27,9 @@ export interface IPaletteParams {
    * the specified color into index 0
    */
   anchorColor?: boolean;
+
+  /** strip out white and black from the array if true */
+  tonalOnly?: boolean;
 }
 
 /** 
@@ -150,13 +153,10 @@ function resolvePalettesDefinition(
 
 export function addNamedPalette(result: Partial<IPalettes>, key: string, params: IPaletteParams) {
   if (typeof params.color === 'string') {
-    const invertAt = params.invertAt || 50;
-    const rotate: boolean = params.anchorColor || false;
+    const { invertAt = 50, tonalOnly = false, anchorColor = false, color } = params;
     const count = 9;
-    const low = 30;
-    const high = 100;
-    const seedColor = colorFromString(params.color) || fallbackBg;
-    result[key] = getShadeArray(seedColor, count, false, rotate, low, high, invertAt);
+    const seedColor = colorFromString(color) || fallbackBg;
+    result[key] = getLumAdjustedShadeArray(seedColor, count, anchorColor, tonalOnly, invertAt);
   } else {
     result[key] = convertColorArray(params.color, fallbackBg);
   }

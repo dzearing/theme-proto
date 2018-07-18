@@ -5,12 +5,12 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
   palettes: {
     fg: { color: 'white' },
     bg: { color: 'black' },
-    accent: { color: '#0078d4' }
+    accent: { color: '#0078d4', anchorColor: true, tonalOnly: true }
   },
   colorSet: {
     backgroundColor: { palette: 'bg', shade: 0 },
-    color: { fn: 'autoText' },
-    borderColor: { fn: 'autoText' }
+    color: { fn: 'autoText', textStyle: 'soft' },
+    borderColor: { palette: 'fg', shade: 0 }
   },
   settings: {
 
@@ -40,7 +40,10 @@ const registerOverlayTheme = () => registerTheme('Overlay', {
   palettes: {
     fg: { color: 'rgba(255, 255, 255, 0.8)' },
     bg: { color: 'rgba(0, 0, 0, 0.4)' },
-    accent: { color: 'rgba(0, 120, 212, 0.4)' }
+    accent: { color: 'rgba(0, 120, 212, 0.4)', anchorColor: true, tonalOnly: true }
+  },
+  colorSet: {
+    color: { palette: 'fg', shade: 0 }
   }
 })
 

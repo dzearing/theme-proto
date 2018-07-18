@@ -1,4 +1,11 @@
-import { rgb2hsv, hsv2hsl, getRelativeLuminance, hsv2rgb, hsl2hsv, rgb2hex } from "./colorConversion";
+import {
+  rgb2hsv,
+  hsv2hsl,
+  getRelativeLuminance,
+  hsv2rgb,
+  hsl2hsv,
+  rgb2hex
+} from "./colorConversion";
 import { cssColor } from "./colorParsing";
 
 

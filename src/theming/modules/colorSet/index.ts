@@ -44,9 +44,9 @@ export interface IPaletteReference {
  */
 export interface IColorFunction {
   fn: keyof IColorTransforms;
-  p1?: number | string;
-  p2?: number | string;
+  by?: number;
   textStyle?: keyof ITextColorStyles;
+  swapTargets?: string[];
 }
 
 export type ColorFunction = (input: IColorFunction, palettes: IPalettes, bg: IResolvedColor) => IResolvedColor

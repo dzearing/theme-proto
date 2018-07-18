@@ -16,8 +16,8 @@ const ColorTransforms: IColorTransforms = {
 }
 
 function DeepenColor(input: IColorFunction, palettes: IPalettes, bg: IResolvedColor): IResolvedColor {
-  if (input.p1 && typeof input.p1 === 'number') {
-    const shift = input.p1;
+  if (input.by) {
+    const shift = input.by;
     if (bg.key) {
       const { palette, shade } = bg.key;
       const colorSet = palettes[palette];
@@ -30,15 +30,14 @@ function DeepenColor(input: IColorFunction, palettes: IPalettes, bg: IResolvedCo
 }
 
 function SwapColors(input: IColorFunction, palettes: IPalettes, bg: IResolvedColor): IResolvedColor {
-  if (input.p1 && typeof input.p1 === 'string' && input.p2 && typeof input.p2 === 'string') {
-    const set1 = input.p1;
-    const set2 = input.p2;
+  if (input.swapTargets && input.swapTargets.length >= 2) {
+    const targets = input.swapTargets;
     if (bg.key) {
       let palette = bg.key.palette;
-      if (palette === set1) {
-        palette = set2;
-      } else if (palette === set2) {
-        palette = set1;
+      if (palette === targets[0]) {
+        palette = targets[1];
+      } else if (palette === targets[1]) {
+        palette = targets[0];
       }
       const newVal = palettes[palette][bg.key.shade];
       return { val: newVal, key: { palette, shade: bg.key.shade }, fn: input };

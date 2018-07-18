@@ -12,13 +12,13 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
   colorSet: {
     backgroundColor: { palette: 'bg', shade: 0 },
     color: { fn: 'autoText', textStyle: 'soft' },
-    borderColor: { fn: 'deepen', p1: 2 }
+    borderColor: { fn: 'deepen', by: 2 }
   },
   typography: DefaultTypography,
   layers: {
     button: {
       colorSet: {
-        backgroundColor: { fn: 'deepen', p1: 2 },
+        backgroundColor: { fn: 'deepen', by: 2 },
       },
       settings: {
         borderWidth: 0,
@@ -26,17 +26,17 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
       },
       states: {
         ':active': {
-          colorSet: { backgroundColor: { fn: 'deepen', p1: 2 } }
+          colorSet: { backgroundColor: { fn: 'deepen', by: 2 } }
         },
         ':hover': {
-          colorSet: { backgroundColor: { fn: 'deepen', p1: 3 } }
+          colorSet: { backgroundColor: { fn: 'deepen', by: 3 } }
         }
       },
     },
     themedButton: {
       parent: 'button',
       colorSet: {
-        backgroundColor: { fn: 'swap', p1: 'accent', p2: 'bg' }
+        backgroundColor: { fn: 'swap', swapTargets: ['accent', 'bg'] }
       }
     }
   }

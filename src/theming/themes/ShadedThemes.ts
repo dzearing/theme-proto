@@ -16,14 +16,12 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
   },
   typography: DefaultTypography,
   layers: {
-    button: {
+    shadedControl: {
       colorSet: {
-        backgroundColor: { fn: 'deepen', by: 2 },
-      },
-      settings: {
-        borderWidth: 0,
-        borderRadius: 2
-      },
+        backgroundColor: { fn: 'deepen', by: 2 }
+      }
+    },
+    interactiveControl: {
       states: {
         ':active': {
           colorSet: { backgroundColor: { fn: 'deepen', by: 2 } }
@@ -31,7 +29,14 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
         ':hover': {
           colorSet: { backgroundColor: { fn: 'deepen', by: 3 } }
         }
-      },
+      }
+    },
+    button: {
+      parent: ['shadedControl', 'interactiveControl'],
+      settings: {
+        borderWidth: 0,
+        borderRadius: 2
+      }
     },
     themedButton: {
       parent: 'button',

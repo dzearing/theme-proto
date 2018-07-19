@@ -16,7 +16,7 @@ export interface IBaseStateDef {
 }
 
 export interface IBaseLayerDef extends IBaseStateDef {
-  parent?: string;
+  parent?: string | string[];
   states?: { [key: string]: Partial<IBaseStateDef>; }
 }
 
@@ -29,7 +29,7 @@ export interface IBaseThemeDef extends IBaseLayerDef {
 export type IBaseState = IBaseStateDef;
 
 export interface IBaseLayer extends IBaseState {
-  parent?: string;
+  parent?: string | string[];
   states?: { [key: string]: Partial<IBaseState> };
 }
 

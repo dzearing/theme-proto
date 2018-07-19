@@ -12,7 +12,7 @@ export interface IThemeModuleDefinitions {
 }
 
 export interface IThemeLayerDefinition extends IThemeModuleDefinitions {
-  parent?: string;
+  parent?: string | string[];
   states?: {
     [key: string]: IThemeModuleDefinitions
   }
@@ -25,7 +25,7 @@ export interface IThemeDefinition extends IThemeLayerDefinition {
 }
 
 export interface IThemeLayer {
-  parent?: string,
+  parent?: string | string[],
   settings: IRawStyle,
   palettes: IPalettes,
   colors: IColorSet,

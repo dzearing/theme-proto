@@ -43,8 +43,15 @@ function aggregateLayerDefinition<IThemeLayerDefinition extends IBaseLayerDef>(
 ): Partial<IThemeLayerDefinition> {
   if (layerDefinitions.hasOwnProperty(layerName)) {
     const layerDef = layerDefinitions[layerName];
+
     if (layerDef.parent) {
-      return mergeDefinitions(aggregateLayerDefinition(layerDefinitions, layerDef.parent!), layerDef);
+      const parentProp = layerDef.parent as string | string[];
+      const parents = typeof parentProp === "string" ? [parentProp] : parentProp;
+      let mergedParentDefs = {};
+      for (const parent of parents) {
+        mergedParentDefs = mergeDefinitions(aggregateLayerDefinition(layerDefinitions, parent), mergedParentDefs)
+      }
+      return mergeDefinitions(mergedParentDefs, layerDef);
     }
     return layerDef;
   }

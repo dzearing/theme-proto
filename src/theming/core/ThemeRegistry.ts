@@ -16,7 +16,11 @@ let themeDefinitions: { [key: string]: IThemeReference } = {
 }
 
 export function registerThemeCore<IThemeDef extends IBaseThemeDef>(name: string, definition: Partial<IThemeDef>) {
-  const parent = definition.parent || defaultName;
+  let parent = defaultName;
+  if (definition.parent) {
+    parent = typeof definition.parent === 'string' ? definition.parent : definition.parent[0];
+  }
+
   if (!themeDefinitions) {
     themeDefinitions = {};
   }

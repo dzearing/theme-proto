@@ -111,20 +111,19 @@ function resolveColorSetDefinition(
     Object.assign({}, def) :
     Object.assign({}, parentSet, def);
 
-  // only something to do if def is defined, otherwise just push the parent set through
-  if (def) {
-    let bgColor = parentSet ? parentSet.backgroundColor
-      : { val: colorFromPaletteReference(palettes, defaultBgKey), key: defaultBgKey };
-    let rerunTransforms: boolean = false;
+  const parentBg = parentSet ? parentSet.backgroundColor
+    : { val: colorFromPaletteReference(palettes, defaultBgKey), key: defaultBgKey };
 
-    if (def.backgroundColor) {
-      result.backgroundColor = resolveColor(def.backgroundColor, bgColor, palettes);
-      rerunTransforms = true;
-    }
-    bgColor = result.backgroundColor;
+  const bgColor = (def && def.backgroundColor) ? resolveColor(def.backgroundColor, parentBg, palettes)
+    : parentBg.key ? { val: colorFromPaletteReference(palettes, parentBg.key), key: parentBg.key } : parentBg;
+  result.backgroundColor = bgColor;
+  const rerunTransforms: boolean = ((def && def.backgroundColor !== undefined) || (bgColor.val.str !== parentBg.val.str));
+
+  // only something to do if def is defined, otherwise just push the parent set through
+  if (def || rerunTransforms) {
     for (const key in result) {
       if (result.hasOwnProperty(key) && key !== 'backgroundColor') {
-        if (def[key]) {
+        if (def && def[key]) {
           result[key] = resolveColor(def[key]!, bgColor, palettes);
         } else {
           const thisColor: IResolvedColor = result[key];

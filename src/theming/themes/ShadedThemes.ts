@@ -47,7 +47,6 @@ const registerDarkTheme = () => registerTheme('DarkTheme', {
   palettes: {
     fg: { color: 'white' },
     bg: { color: '#c3c3c3' },
-    accent: { color: '#0078d4', anchorColor: true, tonalOnly: true }
   },
   layers: {
     default: {}

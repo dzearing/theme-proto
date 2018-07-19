@@ -5,7 +5,6 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
   palettes: {
     fg: { color: 'white' },
     bg: { color: 'black' },
-    accent: { color: '#0078d4', anchorColor: true, tonalOnly: true }
   },
   colorSet: {
     backgroundColor: { palette: 'bg', shade: 0 },

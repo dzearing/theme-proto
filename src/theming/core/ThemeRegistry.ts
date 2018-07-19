@@ -78,8 +78,15 @@ export function getThemeCore<ITheme extends IBaseTheme>(name?: string): ITheme {
     return themeRegistry[name] as ITheme;
   }
 
+  // if the parent theme is built already just execute this as a diff on top of the existing theme
+  let parentTheme: ITheme | undefined;
+  const rawDef = themeDefinitions[name];
+  if (rawDef && rawDef.parent && hasTheme(rawDef.parent, false)) {
+    parentTheme = getThemeCore<ITheme>(rawDef.parent);
+  }
+
   // now no cached theme exists so try the definition
-  const definition = getResolvedDefinition(name);
+  const definition = parentTheme ? rawDef.definition : getResolvedDefinition(name);
   if (!definition) {
     if (name !== defaultName) {
       return getThemeCore();
@@ -90,12 +97,12 @@ export function getThemeCore<ITheme extends IBaseTheme>(name?: string): ITheme {
   }
 
   // now create the new theme
-  themeRegistry[name] = createThemeCore(definition);
+  themeRegistry[name] = createThemeCore(definition, parentTheme);
   return themeRegistry[name] as ITheme;
 }
 
-export function hasTheme(name: string): boolean {
-  return themeDefinitions.hasOwnProperty(name) || themeRegistry.hasOwnProperty(name);
+export function hasTheme(name: string, checkForUnresolved: boolean = true): boolean {
+  return themeRegistry.hasOwnProperty(name) || (checkForUnresolved && themeDefinitions.hasOwnProperty(name));
 }
 
 export function getDefaultThemeCore<ITheme extends IBaseTheme>(): ITheme {

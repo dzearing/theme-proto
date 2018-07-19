@@ -1,6 +1,7 @@
 import { createLayerOrState } from "./ThemeModule";
 import { mergeDefinitions } from "./mergeDefinitions";
 import { IBaseTheme, IBaseLayer, IBaseLayerDef, IBaseThemeDef } from "./ICoreTypes";
+import { hasTheme, getThemeCore } from "./ThemeRegistry";
 
 const defKey = 'definition';
 const defaultName = 'default';
@@ -15,7 +16,6 @@ export function createThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends 
   definition: IThemeDef,
   parentTheme?: ITheme
 ): ITheme {
-  // start with the base style definition
   const baseLayer = createLayerOrState(definition, false, parentTheme);
   const newDef = parentTheme && parentTheme.hasOwnProperty(defKey)
     ? mergeDefinitions(parentTheme[defKey], definition)

@@ -15,7 +15,6 @@
 
 #### theming/themes
 * Can probably do a pass through these to make them better
-* States should have autofg specified so the fg gets reculculated on change
 
 #### coloring
 * Switched swatch generation to be tonal and use HSL which is probably better.

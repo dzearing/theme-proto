@@ -1,6 +1,7 @@
 import { createLayerOrState } from "./ThemeModule";
-import { mergeObjects } from "./mergeObjects";
+import { mergeDefinitions } from "./mergeDefinitions";
 import { IBaseTheme, IBaseLayer, IBaseLayerDef, IBaseThemeDef } from "./ICoreTypes";
+import { hasTheme, getThemeCore } from "./ThemeRegistry";
 
 const defKey = 'definition';
 const defaultName = 'default';
@@ -15,10 +16,9 @@ export function createThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends 
   definition: IThemeDef,
   parentTheme?: ITheme
 ): ITheme {
-  // start with the base style definition
   const baseLayer = createLayerOrState(definition, false, parentTheme);
   const newDef = parentTheme && parentTheme.hasOwnProperty(defKey)
-    ? mergeObjects(parentTheme[defKey], definition)
+    ? mergeDefinitions(parentTheme[defKey], definition)
     : definition;
   const layerDefinitions = newDef.layers || {};
   const baseStateDef = newDef.states || {};
@@ -29,7 +29,7 @@ export function createThemeCore<IThemeDef extends IBaseThemeDef, ITheme extends 
     layers: Object.keys(layerDefinitions).reduce((layers, layerName) => {
       layers[layerName] = () => {
         const base = { states: baseStateDef };
-        const layerDef = mergeObjects(base, aggregateLayerDefinition(layerDefinitions, layerName));
+        const layerDef = mergeDefinitions(base, aggregateLayerDefinition(layerDefinitions, layerName));
         return createLayerOrState(layerDef, false, baseLayer);
       }
       return layers;
@@ -43,8 +43,15 @@ function aggregateLayerDefinition<IThemeLayerDefinition extends IBaseLayerDef>(
 ): Partial<IThemeLayerDefinition> {
   if (layerDefinitions.hasOwnProperty(layerName)) {
     const layerDef = layerDefinitions[layerName];
+
     if (layerDef.parent) {
-      return mergeObjects(aggregateLayerDefinition(layerDefinitions, layerDef.parent!), layerDef);
+      const parentProp = layerDef.parent as string | string[];
+      const parents = typeof parentProp === "string" ? [parentProp] : parentProp;
+      let mergedParentDefs = {};
+      for (const parent of parents) {
+        mergedParentDefs = mergeDefinitions(aggregateLayerDefinition(layerDefinitions, parent), mergedParentDefs)
+      }
+      return mergeDefinitions(mergedParentDefs, layerDef);
     }
     return layerDef;
   }

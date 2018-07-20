@@ -2,15 +2,14 @@ import { registerTheme } from "..";
 
 const registerHighContrastTheme = () => registerTheme('HighContrast', {
   parent: 'DarkTheme',
-  seedColors: {
+  palettes: {
     fg: { color: 'white' },
     bg: { color: 'black' },
-    accent: { color: '#0078d4' }
   },
   colorSet: {
-    backgroundColor: { type: 'bg', shade: 0 },
-    color: { type: 'fn', shade: 0, name: 'autofg' },
-    borderColor: { type: 'fn', shade: 0, name: 'autofg' }
+    backgroundColor: { palette: 'bg', shade: 0 },
+    color: { fn: 'autoText', textStyle: 'soft' },
+    borderColor: { palette: 'fg', shade: 0 }
   },
   settings: {
 
@@ -24,7 +23,7 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
     },
     button: {
       colorSet: {
-        backgroundColor: { type: 'bg', shade: 0 }
+        backgroundColor: { palette: 'bg', shade: 0 }
       },
       settings: {
         borderWidth: 1,
@@ -37,10 +36,13 @@ const registerHighContrastTheme = () => registerTheme('HighContrast', {
 
 const registerOverlayTheme = () => registerTheme('Overlay', {
   parent: 'HighContrast',
-  seedColors: {
+  palettes: {
     fg: { color: 'rgba(255, 255, 255, 0.8)' },
     bg: { color: 'rgba(0, 0, 0, 0.4)' },
-    accent: { color: 'rgba(0, 120, 212, 0.4)' }
+    accent: { color: 'rgba(0, 120, 212, 0.4)', anchorColor: true, tonalOnly: true }
+  },
+  colorSet: {
+    color: { palette: 'fg', shade: 0 }
   }
 })
 

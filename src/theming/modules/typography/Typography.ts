@@ -2,6 +2,7 @@ import { DefaultTypography } from "./DefaultTypography";
 import { registerThemeModule } from "../../core/ThemeModule";
 import { IRawStyle } from "@uifabric/styling";
 import { ITypography, ITypographyProps } from "./ITypography";
+import { IBaseLayer } from "../../core/ICoreTypes";
 
 export function registerTypographyModule() {
   registerThemeModule({
@@ -13,7 +14,12 @@ export function registerTypographyModule() {
 
 const defaultKey = 'default';
 
-function addTypographyToSettings(settings: IRawStyle, typography: ITypography, props?: ITypographyProps): IRawStyle {
+function addTypographyToSettings(
+  settings: IRawStyle,
+  typography: ITypography,
+  _layer: IBaseLayer,
+  props?: ITypographyProps
+): IRawStyle {
   const typeProps = props && props.type && typography.types.hasOwnProperty(props.type) ? typography.types[props.type] : undefined;
   // resolve type properties first
   let {

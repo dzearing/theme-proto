@@ -1,13 +1,13 @@
-import { getColorFromString, IColor } from "../../coloring/color";
-import { getShadeArray } from "../../coloring/shading";
+import { colorFromString, IColor } from "../../coloring";
+import { getLumAdjustedShadeArray } from "../../coloring/shading";
 import { registerThemeModule } from "../core/ThemeModule";
 import { IBaseLayer } from "../core/ICoreTypes";
 
 /**
  * interface defining how an array of colors should be generated.  This either happens
- * via shading a single seed color or by specifying a full array of colors to use
+ * via shading a single color or by specifying a full array of colors to use
  */
-export interface ISeedColorParams {
+export interface IPaletteParams {
   /**
    * Either a single color, or an array of color strings.  If it is a single
    * color that color is used to generate a swatch array using the specified color
@@ -27,37 +27,40 @@ export interface ISeedColorParams {
    * the specified color into index 0
    */
   anchorColor?: boolean;
+
+  /** strip out white and black from the array if true */
+  tonalOnly?: boolean;
 }
 
 /** 
  * Theme colors, used to seed the theming system
  */
-export interface ISeedColorDefinitions {
+export interface IPaletteDefinitions {
   /**
    * Foreground is typically the text color
    */
-  fg: ISeedColorParams;
+  fg: IPaletteParams;
   /**
    * Default background color, typically a neutral color, this will be used to calculate the set
    * of layered background colors
    */
-  bg: ISeedColorParams;
+  bg: IPaletteParams;
   /**
    * Accent color for the theme.  Typically a brighter color, this is used to calculate the
    * themed or accented layers.
    */
-  accent: ISeedColorParams;
+  accent: IPaletteParams;
   /**
    * Additional color parameters can be appended to the set of definitions.  This will be
    * propogated through the system.
    */
-  [key: string]: ISeedColorParams;
+  [key: string]: IPaletteParams;
 }
 
 /**
  * Resolved color arrays
  */
-export interface ISeedColors {
+export interface IPalettes {
   /**
    * Background color layers.  Generated from the seed colors unless specified
    */
@@ -77,24 +80,24 @@ export interface ISeedColors {
   [key: string]: IColor[];
 }
 
+export const DefaultFgParams: IPaletteParams = { color: 'black' };
 
+const fallbackBg: IColor = { str: '#ffffff', rgb: { r: 255, g: 255, b: 255, a: 100 } };
 
-const fallbackBg: IColor = { h: 0, s: 0, v: 100, a: 100, str: '#ffffff' };
+let palettesModuleName: string = 'palettes';
 
-let seedColorsPluginName: string = 'seedColors';
-
-export function registerSeedColorsModule(keyName?: string) {
+export function registerPalettesModule(keyName?: string) {
   if (keyName) {
-    seedColorsPluginName = keyName;
+    palettesModuleName = keyName;
   }
   registerThemeModule({
-    name: seedColorsPluginName,
+    name: palettesModuleName,
     default: {
-      fg: { color: 'black' },
+      fg: DefaultFgParams,
       bg: { color: '#f3f2f1' },
       accent: { color: '#0078d4', anchorColor: true }
     },
-    resolveDef: resolveSeedColorDefinition
+    resolveDef: resolvePalettesDefinition
   });
 }
 
@@ -106,12 +109,12 @@ export function registerSeedColorsModule(keyName?: string) {
  * @param def partial definition to use
  * @param parent parent object
  */
-function resolveSeedColorDefinition(
+function resolvePalettesDefinition(
   name: string,
   _obj: any,
-  defaultDef: ISeedColorDefinitions,
+  defaultDef: IPaletteDefinitions,
   allowPartial: boolean,
-  def?: Partial<ISeedColorDefinitions>,
+  def?: Partial<IPaletteDefinitions>,
   parent?: IBaseLayer
 ): any {
   // state with nothing specified, just return nothing
@@ -119,45 +122,46 @@ function resolveSeedColorDefinition(
     return undefined;
   }
 
-  const parentSeeds = parent ? parent[name] : undefined;
+  const parentPalettes = parent ? parent[name] : undefined;
 
   // default style with no definition, use the default
-  if (!def && !parentSeeds) {
+  if (!def && !parentPalettes) {
     def = defaultDef;
   }
 
   // if we have something to do then do conversions
   if (def) {
     // start with the baseline from the bare minimum, then the parent if specified
-    const result = Object.assign({}, parentSeeds);
+    const result = Object.assign({}, parentPalettes);
 
     // convert colors in the color definitions
     for (const key in def) {
       if (def.hasOwnProperty(key)) {
         const params = def[key];
         if (params) {
-          if (typeof params.color === 'string') {
-            const invertAt = params.invertAt || 50;
-            const rotate: boolean = params.anchorColor || false;
-            const count = 9;
-            const low = 30;
-            const high = 100;
-            const seedColor = getColorFromString(params.color) || fallbackBg;
-            result[key] = getShadeArray(seedColor, count, false, rotate, low, high, invertAt);
-          } else {
-            result[key] = convertColorArray(params.color, fallbackBg);
-          }
+          addNamedPalette(result, key, params);
         }
       }
     }
 
-    // return the built up seed colors
+    // return the built up palette
     return result;
   }
 
-  return parentSeeds;
+  return parentPalettes;
+}
+
+export function addNamedPalette(result: Partial<IPalettes>, key: string, params: IPaletteParams) {
+  if (typeof params.color === 'string') {
+    const { invertAt = 50, tonalOnly = false, anchorColor = false, color } = params;
+    const count = 9;
+    const seedColor = colorFromString(color) || fallbackBg;
+    result[key] = getLumAdjustedShadeArray(seedColor, count, anchorColor, tonalOnly, invertAt);
+  } else {
+    result[key] = convertColorArray(params.color, fallbackBg);
+  }
 }
 
 function convertColorArray(colors: string[], fallback: IColor): IColor[] {
-  return colors.map((val) => (getColorFromString(val) || fallback));
+  return colors.map((val) => (colorFromString(val) || fallback));
 }

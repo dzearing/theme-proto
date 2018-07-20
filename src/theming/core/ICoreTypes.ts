@@ -5,7 +5,7 @@ export interface IBaseStateDef {
   settings?: IBaseSettings;
   /*
   other theme modules will be in here as well
-    seedColors:
+    palettes:
     colorSet:
     typography:
     states: {
@@ -16,7 +16,7 @@ export interface IBaseStateDef {
 }
 
 export interface IBaseLayerDef extends IBaseStateDef {
-  parent?: string;
+  parent?: string | string[];
   states?: { [key: string]: Partial<IBaseStateDef>; }
 }
 
@@ -29,7 +29,7 @@ export interface IBaseThemeDef extends IBaseLayerDef {
 export type IBaseState = IBaseStateDef;
 
 export interface IBaseLayer extends IBaseState {
-  parent?: string;
+  parent?: string | string[];
   states?: { [key: string]: Partial<IBaseState> };
 }
 
@@ -82,6 +82,7 @@ export type ThemeDefinitionResolver = (
 export type SettingsUpdater = (
   settings: IBaseSettings,
   module: IModuleResolved,
+  layer: IBaseLayer,
   params?: object
 ) => IBaseSettings;
 

@@ -4,6 +4,7 @@ import { createComponent, IStyleProps, IViewProps } from './createComponent';
 import { Crumb, ICrumbProps } from './Crumb';
 import { Icon } from 'office-ui-fabric-react';
 import Stack from './Stack';
+import { themeStyle } from './theming';
 
 // Styles for the component
 export interface IBreadcrumbStyles {
@@ -45,7 +46,12 @@ const view = (props: IViewProps<IBreadcrumbProps, IBreadcrumbStyles>) => {
 
 const styles = (props: IStyleProps<IBreadcrumbProps, IBreadcrumbStyles>): IBreadcrumbStyles => {
   return {
-    root: [ props.className ],
+    root: [
+      {
+        ...themeStyle(props.theme)
+      },
+      props.className
+    ],
     divider: [
       {
         fontSize: 8

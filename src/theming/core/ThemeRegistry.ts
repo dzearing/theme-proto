@@ -1,4 +1,4 @@
-import { mergeObjects } from "./mergeObjects";
+import { mergeDefinitions } from "./mergeDefinitions";
 import { createThemeCore } from "./ThemeCreation";
 import { IBaseTheme, IBaseThemeDef } from "./ICoreTypes";
 
@@ -16,7 +16,11 @@ let themeDefinitions: { [key: string]: IThemeReference } = {
 }
 
 export function registerThemeCore<IThemeDef extends IBaseThemeDef>(name: string, definition: Partial<IThemeDef>) {
-  const parent = definition.parent || defaultName;
+  let parent = defaultName;
+  if (definition.parent) {
+    parent = typeof definition.parent === 'string' ? definition.parent : definition.parent[0];
+  }
+
   if (!themeDefinitions) {
     themeDefinitions = {};
   }
@@ -64,7 +68,7 @@ function getResolvedDefinition(name: string): IBaseThemeDef | undefined {
     const thisDef = themeDefinitions[name];
     const parent = thisDef.parent;
     if (parent && parent !== name && themeDefinitions.hasOwnProperty(parent)) {
-      return mergeObjects(getResolvedDefinition(parent), thisDef.definition);
+      return mergeDefinitions(getResolvedDefinition(parent), thisDef.definition);
     }
     return thisDef.definition;
   }
@@ -78,8 +82,15 @@ export function getThemeCore<ITheme extends IBaseTheme>(name?: string): ITheme {
     return themeRegistry[name] as ITheme;
   }
 
+  // if the parent theme is built already just execute this as a diff on top of the existing theme
+  let parentTheme: ITheme | undefined;
+  const rawDef = themeDefinitions[name];
+  if (rawDef && rawDef.parent && hasTheme(rawDef.parent, false)) {
+    parentTheme = getThemeCore<ITheme>(rawDef.parent);
+  }
+
   // now no cached theme exists so try the definition
-  const definition = getResolvedDefinition(name);
+  const definition = parentTheme ? rawDef.definition : getResolvedDefinition(name);
   if (!definition) {
     if (name !== defaultName) {
       return getThemeCore();
@@ -90,12 +101,12 @@ export function getThemeCore<ITheme extends IBaseTheme>(name?: string): ITheme {
   }
 
   // now create the new theme
-  themeRegistry[name] = createThemeCore(definition);
+  themeRegistry[name] = createThemeCore(definition, parentTheme);
   return themeRegistry[name] as ITheme;
 }
 
-export function hasTheme(name: string): boolean {
-  return themeDefinitions.hasOwnProperty(name) || themeRegistry.hasOwnProperty(name);
+export function hasTheme(name: string, checkForUnresolved: boolean = true): boolean {
+  return themeRegistry.hasOwnProperty(name) || (checkForUnresolved && themeDefinitions.hasOwnProperty(name));
 }
 
 export function getDefaultThemeCore<ITheme extends IBaseTheme>(): ITheme {

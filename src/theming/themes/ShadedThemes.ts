@@ -4,39 +4,44 @@ import { registerTheme } from '..';
 export const DefaultThemeName = 'LightTheme';
 
 const registerLightTheme = () => registerTheme(DefaultThemeName, {
-  seedColors: {
+  palettes: {
     fg: { color: 'black' },
     bg: { color: '#f3f2f1' },
-    accent: { color: '#0078d4', anchorColor: true }
+    accent: { color: '#0078d4', anchorColor: true, tonalOnly: true }
   },
   colorSet: {
-    backgroundColor: { type: 'bg', shade: 0 },
-    color: { type: 'fn', shade: 0, name: 'autofg' },
-    borderColor: { type: 'rel', shade: 2 }
+    backgroundColor: { palette: 'bg', shade: 0 },
+    color: { fn: 'autoText', textStyle: 'soft' },
+    borderColor: { fn: 'deepen', by: 2 }
   },
   typography: DefaultTypography,
   layers: {
-    button: {
+    shadedControl: {
       colorSet: {
-        backgroundColor: { type: 'rel', shade: 2 }
-      },
+        backgroundColor: { fn: 'deepen', by: 2 }
+      }
+    },
+    interactiveControl: {
+      states: {
+        ':active': {
+          colorSet: { backgroundColor: { fn: 'deepen', by: 2 } }
+        },
+        ':hover': {
+          colorSet: { backgroundColor: { fn: 'deepen', by: 3 } }
+        }
+      }
+    },
+    button: {
+      parent: ['shadedControl', 'interactiveControl'],
       settings: {
         borderWidth: 0,
         borderRadius: 2
-      },
-      states: {
-        ':active': {
-          colorSet: { backgroundColor: { type: 'rel', shade: 2 } }
-        },
-        ':hover': {
-          colorSet: { backgroundColor: { type: 'rel', shade: 3 } }
-        }
-      },
+      }
     },
     themedButton: {
       parent: 'button',
       colorSet: {
-        backgroundColor: { type: 'switch', shade: 0 }
+        backgroundColor: { fn: 'swap', swapTargets: ['accent', 'bg'] }
       }
     }
   }
@@ -44,10 +49,9 @@ const registerLightTheme = () => registerTheme(DefaultThemeName, {
 
 const registerDarkTheme = () => registerTheme('DarkTheme', {
   parent: 'LightTheme',
-  seedColors: {
+  palettes: {
     fg: { color: 'white' },
     bg: { color: '#c3c3c3' },
-    accent: { color: '#0078d4' }
   },
   layers: {
     default: {}
